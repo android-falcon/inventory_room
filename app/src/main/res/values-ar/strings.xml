@@ -230,5 +230,8 @@
     <string name="falidedimportItemQR">فشل استيراد QR </string>
     <string name="saveItemQr">Save Item QR In Db</string>
     <string name="saveitemQR">save item QR</string>
+    <string name="ActivateTheVersion">تفعيل النسخه </string>
+    <string name="Activate">تفعيل</string>
+
 
 </resources>

@@ -268,14 +268,14 @@ public class MainActivity2 extends AppCompatActivity {
         final Button itemStore = new Button(this);
         final Button itemUnite = new Button(this);
         final Button itemAssets = new Button(this);
-        final Button itemQr = new Button(this);
+//        final Button itemQr = new Button(this);
 
         itemCard.setText(getResources().getString(R.string.Import_Item_Card));
         itemSwitch.setText(getResources().getString(R.string.ImportItemSwitch));
         itemStore.setText(getResources().getString(R.string.ImporItemStore));
         itemUnite.setText("Import Item Unite");
         itemAssets.setText("Import Item Assets");
-        itemQr.setText("Import Item QR");
+//        itemQr.setText("Import Item QR");
         if (SweetAlertDialog.DARK_STYLE) {
             itemCard.setTextColor(Color.WHITE);
             itemSwitch.setTextColor(Color.WHITE);
@@ -290,7 +290,7 @@ public class MainActivity2 extends AppCompatActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(itemCard);
         linearLayout.addView(itemSwitch);
-        linearLayout.addView(itemQr);
+//        linearLayout.addView(itemQr);
         linearLayout.addView(itemUnite);
         linearLayout.addView(itemStore);
         linearLayout.addView(itemAssets);
@@ -350,13 +350,13 @@ public class MainActivity2 extends AppCompatActivity {
         });
 
 
-        itemQr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messages(7);
-                dialog.dismissWithAnimation();
-            }
-        });
+//        itemQr.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                messages(7);
+//                dialog.dismissWithAnimation();
+//            }
+//        });
 
 
 

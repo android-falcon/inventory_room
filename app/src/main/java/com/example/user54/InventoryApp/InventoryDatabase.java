@@ -30,7 +30,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 19;//version Db
+    private static final int DATABASE_VERSION =20;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -279,6 +279,11 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String PRICE7 = "PRICE";
     private static final String QR_CODE7 = "QR_CODE";
     private static final String LOT_NUMBER7 = "LOT_NUMBER";
+
+    //___________________________________________________________________________________
+    private static final String ACTIVATE_TABLE = "ACTIVATE_TABLE";
+
+    private static final String ACTIVATE = "ACTIVATE";
 
 
 
@@ -539,6 +544,12 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + LOT_NUMBER7 +  " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_ITEMS_QR_CODE_TABLE);
 
+        //=========================================================================================
+
+        String CREATE_TABLE_ACTIVATE = "CREATE TABLE " + ACTIVATE_TABLE + "("
+                + ACTIVATE + " NVARCHAR NOT NULL " + ")";
+        Idb.execSQL(CREATE_TABLE_ACTIVATE);
+
 //=========================================================================================
 
     }
@@ -704,6 +715,15 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }
 
 
+        try{
+
+            String CREATE_TABLE_ACTIVATE = "CREATE TABLE " + ACTIVATE_TABLE + "("
+                    + ACTIVATE + " NVARCHAR NOT NULL " + ")";
+            Idb.execSQL(CREATE_TABLE_ACTIVATE);
+
+        }catch (Exception e){
+            Log.e("upgrade", "ACTIVATE_TABLE TABLE");
+        }
 
 
 
@@ -959,7 +979,16 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         Idb.close();
     }
 
+    public void addActive(String activ) {
+        Idb = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put(ACTIVATE,activ );
+
+
+        Idb.insert(ACTIVATE_TABLE, null, values);
+        Idb.close();
+    }
 
 
     public void addItemSwitchTester(List<ItemSwitch> itemSwitch) {
@@ -1584,6 +1613,22 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return stks;
     }
 
+    public String getActivate() {
+      String activate="";
+        String selectQuery = "SELECT  * FROM " + ACTIVATE_TABLE;
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                activate=cursor.getString(0);
+
+            } while (cursor.moveToNext());
+        }
+        return activate;
+    }
+
     //select * from ITEM_QR_CODE_TABLE where QR_CODE LIKE '0106281086002827%'
 
 
@@ -1947,6 +1992,9 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         return maxNo;
 
     }
+
+
+
 
     public void updatePasswordTable(String newValue,String serialNo,String oldPass) {
         Idb = this.getWritableDatabase();

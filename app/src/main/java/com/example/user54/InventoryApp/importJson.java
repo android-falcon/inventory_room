@@ -411,7 +411,9 @@ public class importJson {
 
             }
             else if (JsonResponse != null && JsonResponse.contains("No Data Found.")){
-                new SyncItemQR().execute();
+              new SyncItemQR().execute();
+//                new SyncItemUnite().execute();
+
             }else {
                 Log.e("TAG_itemSwitch", "****Failed to export data");
 //                progressDialog.dismiss();
@@ -1424,6 +1426,8 @@ public class importJson {
             pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             pd.setTitleText(context.getResources().getString(R.string.saveitemswitch));
             new SyncItemQR().execute();
+//            new SyncItemUnite().execute();
+
         }
     }
 

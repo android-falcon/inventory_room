@@ -226,5 +226,7 @@
     <string name="falidedimportItemQR">Failed to Import item Qr Table</string>
     <string name="saveItemQr">Save Item QR In Db</string>
     <string name="saveitemQR">save item QR</string>
+    <string name="ActivateTheVersion">Activate The Version</string>
+    <string name="Activate">Activate</string>
 
 </resources>
