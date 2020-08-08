@@ -394,6 +394,7 @@ public class Tools extends AppCompatActivity {
         final TextView StoreName = MainSettingdialog.findViewById(R.id.StoreName);
         final EditText ipSetting = MainSettingdialog.findViewById(R.id.ipSetting);
         final CheckBox AssestCheckBox = MainSettingdialog.findViewById(R.id.AssestCheckBox);
+        final CheckBox QrCheckBox = MainSettingdialog.findViewById(R.id.QrCheckBox);
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
         String StkNo = "";
@@ -439,6 +440,11 @@ public class Tools extends AppCompatActivity {
             } else {
                 AssestCheckBox.setChecked(false);
             }
+            if (mainSettings.get(0).getIsQr().equals("1")) {
+                QrCheckBox.setChecked(true);
+            } else {
+                QrCheckBox.setChecked(false);
+            }
             int index = StokNo.indexOf(mainSettings.get(0).getStorNo());
 //            StkNo = StkAdapter.getItem(index);
             Log.e("indexofSpinner = ", "= " + index + "   " + StkNo + "    " + mainSettings.get(0).getStorNo());
@@ -458,6 +464,7 @@ public class Tools extends AppCompatActivity {
                     InventDB.deleteAllItem("MAIN_SETTING_TABLE");
                     String Store = "0";
                     String isAssest = "0";//0->not 1-->assest
+                    String isQr="0";//0->not 1-->QR
                     if (StokNo.size() != 0) {
                         Store = stkSpinner.getSelectedItem().toString();
                     } else {
@@ -470,7 +477,14 @@ public class Tools extends AppCompatActivity {
                         isAssest = "0";
                     }
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest));
+
+                    if (QrCheckBox.isChecked()) {
+                        isQr = "1";
+                    } else {
+                        isQr = "0";
+                    }
+
+                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     MainSettingdialog.dismiss();
 

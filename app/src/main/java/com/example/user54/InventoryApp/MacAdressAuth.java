@@ -40,8 +40,9 @@ public class MacAdressAuth extends AppCompatActivity {
 //            setContentView(R.layout.mac_adreass_activity_yellow);
 //        }
 
-//0:10:20:98:eb:96
-        if(getMacAddr().equals("0:10:20:98:eb:9b")){//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
+        //48:3f:e9:86:ce:90
+//0:10:20:98:eb:9b
+        if(getMacAddr().equals("c4:9f:4c:96:d5:dd")){//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
 
             Intent logIntent=new Intent(MacAdressAuth.this,LogIn.class);
                     startActivity(logIntent);

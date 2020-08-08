@@ -5,15 +5,17 @@ public class MainSetting {
     private String IP;
     private String StorNo;
     private String isAssest;
+    private String isQr;
 
 
     public MainSetting() {
     }
 
-    public MainSetting(String IP, String storNo, String isAssest) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
+        this.isQr = isQr;
     }
 
     public String getIP() {
@@ -38,5 +40,13 @@ public class MainSetting {
 
     public void setIsAssest(String isAssest) {
         this.isAssest = isAssest;
+    }
+
+    public String getIsQr() {
+        return isQr;
+    }
+
+    public void setIsQr(String isQr) {
+        this.isQr = isQr;
     }
 }

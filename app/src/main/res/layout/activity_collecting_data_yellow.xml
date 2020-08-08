@@ -349,13 +349,14 @@
                             android:textColor="@color/white"
                             android:textSize="16sp" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/salePrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bac_frame_no"
                             android:ems="10"
                             android:gravity="center"
+                            android:inputType="numberDecimal"
                             android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />

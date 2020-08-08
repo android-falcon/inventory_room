@@ -228,5 +228,6 @@
     <string name="saveitemQR">save item QR</string>
     <string name="ActivateTheVersion">Activate The Version</string>
     <string name="Activate">Activate</string>
+    <string name="enter_location">Enter Location</string>
 
 </resources>

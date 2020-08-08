@@ -30,7 +30,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =20;//version Db
+    private static final int DATABASE_VERSION =21;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -204,6 +204,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String IP_SETTING = "IP_SETTING";
     private static final String STORNO = "STORNO";
     private static final String IS_ASSEST = "IS_ASSEST";
+    private static final String IS_QRJARD = "IS_QRJARD";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -464,7 +465,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         String CREATE_TABLE_MAIN_SETTING = "CREATE TABLE " + MAIN_SETTING_TABLE + "("
                 + IP_SETTING + " NVARCHAR   ,"
                 + STORNO + " NVARCHAR   ,"
-                + IS_ASSEST + " NVARCHAR " + ")";
+                + IS_ASSEST + " NVARCHAR   ,"
+                + IS_QRJARD + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -725,7 +727,12 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             Log.e("upgrade", "ACTIVATE_TABLE TABLE");
         }
 
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + IS_QRJARD + " TEXT"+" DEFAULT '0'");
 
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE TABLE  IS_QRJARD");
+        }
 
     }
 
@@ -833,6 +840,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(IP_SETTING, convertToEnglish( mainSetting.getIP()));
         values.put(STORNO,  convertToEnglish(mainSetting.getStorNo()));
         values.put(IS_ASSEST,  convertToEnglish(mainSetting.getIsAssest()));
+        values.put(IS_QRJARD,  convertToEnglish(mainSetting.getIsQr()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -1546,6 +1554,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setIP(cursor.getString(0));
                 item.setStorNo(cursor.getString(1));
                 item.setIsAssest(cursor.getString(2));
+                item.setIsQr(cursor.getString(3));
                 passwords.add(item);
 
             } while (cursor.moveToNext());
@@ -1656,6 +1665,47 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return QRList;
     }
 
+    public ArrayList<ItemQR> getAllQRItemEqQr(String Qrcode,String STR_NO) {
+        ArrayList<ItemQR> QRList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + ITEM_QR_CODE_TABLE +" WHERE STR_NO ='"+STR_NO+"' and QR_CODE = '"+Qrcode+"'";
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ItemQR item = new ItemQR();
+
+                item.setStoreNo(cursor.getString(0));
+                item.setItemCode(cursor.getString(1));
+                item.setItemNmae(cursor.getString(2));
+                item.setSalesPrice(cursor.getString(3));
+                item.setQrCode(cursor.getString(4));
+                item.setLotNo(cursor.getString(5));
+
+                QRList.add(item);
+            } while (cursor.moveToNext());
+        }
+        return QRList;
+    }
+
+    public String getSalesQRItem(String ITEM_CODE,String STR_NO) {
+       String QRList = "";
+
+        String selectQuery = "SELECT  PRICE FROM " + ITEM_QR_CODE_TABLE +" WHERE STR_NO ='"+STR_NO+"' and ITEM_CODE = '"+ITEM_CODE+"'";
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                QRList= cursor.getString(0);
+
+
+            } while (cursor.moveToNext());
+        }
+        return QRList;
+    }
 
     public ArrayList<AssestItem> getAllAssesstItem() {
         ArrayList<AssestItem> assestItems = new ArrayList<>();

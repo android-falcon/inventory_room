@@ -51,6 +51,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.user54.InventoryApp.InventoryDatabase;
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.ItemCard;
@@ -103,12 +104,15 @@ public class CollectingData extends AppCompatActivity {
     int textId = 0;
     ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
 
-    String StkNo="";
+    String StkNo = "";
+    String QrUse = "";
     Animation animFadein;
     TableRow row;
     TableLayout noteTable;
     ArrayList<ItemCard> itemCodeCard;
     DecimalFormat numberFormat = new DecimalFormat("0.000");
+
+    String LocationEdite = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,9 +156,18 @@ public class CollectingData extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.collData:
-                    collectData.setClickable(false);
-                    collDOpen = true;
-                    showCollectDataDialog();
+//                    collectData.setClickable(false);
+//                    collDOpen = true;
+
+//                    showCollectDataDialog();
+
+                    boolean is=LocationDialog();
+//                    if(is) {
+//
+//                    }else {
+//                        Toast.makeText(CollectingData.this, "noLocation", Toast.LENGTH_SHORT).show();
+//                    }
+
                     break;
 //                case R.id.collByorg:
 //
@@ -1136,10 +1149,10 @@ public class CollectingData extends AppCompatActivity {
         final CheckBox upDateCheck = (CheckBox) dialog.findViewById(R.id.updateQ);
         final RadioButton min, NotMin;
         final CheckBox ExpDateCheckBox = (CheckBox) dialog.findViewById(R.id.ExpDateCheckBox);
-        final TextView itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, salePrice, _qty;
+        final TextView itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, _qty;
         final LinearLayout exit, save, clear, update, newButton, search;
         final Button barcode;
-        final EditText itemCodeText, itemQty, locations, lotNo, qrCode;
+        final EditText itemCodeText, itemQty, locations, lotNo, qrCode, salePrice;
         final int[] uQty = {1};
 
 
@@ -1154,7 +1167,7 @@ public class CollectingData extends AppCompatActivity {
         itemQty = (EditText) dialog.findViewById(R.id.item_qty);
         itemLocation = dialog.findViewById(R.id.location);
         locations = dialog.findViewById(R.id.locations);
-        salePrice = (TextView) dialog.findViewById(R.id.salePrice);
+        salePrice = (EditText) dialog.findViewById(R.id.salePrice);
         itemName = (TextView) dialog.findViewById(R.id.item_name);
         itemNameBefore = (TextView) dialog.findViewById(R.id.itemNameB);
         itemCodeBefore = (TextView) dialog.findViewById(R.id.itemCodeB);
@@ -1182,8 +1195,11 @@ public class CollectingData extends AppCompatActivity {
         String StkName = "";
         if (mainSettings.size() != 0) {
             StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
-            StkNo=mainSettings.get(0).getStorNo();
+            StkNo = mainSettings.get(0).getStorNo();
+            QrUse = mainSettings.get(0).getIsQr();
         }
+
+        locations.setText(LocationEdite);
 
 //
 //        itemQty.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -1231,6 +1247,20 @@ public class CollectingData extends AppCompatActivity {
 //                return false;
 //            }
 //        });
+
+
+        salePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // TODO: the editText has just been left
+
+                    PasswordDialog(salePrice,locations);
+
+                }
+
+            }
+        });
 
 
         itemDate.setOnClickListener(new View.OnClickListener() {
@@ -1360,6 +1390,26 @@ public class CollectingData extends AppCompatActivity {
 //            }});
 *///to
 
+        itemQty.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {
+
+
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            salePrice.requestFocus();
+
+                        }
+                    });
+
+                }
+                return false;
+            }
+        });
+
 //
 
         itemCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -1399,17 +1449,19 @@ public class CollectingData extends AppCompatActivity {
                         isEnter[0] = true;
 
                         Log.e("itemCardsList.size()", "-->" + itemCardsList.size());
+                        List<ItemQR> QRList = new ArrayList<>();
                         boolean isSaleFromUnit = false;
                         if (itemCode.length() > 17) {
                             QRCode = itemCode;
-                            itemCode=itemCode.substring(0, 16);
-                            Log.e("String ",""+itemCode);
-
+                            itemCode = itemCode.substring(0, 16);
+                            Log.e("String ", "" + itemCode);
+                            QRList = findQRCode(itemCode, StkNo, false);
                         } else {
+                            QRCode = itemCode;
                             itemCode = itemCodeText.getText().toString();
+                            QRList = findQRCode(itemCode, StkNo, true);
                         }
 
-                        List<ItemQR> QRList = findQRCode(itemCode, StkNo);
 
                         if (QRList.size() != 0) {
                             itemCode = QRList.get(0).getItemCode();
@@ -1459,6 +1511,15 @@ public class CollectingData extends AppCompatActivity {
                                 if (!isSaleFromUnit) {
                                     salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
                                     _qty.setText("1");
+                                }
+
+                                if (QrUse.equals("1")) {
+                                    String Sales = findQRCodeSale(itemCode, StkNo);
+                                    if (!TextUtils.isEmpty(Sales)) {
+                                        salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Sales))));
+                                    } else {
+                                        salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
+                                    }
                                 }
 
                                 break;
@@ -4142,7 +4203,7 @@ public class CollectingData extends AppCompatActivity {
                     if (openSearch) {
 
                         for (int i = 0; i < itemCodeCard.size(); i++) {
-                            if (itemCodeCard.get(i).getItemCode().contains(itemCodeReader) || itemCodeCard.get(i).getItemName().contains(itemCodeReader)) {
+                            if (itemCodeCard.get(i).getItemCode().toUpperCase().contains(itemCodeReader.toUpperCase()) || itemCodeCard.get(i).getItemName().toUpperCase().contains(itemCodeReader.toUpperCase())) {
 //                            insertRowSearch(finalItemCodeCard.get(i).getItemName(), finalItemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
                                 ItemCard itemCard = itemCodeCard.get(i);
                                 ItemCodeCardSearch.add(itemCard);
@@ -4650,11 +4711,23 @@ public class CollectingData extends AppCompatActivity {
         return itemOCode;
     }
 
-    public List<ItemQR> findQRCode(String ItemQR,String strNo) {
+    public List<ItemQR> findQRCode(String ItemQR, String strNo, boolean eqQR) {
+        List<ItemQR> itemOCode = new ArrayList<>();
+        if (!eqQR) {
+            itemOCode = InventDB.getAllQRItem(ItemQR, strNo);
+        } else {
+            itemOCode = InventDB.getAllQRItemEqQr(ItemQR, strNo);
+        }
 
-        List<ItemQR> itemOCode = InventDB.getAllQRItem(ItemQR,strNo);
 
         return itemOCode;
+    }
+
+    public String findQRCodeSale(String ItemCode, String strNo) {
+
+        String Sales = InventDB.getSalesQRItem(ItemCode, strNo);
+
+        return Sales;
     }
 
     public List<String> findUnite(String Item) {
@@ -4739,6 +4812,121 @@ public class CollectingData extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+
+    boolean LocationDialog() {
+        final boolean[] isLocation = {false};
+        final boolean[] onClicke = {true};
+
+        final EditText editText = new EditText(CollectingData.this);
+//        final TextView textView = new TextView(CollectingData.this);
+        editText.setHint(CollectingData.this.getResources().getString(R.string.enter_location));
+        editText.setTextColor(Color.BLACK);
+//        textView.setTextColor(Color.RED);
+        if (SweetAlertDialog.DARK_STYLE) {
+            editText.setTextColor(Color.BLACK);
+        }
+        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(editText);
+//        linearLayout.addView(textView);
+
+        final SweetAlertDialog dialog = new SweetAlertDialog(CollectingData.this, SweetAlertDialog.NORMAL_TYPE);
+        dialog.setTitleText(CollectingData.this.getResources().getString(R.string.location));
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                String LocationEditeStr = editText.getText().toString();
+//                        textView.setText("");
+                if (!LocationEditeStr.equals("")) {
+                    if(onClicke[0]) {
+                        onClicke[0] = false;
+
+                        dialog.dismissWithAnimation();
+                        LocationEdite = LocationEditeStr;
+
+                        collectData.setClickable(false);
+                        collDOpen = true;
+                        showCollectDataDialog();
+                        isLocation[0] = true;
+                    }
+
+                } else {
+                    Toast.makeText(CollectingData.this, "Please Enter Location ", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+//                        .hideConfirmButton();
+
+        dialog.setCustomView(linearLayout);
+        dialog.show();
+
+        return isLocation[0];
+    }
+
+    void PasswordDialog(final EditText salePrice, final EditText master) {
+
+        final EditText editText = new EditText(CollectingData.this);
+        final TextView textView = new TextView(CollectingData.this);
+        editText.setHint("Enter Password");
+        editText.setTextColor(Color.BLACK);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        textView.setTextColor(Color.RED);
+        if (SweetAlertDialog.DARK_STYLE) {
+            editText.setTextColor(Color.BLACK);
+        }
+        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(editText);
+        linearLayout.addView(textView);
+
+        final SweetAlertDialog dialog = new SweetAlertDialog(CollectingData.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Password")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        String password = editText.getText().toString();
+                        textView.setText("");
+                        if (!password.equals("")) {
+                            if (password.equals("882020")) {
+
+                                textView.setText("");
+                                salePrice.setEnabled(true);
+                                sweetAlertDialog.dismissWithAnimation();
+
+                            } else {
+                                textView.setText(getResources().getString(R.string.NotCorrectPassword));
+                                salePrice.setEnabled(false);
+                            }
+
+                        }
+
+                    }
+                })
+                .setCancelButton(CollectingData.this.getResources().getString(R.string.cancel), new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                master.requestFocus();
+
+                            }
+                        });
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                });
+//                        .hideConfirmButton();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCustomView(linearLayout);
+        dialog.show();
+
     }
 
 

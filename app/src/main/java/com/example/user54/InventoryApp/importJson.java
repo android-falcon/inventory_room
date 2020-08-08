@@ -493,9 +493,15 @@ public class importJson {
 
                 StringBuffer stringBuffer = new StringBuffer();
 
-                while ((JsonResponse = bufferedReader.readLine()) != null) {
-                    stringBuffer.append(JsonResponse + "\n");
-                }
+
+                    while ((JsonResponse = bufferedReader.readLine()) != null) {
+                        try {
+                        stringBuffer.append(JsonResponse + "\n");
+                    }catch (Exception ex){
+                        Log.e("QRJsonResponse","Long JsonResponse "+ex.toString());
+                    }
+                    }
+
 
                 bufferedReader.close();
                 inputStream.close();
