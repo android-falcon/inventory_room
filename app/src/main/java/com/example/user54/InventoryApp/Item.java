@@ -1966,6 +1966,8 @@ TextView barCodTextTemp;
                     itemCard.setItemCode(itemCodeNew.getText().toString());
                     itemCard.setItemName(itemNameNew.getText().toString());
                     itemCard.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(itemPrice.getText().toString()))));
+                    itemCard.setIsExport("0");
+                    itemCard.setIsNew("1");
 
                     InventDB.addItemcardTable(itemCard);
                     prograseSave();

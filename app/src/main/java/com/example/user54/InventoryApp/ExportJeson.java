@@ -57,6 +57,9 @@ public class ExportJeson {
         if (flag.equals("ExportData"))
             new ExportData().execute();
 
+        if (flag.equals("ExportDataBackup"))
+            new ExportDataBackup().execute();
+
         if (flag.equals("ExportTransferData"))
             new ExportTransferData().execute();
 
@@ -66,6 +69,9 @@ public class ExportJeson {
 
         if (flag.equals("ExportAssets"))
             new ExportAssets().execute();
+
+        if (flag.equals("ExportItemCard"))
+            new ExportItemCard().execute();
 
     }
 
@@ -181,6 +187,134 @@ public class ExportJeson {
 
                 if(pdItem!=null){
                 pdItem.dismissWithAnimation();
+
+                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText(context.getResources().getString(R.string.ops))
+                            .setContentText(context.getResources().getString(R.string.faildexport_iteminfo))
+                            .show();
+
+                }
+
+            }
+
+        }
+
+
+
+    }
+
+    private class ExportDataBackup extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+        SweetAlertDialog pdItem=null;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            progressDialog = new ProgressDialog(context,R.style.MyTheme);
+//            progressDialog.setCancelable(false);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progressDialog.setProgress(0);
+//            progressDialog.show();
+            pdItem = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            pdItem.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+            pdItem.setTitleText(context.getResources().getString(R.string.exportiteminfo));
+            pdItem.setCancelable(false);
+            pdItem.show();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
+            try {
+                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                String ip="";
+                if(mainSettings.size()!=0) {
+                    ip= mainSettings.get(0).getIP();
+                }
+                String link = "http://"+ip + "/ExportData2";
+//
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                Log.e("tag_link", "ExportData -->" + link);
+                Log.e("tag_data", "ExportData -->" + data);
+
+////
+                URL url = new URL(link);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "ExportData -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+            if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
+                Log.e("ExportData", "****Success");
+                dbHandler.updateIsExportBackupInfoTable();
+                pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pdItem.setTitleText(context.getResources().getString(R.string.exportriteminfosuc));
+                if(pdItem!=null){
+                    pdItem.dismissWithAnimation();
+
+                    new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText(context.getResources().getString(R.string.sucess))
+                            .setContentText(context.getResources().getString(R.string.exportiteminfosucess))
+                            .show();
+
+                }
+
+
+            } else {
+                Log.e("ExportData", "****Failed to export data");
+//                Toast.makeText(context, "Failed to ExportData", Toast.LENGTH_SHORT).show();
+
+                if(pdItem!=null){
+                    pdItem.dismissWithAnimation();
 
                     new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText(context.getResources().getString(R.string.ops))
@@ -561,6 +695,126 @@ public class ExportJeson {
 
                 if(AssetsDialog !=null){
                     AssetsDialog.dismissWithAnimation();
+
+                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText(context.getResources().getString(R.string.ops))
+                            .setContentText(context.getResources().getString(R.string.assfailedtoExport))
+                            .show();
+
+                }
+            }
+
+        }
+
+
+
+    }
+
+
+    private class ExportItemCard extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+        SweetAlertDialog ItemCardDialog =null;
+        @Override
+        protected void onPreExecute() {
+
+            ItemCardDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            ItemCardDialog.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+            ItemCardDialog.setTitleText(context.getResources().getString(R.string.assetsExport));
+            ItemCardDialog.setCancelable(false);
+            ItemCardDialog.show();
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
+            try {
+                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                String ip="";
+                if(mainSettings.size()!=0) {
+                    ip= mainSettings.get(0).getIP();
+                }
+                String link = "http://"+ip + "/SaveAssets";
+//
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                Log.e("tag_link", "ExportData -->" + link);
+                Log.e("tag_data", "ExportData -->" + data);
+
+////
+                URL url = new URL(link);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "ExportData -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+            if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
+                Log.e("ExportData", "****Success");
+                dbHandler.updateIsExportItemCard();
+
+                if(ItemCardDialog !=null){
+                    ItemCardDialog.dismissWithAnimation();
+
+                    new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText(context.getResources().getString(R.string.sucess))
+                            .setContentText(context.getResources().getString(R.string.assestSave))
+                            .show();
+
+                }
+
+            } else {
+                Log.e("ExportData", "****Failed to export data");
+                Toast.makeText(context, "Failed to ExportData", Toast.LENGTH_SHORT).show();
+
+                if(ItemCardDialog !=null){
+                    ItemCardDialog.dismissWithAnimation();
 
                     new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText(context.getResources().getString(R.string.ops))

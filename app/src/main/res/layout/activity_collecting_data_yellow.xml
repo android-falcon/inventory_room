@@ -106,6 +106,7 @@
                         </TableRow>
 
                         <TableRow
+                            android:id="@+id/rawQr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -124,6 +125,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bac_frame_no"
                                 android:ems="10"
+                                android:text="@string/_0"
                                 android:gravity="center"
                                 android:inputType="text"
                                 android:textColor="@color/white"
@@ -156,6 +158,7 @@
                                 android:textStyle="bold" />
                         </TableRow>
                         <TableRow
+                            android:id="@+id/rawQrLot"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp">
@@ -173,6 +176,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bac_frame_no"
                                 android:ems="10"
+                                android:text="@string/_0"
                                 android:gravity="center"
                                 android:inputType="text"
                                 android:textColor="@color/white"

@@ -1,5 +1,10 @@
 package com.example.user54.InventoryApp.Model;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ItemCard {
 
     private String itemCode;
@@ -19,15 +24,15 @@ public class ItemCard {
     private String itemGs;
     private String orgPrice;
     private String inDate;
+    private String isExport;
+    private String isNew;
+
     private boolean check;
     public ItemCard() {
 
     }
 
-    public ItemCard(String itemCode, String itemName, String costPrc, String salePrc,
-                    String AVLQty, String FDPRC, String branchId, String branchName, String departmentId,
-                    String departmentName, String itemG, String itemK, String itemL
-            , String itemDiv, String itemGs, String orgPrice, String inDate, boolean check) {
+    public ItemCard(String itemCode, String itemName, String costPrc, String salePrc, String AVLQty, String FDPRC, String branchId, String branchName, String departmentId, String departmentName, String itemG, String itemK, String itemL, String itemDiv, String itemGs, String orgPrice, String inDate, String isExport, String isNew, boolean check) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.costPrc = costPrc;
@@ -45,6 +50,8 @@ public class ItemCard {
         this.itemGs = itemGs;
         this.orgPrice = orgPrice;
         this.inDate = inDate;
+        this.isExport = isExport;
+        this.isNew = isNew;
         this.check = check;
     }
 
@@ -191,4 +198,45 @@ public class ItemCard {
     public void setInDate(String inDate) {
         this.inDate = inDate;
     }
+
+    public String getIsExport() {
+        return isExport;
+    }
+
+    public void setIsExport(String isExport) {
+        this.isExport = isExport;
+    }
+
+    public String getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(String isNew) {
+        this.isNew = isNew;
+    }
+
+    public JSONObject getJSONObject2() { // for server
+        JSONObject obj = new JSONObject();
+        try {
+
+            obj.put("ItemOCode", itemCode);
+            obj.put("ItemNameA", itemName);
+            obj.put("ItemG", costPrc);
+            obj.put("SalePrice", salePrc);
+            obj.put("AVLQTY", AVLQty);
+            obj.put("F_D",FDPRC );
+            obj.put("ItemK", branchId);
+            obj.put("ItemL", branchName);
+            obj.put("ITEMDIV", departmentId);
+            obj.put("ITEMGS", departmentName);
+            obj.put("InDate", itemG);
+
+
+
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
+    }
+
 }

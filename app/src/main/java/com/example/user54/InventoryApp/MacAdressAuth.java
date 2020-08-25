@@ -27,7 +27,7 @@ public class MacAdressAuth extends AppCompatActivity {
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        inventoryDatabase=new InventoryDatabase(MacAdressAuth.this);
+        inventoryDatabase = new InventoryDatabase(MacAdressAuth.this);
 //        String ac=inventoryDatabase.getActivate();
 //        if(!ac.equals("")){
 //            if(ac.equals("11A")){
@@ -39,27 +39,39 @@ public class MacAdressAuth extends AppCompatActivity {
 //        }else{
 //            setContentView(R.layout.mac_adreass_activity_yellow);
 //        }
-
+//c4:9f:4c:96:d5:dd
         //48:3f:e9:86:ce:90
 //0:10:20:98:eb:9b
-        if(getMacAddr().equals("c4:9f:4c:96:d5:dd")){//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
+        //14:9f:e8:1:49:2f
+        if(false){
+        if (getMacAddr().equals("48:3f:e9:86:ce:90") ||
+                getMacAddr().equals("0:10:20:98:ed:3b") ||
+                getMacAddr().equals("0:10:20:98:ec:29") ||
+                getMacAddr().equals("0:10:20:98:ec:67") ||
+                getMacAddr().equals("0:10:20:98:ec:ed") ||
+                getMacAddr().equals("0:10:20:98:eb:9b") ||
+                getMacAddr().equals("c4:9f:4c:96:d5:dd")) {//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
 
-            Intent logIntent=new Intent(MacAdressAuth.this,LogIn.class);
-                    startActivity(logIntent);
+            Intent logIntent = new Intent(MacAdressAuth.this, LogIn.class);
+            startActivity(logIntent);
             finish();
-        }else{
+        } else {
             setContentView(R.layout.mac_adreass_activity_yellow);
             Toast.makeText(this, "Not Activate", Toast.LENGTH_SHORT).show();
-            MacAddress=findViewById(R.id.MacAddress);
+            MacAddress = findViewById(R.id.MacAddress);
 //        ActivateButton=findViewById(R.id.ActivateButton);
 
             MacAddress.setTextIsSelectable(true);
-            MacAddress.setText(""+getMacAddr());
+            MacAddress.setText("" + getMacAddr());
         }
 
+    }else {
 
+        Intent logIntent=new Intent(MacAdressAuth.this,LogIn.class);
+        startActivity(logIntent);
+        finish();
 
-
+        }
 
 //        ActivateButton.setOnClickListener(new View.OnClickListener() {
 //            @Override

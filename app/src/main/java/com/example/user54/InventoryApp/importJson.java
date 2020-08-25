@@ -54,7 +54,7 @@ public class importJson {
     String JsonResponseSaveQRCode;
     String JsonResponseSaveSwitch;
     SweetAlertDialog pd = null;
-          String isAssetsIn,ip;
+          String isAssetsIn,ip,QrUse;
 
 
     public importJson(Context context,String itemCodes,int is) {//, JSONObject obj
@@ -83,6 +83,7 @@ public class importJson {
         if (mainSettings.size() != 0) {
             this.ip = mainSettings.get(0).getIP();
             this.isAssetsIn = mainSettings.get(0).getIsAssest();
+            this.QrUse = mainSettings.get(0).getIsQr();
         }
 
         if (flag.equals("ItemCard"))
@@ -411,7 +412,11 @@ public class importJson {
 
             }
             else if (JsonResponse != null && JsonResponse.contains("No Data Found.")){
-              new SyncItemQR().execute();
+               if(QrUse.equals("1")) {
+                   new SyncItemQR().execute();
+               }else{
+                   new SyncItemUnite().execute();
+               }
 //                new SyncItemUnite().execute();
 
             }else {
@@ -1431,9 +1436,12 @@ public class importJson {
 
             pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             pd.setTitleText(context.getResources().getString(R.string.saveitemswitch));
-            new SyncItemQR().execute();
-//            new SyncItemUnite().execute();
 
+            if(QrUse.equals("1")) {
+                new SyncItemQR().execute();
+            }else {
+            new SyncItemUnite().execute();
+            }
         }
     }
 
@@ -1536,25 +1544,90 @@ public class importJson {
 
 //                    {"ITEMOCODE":"1002839","ITEMBARCODE":"4800528456282","SALEPRICE":"1.89","ITEMU":"حبة","UQTY":"1","USERIAL":"1","CALCQTY":"1","WHOLESALEPRC":"0","PURCHASEPRICE":"0","PCLASS1":"0","PCLASS2":"0","PCLASS3":"0","INDATE":"12\/28\/2019 10:30:45 AM","UNIT_NAME":"شعيرية بيهون الخاصة هوبي 454 غم","ORG_SALEPRICE":"","OLD_SALE_PRICE":"","UPDATE_DATE":"12\/28\/2019 10:30:45 AM"}
 //
-
+//[{"ITEMOCODE":"6251001212648","ITEMBARCODE":"6251001212648","SALEPRICE":"2","ITEMU":"حبة","UQTY":"1","USERIAL":"1","CALCQTY":"1","WHOLESALEPRC":"2","PURCHASEPRICE":"0","PCLASS1":"","PCLASS2":"","PCLASS3":"","INDATE":"12\/08\/2020 4:44:53 PM","UNIT_NAME":"AAA","ORG_SALEPRICE":"0","OLD_SALE_PRICE":"0","UPDATE_DATE":""}]
 
 
                     ItemUnit obj = new ItemUnit();
 
                     obj.setItemOCode(finalObject.getString("ITEMOCODE"));
                     obj.setItemBarcode(finalObject.getString("ITEMBARCODE"));
-                    obj.setSalePrice(Float.parseFloat(finalObject.getString("SALEPRICE")));
+
+                    try {
+                        obj.setSalePrice(Float.parseFloat(finalObject.getString("SALEPRICE")));
+
+
+                    }catch (Exception ex){
+                        obj.setSalePrice(0);
+                        Log.e("setSalePrice",""+ex.toString());
+                    }
+
                     obj.setItemU(finalObject.getString("ITEMU"));
-                    obj.setUQty(Float.parseFloat(finalObject.getString("UQTY")));
 
-                    obj.setUSerial(Integer.parseInt(finalObject.getString("USERIAL")));
-                    obj.setCalcQty(Float.parseFloat(finalObject.getString("CALCQTY")));
-                    obj.setWholeSalePrc(Float.parseFloat(finalObject.getString("WHOLESALEPRC")));
-                    obj.setPurchasePrc(Float.parseFloat(finalObject.getString("PURCHASEPRICE")));
-                    obj.setPclAss1(Float.parseFloat(finalObject.getString("PCLASS1")));
+                    try {
+                        obj.setUQty(Float.parseFloat(finalObject.getString("UQTY")));
 
-                    obj.setPclAss2(Float.parseFloat(finalObject.getString("PCLASS2")));
-                    obj.setPclAss3(Float.parseFloat(finalObject.getString("PCLASS3")));
+                    }catch (Exception ex){
+                        obj.setUQty(0);
+                        Log.e("setUQty",""+ex.toString());
+                    }
+
+                    try {
+                        obj.setUSerial(Integer.parseInt(finalObject.getString("USERIAL")));
+
+                    }catch (Exception ex){
+                        obj.setUSerial(0);
+                        Log.e("setUSerial",""+ex.toString());
+                    }
+
+
+                    try {
+                        obj.setCalcQty(Float.parseFloat(finalObject.getString("CALCQTY")));
+
+                    }catch (Exception ex){
+                        obj.setCalcQty(0);
+                        Log.e("setCalcQty",""+ex.toString());
+                    }
+
+                    try {
+                        obj.setWholeSalePrc(Float.parseFloat(finalObject.getString("WHOLESALEPRC")));
+
+                    }catch (Exception ex){
+                        obj.setWholeSalePrc(0);
+                        Log.e("setWholeSalePrc",""+ex.toString());
+                    }
+
+                    try {
+                        obj.setPurchasePrc(Float.parseFloat(finalObject.getString("PURCHASEPRICE")));
+
+                    }catch (Exception ex){
+                        obj.setPurchasePrc(0);
+                        Log.e("setPurchasePrc",""+ex.toString());
+                    }
+
+
+                    try {
+                        obj.setPclAss1(Float.parseFloat(finalObject.getString("PCLASS1")));
+
+                    }catch (Exception ex){
+                        obj.setPclAss1(0);
+                        Log.e("setPclAss1",""+ex.toString());
+                    }
+
+
+                    try {
+                        obj.setPclAss2(Float.parseFloat(finalObject.getString("PCLASS2")));
+
+                    }catch (Exception ex){
+                        obj.setPclAss2(0);
+                        Log.e("setPclAss2",""+ex.toString());
+                    }
+                    try {
+                        obj.setPclAss3(Float.parseFloat(finalObject.getString("PCLASS3")));
+                    }catch (Exception ex){
+                        obj.setPclAss3(0);
+                        Log.e("setPclAss3",""+ex.toString());
+                    }
+
                     obj.setInDate(finalObject.getString("INDATE"));
                     obj.setUnitName(finalObject.getString("UNIT_NAME"));
                     obj.setOrgSalePrice(finalObject.getString("ORG_SALEPRICE"));

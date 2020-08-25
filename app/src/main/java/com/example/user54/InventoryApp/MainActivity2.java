@@ -44,6 +44,7 @@ public class MainActivity2 extends AppCompatActivity {
     private ScaleAnimation scale;
 //    LinearLayout master;
     InventoryDatabase InventoryDb;
+    String QrUse="0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,13 @@ public class MainActivity2 extends AppCompatActivity {
         setting.setOnClickListener(mainMenu);
         report.setOnClickListener(mainMenu);
         send.setOnClickListener(mainMenu);
+
+//        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+//        if (mainSettings.size() != 0) {
+////            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
+////            StkNo = mainSettings.get(0).getStorNo();
+//            QrUse = mainSettings.get(0).getIsQr();
+//        }
 
         send.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -269,6 +277,12 @@ public class MainActivity2 extends AppCompatActivity {
         final Button itemUnite = new Button(this);
         final Button itemAssets = new Button(this);
         final Button itemQr = new Button(this);
+        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+        if (mainSettings.size() != 0) {
+//            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
+//            StkNo = mainSettings.get(0).getStorNo();
+            QrUse = mainSettings.get(0).getIsQr();
+        }
 
         itemCard.setText(getResources().getString(R.string.Import_Item_Card));
         itemSwitch.setText(getResources().getString(R.string.ImportItemSwitch));
@@ -290,7 +304,9 @@ public class MainActivity2 extends AppCompatActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(itemCard);
         linearLayout.addView(itemSwitch);
-        linearLayout.addView(itemQr);
+        if(QrUse.equals("1")) {
+            linearLayout.addView(itemQr);
+        }
         linearLayout.addView(itemUnite);
         linearLayout.addView(itemStore);
         linearLayout.addView(itemAssets);

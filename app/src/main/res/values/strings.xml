@@ -229,5 +229,6 @@
     <string name="ActivateTheVersion">Activate The Version</string>
     <string name="Activate">Activate</string>
     <string name="enter_location">Enter Location</string>
+    <string name="newItemList">New Item List</string>
 
 </resources>

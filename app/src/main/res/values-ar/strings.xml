@@ -233,6 +233,7 @@
     <string name="ActivateTheVersion">تفعيل النسخه </string>
     <string name="Activate">تفعيل</string>
     <string name="enter_location">ادخل الموقع</string>
+    <string name="newItemList">New Item List</string>
 
 
 </resources>

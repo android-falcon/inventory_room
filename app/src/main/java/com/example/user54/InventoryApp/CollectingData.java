@@ -859,6 +859,8 @@ public class CollectingData extends AppCompatActivity {
                     itemCard.setItemCode(itemCodeNew.getText().toString());
                     itemCard.setItemName(itemNameNew.getText().toString());
                     itemCard.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(itemPrice.getText().toString()))));
+                    itemCard.setIsNew("1");
+                    itemCard.setIsExport("0");
 
                     InventDB.addItemcardTable(itemCard);
                     prograseSave();
@@ -1154,8 +1156,10 @@ public class CollectingData extends AppCompatActivity {
         final Button barcode;
         final EditText itemCodeText, itemQty, locations, lotNo, qrCode, salePrice;
         final int[] uQty = {1};
+        TableRow rawQr,rawQrLot;
 
-
+        rawQr= dialog.findViewById(R.id.rawQr);
+        rawQrLot=dialog.findViewById(R.id.rawQrLot);
         _qty = dialog.findViewById(R.id._qty);
         lotNo = dialog.findViewById(R.id.lotNo);
         qrCode = dialog.findViewById(R.id.qrCode);
@@ -1249,14 +1253,25 @@ public class CollectingData extends AppCompatActivity {
 //        });
 
 
+        if(QrUse.equals("1")){
+            min.setVisibility(View.GONE);
+            rawQr.setVisibility(View.VISIBLE);
+            rawQrLot.setVisibility(View.VISIBLE);
+        }else{
+            rawQrLot.setVisibility(View.GONE);
+            rawQr.setVisibility(View.GONE);
+            min.setVisibility(View.VISIBLE);
+        }
+
         salePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     // TODO: the editText has just been left
 
-                    PasswordDialog(salePrice,locations);
-
+                    if(QrUse.equals("1")) {
+                        PasswordDialog(salePrice, locations);
+                    }
                 }
 
             }
@@ -1451,17 +1466,20 @@ public class CollectingData extends AppCompatActivity {
                         Log.e("itemCardsList.size()", "-->" + itemCardsList.size());
                         List<ItemQR> QRList = new ArrayList<>();
                         boolean isSaleFromUnit = false;
-                        if (itemCode.length() > 17) {
-                            QRCode = itemCode;
-                            itemCode = itemCode.substring(0, 16);
-                            Log.e("String ", "" + itemCode);
-                            QRList = findQRCode(itemCode, StkNo, false);
-                        } else {
-                            QRCode = itemCode;
-                            itemCode = itemCodeText.getText().toString();
-                            QRList = findQRCode(itemCode, StkNo, true);
-                        }
 
+                        if (QrUse.equals("1")) {
+                            if (itemCode.length() > 17) {
+                                QRCode = itemCode;
+                                itemCode = itemCode.substring(0, 16);
+                                Log.e("String ", "" + itemCode);
+                                QRList = findQRCode(itemCode, StkNo, false);
+                            } else {
+                                QRCode = itemCode;
+                                itemCode = itemCodeText.getText().toString();
+                                QRList = findQRCode(itemCode, StkNo, true);
+                            }
+
+                        }
 
                         if (QRList.size() != 0) {
                             itemCode = QRList.get(0).getItemCode();
@@ -1648,8 +1666,14 @@ public class CollectingData extends AppCompatActivity {
                                     item.setSalePrice(0);
                                 }
                                 item.setTrnDate(convertToEnglish(today));
-                                item.setLotNo(lotNo.getText().toString());
-                                item.setQRCode(qrCode.getText().toString());
+                                if(QrUse.equals(1)){
+                                    item.setLotNo(lotNo.getText().toString());
+                                    item.setQRCode(qrCode.getText().toString());
+                                }else {
+                                    item.setLotNo("0");
+                                    item.setQRCode("0");
+                                }
+
 
                                 InventDB.addItemcard(item);
                                 item.setIsDelete("0");
@@ -2782,10 +2806,11 @@ public class CollectingData extends AppCompatActivity {
 //        });
 
 
-        new SweetAlertDialog(CollectingData.this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getResources().getString(R.string.ops))
-                .setContentText(TextMessage)
-                .show();
+        SweetAlertDialog newSe= new SweetAlertDialog(CollectingData.this, SweetAlertDialog.ERROR_TYPE);
+        newSe .setTitleText(getResources().getString(R.string.ops));
+        newSe.setContentText(TextMessage);
+        newSe.setCanceledOnTouchOutside(false);
+        newSe .show();
 
         final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
         tg.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT);

@@ -177,4 +177,29 @@ public class ItemInfo  {
         }
         return obj;
     }
+
+
+    public JSONObject getJSONObjectBacup() { // for server
+        JSONObject obj = new JSONObject();
+        try {
+
+            obj.put("ITEMCODE", itemCode);
+            obj.put("ITEMNAME", itemName);
+            obj.put("STORENO", itemLocation);
+            obj.put("ITEMQTY", itemQty);
+            obj.put("ROWINDEX", rowIndex);
+            obj.put("EXPIRYDATE",ExpDate );
+            obj.put("TRDATE", TrnDate);
+            obj.put("SALESPRICE", salePrice);
+            obj.put("LOCATION", Location);
+            obj.put("QRCODE", QRCode);
+            obj.put("LOTNUMBER", LotNo);
+            obj.put("DELETED", IsDelete);
+
+
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
+    }
 }

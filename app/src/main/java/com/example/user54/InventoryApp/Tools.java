@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
+import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.Password;
@@ -129,7 +130,11 @@ public class Tools extends AppCompatActivity {
                         List<ItemInfo> itemInfos = InventDB.getAllItemInfo();
                         List<TransferItemsInfo> itemTransInfos = InventDB.getAllTransferItemInfo();
                         List<AssestItem> itemTransAssets = InventDB.getAllAssesstItemInfo();
-                        sendToServer(itemInfos, itemTransInfos, itemTransAssets, mainSetting.get(0).getIsAssest());
+                        List<ItemCard> itemTransItemCard = InventDB.getAllItemCardNotExport();
+
+                        List<ItemInfo> itemInfoBackup = InventDB.getAllItemInfoBackUp();
+
+                        sendToServer(itemInfos, itemTransInfos, itemTransAssets, mainSetting.get(0).getIsAssest(),itemTransItemCard,itemInfoBackup);
 
                     } else {
 
@@ -538,9 +543,9 @@ public class Tools extends AppCompatActivity {
 
     }
 
-    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem> AssestItem, String isAssest) {
-        if (itemInfo.size() != 0 || transferItemsInfos.size() != 0 || AssestItem.size() != 0) {
-            boolean isExported = false, isExportedTranse = false;
+    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem> AssestItem, String isAssest, List<ItemCard>itemCard ,List<ItemInfo> itemInfosBackup) {
+        if (itemInfo.size() != 0 || transferItemsInfos.size() != 0 || AssestItem.size() != 0 || itemInfosBackup.size() != 0) {
+            boolean isExported = false, isExportedTranse = false,isExportItemCard=false,isExportedBackup = false;
             try {
 
                 JSONArray obj2 = new JSONArray();
@@ -570,6 +575,65 @@ public class Tools extends AppCompatActivity {
 
                 }
 
+                //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+                JSONArray obj2Backup = new JSONArray();
+                for (int i = 0; i < itemInfosBackup.size(); i++) {
+                    if (Integer.parseInt(itemInfosBackup.get(i).getIsExport()) != 1) {
+                        Log.e("ExportData_Backup", itemInfosBackup.get(i).getSalePrice() + "");
+                        obj2Backup.put(itemInfosBackup.get(i).getJSONObjectBacup());
+                        isExportedBackup = true;
+                    }
+                }
+
+
+                JSONObject objBackup = new JSONObject();
+                objBackup.put("JRD", obj2Backup);
+
+
+                Log.e("ExportDataBackup=", obj2Backup.toString());
+
+                Log.e("ExportDataBackup", objBackup.toString());
+
+                if (isExportedBackup) {
+                    ExportJeson exportJeson = new ExportJeson(Tools.this, objBackup);
+                    exportJeson.startSending("ExportDataBackup");
+                } else {
+//                    Toast.makeText(Tools.this, getResources().getString(R.string.allExport), Toast.LENGTH_SHORT).show();
+                    TostMesage(getResources().getString(R.string.allExport)+"Backup");
+
+                }
+
+                //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+////////////////////Item Card new trans begin
+
+//                JSONArray objItemCard2 = new JSONArray();
+//                for (int i = 0; i < itemCard.size(); i++) {
+//                        objItemCard2.put(itemCard.get(i).getJSONObject2());
+//                        isExportItemCard = true;
+//                }
+//
+//
+//                JSONObject objItemCard = new JSONObject();
+//                objItemCard.put("JRD", objItemCard2);
+//
+//
+//                Log.e("ExportDataJrd_=", objItemCard2.toString());
+//
+//                Log.e("ExportData_", objItemCard2.toString());
+//
+//                if (isExportItemCard) {
+//                    ExportJeson exportJesonItemCard = new ExportJeson(Tools.this, objItemCard);
+//                    exportJesonItemCard.startSending("ExportItemCard");
+//                } else {
+////                    Toast.makeText(Tools.this, getResources().getString(R.string.allExport), Toast.LENGTH_SHORT).show();
+//                    TostMesage(getResources().getString(R.string.allExport));
+//
+//                }
+
+////////////////////Item Card new trans end
 
 /////////////////////trans begin
 
