@@ -1733,9 +1733,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
 
     public ArrayList<ItemQR> getAllQRItem(String Qrcode,String STR_NO) {
-        ArrayList<ItemQR> QRList = new ArrayList<>();
+        ArrayList<ItemQR> QRList = new ArrayList<>();//STR_NO ='"+STR_NO+"' and
 
-        String selectQuery = "SELECT  * FROM " + ITEM_QR_CODE_TABLE +" WHERE STR_NO ='"+STR_NO+"' and QR_CODE LIKE '"+Qrcode+"%'";
+        String selectQuery = "SELECT  * FROM " + ITEM_QR_CODE_TABLE +" WHERE  QR_CODE LIKE '"+Qrcode+"%'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 
@@ -1757,9 +1757,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
 
     public ArrayList<ItemQR> getAllQRItemEqQr(String Qrcode,String STR_NO) {
-        ArrayList<ItemQR> QRList = new ArrayList<>();
+        ArrayList<ItemQR> QRList = new ArrayList<>();//STR_NO ='"+STR_NO+"' and
 
-        String selectQuery = "SELECT  * FROM " + ITEM_QR_CODE_TABLE +" WHERE STR_NO ='"+STR_NO+"' and QR_CODE = '"+Qrcode+"'";
+        String selectQuery = "SELECT  * FROM " + ITEM_QR_CODE_TABLE +" WHERE  QR_CODE = '"+Qrcode+"'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 
@@ -1781,9 +1781,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
 
     public String getSalesQRItem(String ITEM_CODE,String STR_NO) {
-       String QRList = "";
+       String QRList = "";//STR_NO ='"+STR_NO+"' and
 
-        String selectQuery = "SELECT  PRICE FROM " + ITEM_QR_CODE_TABLE +" WHERE STR_NO ='"+STR_NO+"' and ITEM_CODE = '"+ITEM_CODE+"'";
+        String selectQuery = "SELECT  PRICE FROM " + ITEM_QR_CODE_TABLE +" WHERE  ITEM_CODE = '"+ITEM_CODE+"'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 

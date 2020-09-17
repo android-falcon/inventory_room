@@ -1202,7 +1202,7 @@ public class CollectingData extends AppCompatActivity {
             StkNo = mainSettings.get(0).getStorNo();
             QrUse = mainSettings.get(0).getIsQr();
         }
-
+        locations.setEnabled(false);
         locations.setText(LocationEdite);
 
 //
