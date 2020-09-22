@@ -43,7 +43,7 @@ public class MacAdressAuth extends AppCompatActivity {
         //48:3f:e9:86:ce:90
 //0:10:20:98:eb:9b
         //14:9f:e8:1:49:2f
-        if(true){
+        if(false){
         if (getMacAddr().equals("48:3f:e9:86:ce:90") ||
                 getMacAddr().equals("0:10:20:98:ed:3b") ||
                 getMacAddr().equals("0:10:20:98:ec:29") ||
