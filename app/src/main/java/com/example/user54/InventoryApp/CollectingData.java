@@ -1151,10 +1151,10 @@ public class CollectingData extends AppCompatActivity {
         final CheckBox upDateCheck = (CheckBox) dialog.findViewById(R.id.updateQ);
         final RadioButton min, NotMin;
         final CheckBox ExpDateCheckBox = (CheckBox) dialog.findViewById(R.id.ExpDateCheckBox);
-        final TextView itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, _qty;
+        final TextView itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, _qty, locations;
         final LinearLayout exit, save, clear, update, newButton, search;
         final Button barcode;
-        final EditText itemCodeText, itemQty, locations, lotNo, qrCode, salePrice;
+        final EditText itemCodeText, itemQty, lotNo, qrCode, salePrice;
         final int[] uQty = {1};
         TableRow rawQr,rawQrLot;
 
@@ -1615,6 +1615,7 @@ public class CollectingData extends AppCompatActivity {
 //                            Toast.makeText(CollectingData.this, "save no auto", Toast.LENGTH_SHORT).show();
                             } else {
 //                            Toast.makeText(CollectingData.this, "save auto", Toast.LENGTH_SHORT).show();
+                                if(itemQty.getText().toString().length()<=5){
                                 oldQty[0] = InventDB.getTotal(itemCode, "ITEMS_INFO");
 //
                                 save.setClickable(false);
@@ -1666,10 +1667,10 @@ public class CollectingData extends AppCompatActivity {
                                     item.setSalePrice(0);
                                 }
                                 item.setTrnDate(convertToEnglish(today));
-                                if(QrUse.equals(1)){
+                                if (QrUse.equals(1)) {
                                     item.setLotNo(lotNo.getText().toString());
                                     item.setQRCode(qrCode.getText().toString());
-                                }else {
+                                } else {
                                     item.setLotNo("0");
                                     item.setQRCode("0");
                                 }
@@ -1723,8 +1724,12 @@ public class CollectingData extends AppCompatActivity {
 
                                 }
 
-
+                            }else {
+                                    itemQty.setError(CollectingData.this.getResources().getString(R.string.maxNo));
+                                    TostMesage(CollectingData.this.getResources().getString(R.string.maxNo));
                             }
+                            }
+
 
 
                         } else {
@@ -1953,6 +1958,8 @@ public class CollectingData extends AppCompatActivity {
 
                 if (!itemQty.getText().toString().equals("") && !itemCode.equals("") && !salePrice.getText().toString().equals("") && isFound[0]) {
 
+                    if(itemQty.getText().toString().length()<=5){
+
                     ItemInfo item = new ItemInfo();
 
                     String Lo = "";
@@ -2031,7 +2038,12 @@ public class CollectingData extends AppCompatActivity {
 
 
                     }
+                }else{
 
+                        itemQty.setError(CollectingData.this.getResources().getString(R.string.maxNo));
+                        TostMesage(CollectingData.this.getResources().getString(R.string.maxNo));
+
+                    }
                 } else {
 //                    Toast.makeText(CollectingData.this, "please insert all data in field", Toast.LENGTH_SHORT).show();
                     TostMesage(CollectingData.this.getResources().getString(R.string.insertData));
@@ -4892,7 +4904,7 @@ public class CollectingData extends AppCompatActivity {
         return isLocation[0];
     }
 
-    void PasswordDialog(final EditText salePrice, final EditText master) {
+    void PasswordDialog(final EditText salePrice, final TextView master) {
 
         final EditText editText = new EditText(CollectingData.this);
         final TextView textView = new TextView(CollectingData.this);

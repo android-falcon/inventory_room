@@ -230,5 +230,6 @@
     <string name="Activate">Activate</string>
     <string name="enter_location">Enter Location</string>
     <string name="newItemList">New Item List</string>
+    <string name="maxNo">max Length Of Qty 5</string>
 
 </resources>
