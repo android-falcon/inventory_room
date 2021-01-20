@@ -8,21 +8,21 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/bac_"
         android:orientation="vertical">
 
         <!--<TextView-->
-            <!--android:id="@+id/sea"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/search"-->
-            <!--android:textColor="@color/grayLight"-->
-            <!--android:textSize="20sp"-->
-            <!--app:fontFamily="monospace" />-->
+        <!--android:id="@+id/sea"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/search"-->
+        <!--android:textColor="@color/grayLight"-->
+        <!--android:textSize="20sp"-->
+        <!--app:fontFamily="monospace" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,13 +65,14 @@
             android:layout_marginBottom="10dp"
             android:background="@color/pinkLow" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TableRow
@@ -108,7 +109,7 @@
                 <TableLayout
                     android:id="@+id/table"
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="5dp"
@@ -183,56 +184,57 @@
                 </TableLayout>
 
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-
-                    <LinearLayout
-                        android:id="@+id/exitsearch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:background="@drawable/bac_frame"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:layout_width="50dp"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/ic_exit_to_app_black_24dp"
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/textVie_152"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
-                            android:text="@string/exit"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-
-                    <!--<Button-->
-                        <!--android:id="@+id/exitsearch"-->
-                        <!--android:layout_width="181dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_margin="10dp"-->
-                        <!--android:background="@drawable/clear_buttons"-->
-                        <!--android:text="@string/exit"-->
-                        <!--android:textColor="@color/white" />-->
-                </LinearLayout>
-
             </LinearLayout>
-        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/exitsearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:background="@drawable/bac_frame"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <!--<TextView-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
+                    <!--android:textColor="@color/black" />-->
+
+                <TextView
+                    android:id="@+id/textVie_152"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                    android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
+                    android:text="@string/exit"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <!--<Button-->
+            <!--android:id="@+id/exitsearch"-->
+            <!--android:layout_width="181dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:background="@drawable/clear_buttons"-->
+            <!--android:text="@string/exit"-->
+            <!--android:textColor="@color/white" />-->
+        </LinearLayout>
+        <!--</ScrollView>-->
 
     </LinearLayout>
 

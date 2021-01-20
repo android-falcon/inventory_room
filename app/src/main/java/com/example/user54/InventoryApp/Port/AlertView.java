@@ -26,7 +26,7 @@ public class AlertView
 	{
 		context=ctx;
 		//Create a builder
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx,R.style.MyTheme);
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(title);
 		builder.setMessage(message);
 		//add buttons and listener

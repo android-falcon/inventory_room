@@ -219,7 +219,7 @@ TextView barCodTextTemp;
 
     @SuppressLint("ClickableViewAccessibility")
     void showPrintBarcodeDialog() {
-       final Dialog dialogBarCode = new Dialog(Item.this,R.style.Theme_Dialog);
+       final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBarCode.setCancelable(false);
         if(controll.isYellow){
@@ -593,7 +593,7 @@ TextView barCodTextTemp;
 
     @SuppressLint("ClickableViewAccessibility")
     void showPrintAssesstDialog() {
-        final Dialog dialogBarCodeAssesst = new Dialog(Item.this,R.style.Theme_Dialog);
+        final Dialog dialogBarCodeAssesst = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogBarCodeAssesst.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBarCodeAssesst.setCancelable(false);
         if(controll.isYellow){
@@ -969,7 +969,7 @@ TextView barCodTextTemp;
 
 
     void showItemPriceDialog() {
-        final Dialog dialogBarCode = new Dialog(Item.this,R.style.Theme_Dialog);
+        final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBarCode.setCancelable(false);
         if(controll.isYellow){
@@ -1167,7 +1167,7 @@ TextView barCodTextTemp;
 
 
     void showPrintShelfTagDialog() {
-        dialog = new Dialog(Item.this,R.style.Theme_Dialog);
+        dialog = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         if(controll.isYellow){
@@ -1750,7 +1750,7 @@ TextView barCodTextTemp;
 
 
     void showNewItemDialog(final int tr) {
-        final Dialog dialogNew = new Dialog(Item.this,R.style.Theme_Dialog);
+        final Dialog dialogNew = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogNew.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogNew.setCancelable(false);
         if(controll.isYellow){
@@ -2290,7 +2290,7 @@ TextView barCodTextTemp;
 
     @SuppressLint("ClickableViewAccessibility")
     void SearchDialog(final EditText itemCodeText, final int swSearch) {
-        final Dialog dialogSearch = new Dialog(Item.this,R.style.Theme_Dialog);
+        final Dialog dialogSearch = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogSearch.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogSearch.setCancelable(false);
         if(controll.isYellow){
@@ -2454,7 +2454,7 @@ TextView barCodTextTemp;
 
 
     void SearchDialogForAssets(final EditText itemCodeText, final int swSearch) {
-        final Dialog dialogSearch = new Dialog(Item.this,R.style.Theme_Dialog);
+        final Dialog dialogSearch = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogSearch.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogSearch.setCancelable(false);
         if(controll.isYellow){

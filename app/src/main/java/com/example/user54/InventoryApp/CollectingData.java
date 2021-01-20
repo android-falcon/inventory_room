@@ -85,12 +85,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class CollectingData extends AppCompatActivity {
     Button item, report, collecting, exitAll2, setting;
     LinearLayout collectData, collectByORG, transferData, collectingByExpiry,
-            collectByReceipt, UpdateQty, itemAssest;
+            collectByReceipt, UpdateQty, itemAssest,TransferPhar;
     TextView barCodTextTemp;
     TextView home;
     public static TextView textViewUpdate, textItemNameUpdate;
     Dialog dialog;
-    boolean open = false, collDOpen = false, collExOpen = false, collReceipt = false, collTransfer = false, collUpdate = false, collAssetsOpen = false;
+    boolean open = false, collDOpen = false, collExOpen = false, collReceipt = false, collTransfer = false, collUpdate = false, collAssetsOpen = false, collTranseOpen = false;
     String today;
     InventoryDatabase InventDB;
     List<AssestItem> assestItemsList;
@@ -135,7 +135,7 @@ public class CollectingData extends AppCompatActivity {
         transferData.startAnimation(animFadein);
         UpdateQty.startAnimation(animFadein);
         itemAssest.startAnimation(animFadein);
-
+        TransferPhar.startAnimation(animFadein);
 
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -203,13 +203,18 @@ public class CollectingData extends AppCompatActivity {
                     collAssetsOpen = true;
                     showAssetsDataDialog();
                     break;
+                case R.id.TransferPhar:
+                    TransferPhar.setClickable(false);
+                    collTranseOpen = true;
+                    showTransferDataDialog();
+                    break;
 
             }
         }
     };
 
     void showItemUpdateQtyDialog() {
-        final Dialog dialogBarCode = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        final Dialog dialogBarCode = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBarCode.setCancelable(false);
         if (controll.isYellow) {
@@ -1113,7 +1118,7 @@ public class CollectingData extends AppCompatActivity {
 
 
     void showCollectDataDialog() {
-        dialog = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        dialog = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
 
@@ -1301,6 +1306,13 @@ public class CollectingData extends AppCompatActivity {
                 openSearch = true;
                 collDOpen = false;
                 SearchDialog(itemCodeText, 0);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        itemQty.requestFocus();
+                    }
+                });
+
             }
         });
 
@@ -2090,7 +2102,7 @@ public class CollectingData extends AppCompatActivity {
     }
 
     void showAssetsDataDialog() {
-        dialog = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        dialog = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
 
@@ -2344,6 +2356,265 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 itemAssest.setClickable(true);
                 collAssetsOpen = false;
+                noEnterData[0] = false;
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    void showTransferDataDialog() {
+        dialog = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+
+        if (controll.isYellow) {
+            dialog.setContentView(R.layout.activity_assets_data_yellow);
+        } else {
+            dialog.setContentView(R.layout.activity_assets_data_yellow);
+        }
+
+//
+
+        dialog.setCanceledOnTouchOutside(false);
+
+        final boolean[] noEnterData = {true};
+
+        final boolean[] isEnter = {true};
+
+        final TextView itemName;
+        final LinearLayout exit, save, clear;
+        final Button barcode;
+        final EditText itemCodeText, itemQty;
+        final Spinner mangment, depart, section, area;
+
+        mangment = dialog.findViewById(R.id.manSpin);
+        depart = dialog.findViewById(R.id.depSpin);
+        section = dialog.findViewById(R.id.secSpin);
+        area = dialog.findViewById(R.id.AreaSpin);
+
+        itemCodeText = (EditText) dialog.findViewById(R.id.itemCode);
+        itemQty = (EditText) dialog.findViewById(R.id.item_qty);
+        itemName = (TextView) dialog.findViewById(R.id.item_name);
+
+
+        exit = dialog.findViewById(R.id.exit);
+        save = dialog.findViewById(R.id.save);
+        clear = dialog.findViewById(R.id.cler);
+
+        barcode = dialog.findViewById(R.id.barcode);
+
+        managList = new ArrayList<>();
+        areaList = new ArrayList<>();
+        depList = new ArrayList<>();
+        secList = new ArrayList<>();
+
+
+        managList = InventDB.getAllAssesstMang();
+        depList = InventDB.getAllAssesstDepart();
+        secList = InventDB.getAllAssesstSec();
+        areaList = InventDB.getAllAssesstArea();
+        assestItemsList = new ArrayList<>();
+
+        ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, managList);
+        mangment.setAdapter(MangAdapter);
+
+        ArrayAdapter DepAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, depList);
+        depart.setAdapter(DepAdapter);
+
+        ArrayAdapter SecAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, secList);
+        section.setAdapter(SecAdapter);
+
+        ArrayAdapter AreaAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, areaList);
+        area.setAdapter(AreaAdapter);
+
+        barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openBarCode = true;
+                collAssetsOpen = false;
+                readBarCode(itemCodeText, 8);
+
+            }
+        });
+
+        itemCodeText.requestFocus();
+        itemQty.setEnabled(true);
+        itemCodeText.setEnabled(true);
+
+        save.setClickable(true);
+        itemCodeText.setText("");
+        itemQty.setText("1");
+        itemName.setText("");
+
+
+        clear.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                itemCodeText.requestFocus();
+                itemQty.setEnabled(true);
+                itemCodeText.setEnabled(true);
+
+                save.setClickable(true);
+                itemCodeText.setText("");
+                itemQty.setText("1");
+                itemName.setText("");
+            }
+        });
+
+
+        itemCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_NULL) {
+//                    if (isEnter[0]) {
+//                        if (!isFound[0]) {
+//                            showAlertDialog("This item not found please add this item before ");
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    itemCodeText.requestFocus();
+//                                }
+//                            });
+//
+//                            itemQty.setEnabled(true);
+//                            itemCodeText.setEnabled(true);
+//
+//                            save.setClickable(true);
+//                            itemCodeText.setText("");
+//                            itemQty.setText("1");
+//                            itemName.setText("");
+//                            salePrice.setText("");
+//                            itemLocation.setText("");
+//                            isEnter[0] = false;
+//                        }
+//
+//                    }
+
+
+                    String itemCode = itemCodeText.getText().toString();
+
+                    if (!itemCode.equals("") && collAssetsOpen && noEnterData[0]) {
+                        isEnter[0] = true;
+
+                        assestItemsList = findAssest(itemCode);
+                        if (assestItemsList.size() != 0) {
+
+                            itemName.setText("" + assestItemsList.get(0).getAssesstName());
+                            itemQty.setSelectAllOnFocus(true);
+                            itemQty.requestFocus();
+
+                        } else {
+//                            Toast.makeText(CollectingData.this, "Not Found", Toast.LENGTH_SHORT).show();
+                            showAlertDialog(getResources().getString(R.string.thisitemnotfound));
+                            itemCodeText.setSelectAllOnFocus(true);
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemCodeText.requestFocus();
+                                }
+                            });
+
+                        }
+
+                    }
+                }
+                return false;
+            }
+        });
+
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (assestItemsList.size() != 0) {
+                    if (!itemCodeText.getText().toString().equals("") && !itemName.getText().toString().equals("") && !itemQty.getText().toString().equals("")) {
+                        AssestItem assestItem = new AssestItem();
+                        String manageString = "", depString = "", secString = "", areaString = "";
+                        if (managList.size() != 0) {
+                            manageString = managList.get(mangment.getSelectedItemPosition());
+
+                        } else {
+                            manageString = "";
+                        }
+
+                        if (depList.size() != 0) {
+                            depString = depList.get(depart.getSelectedItemPosition());
+
+                        } else {
+                            depString = "";
+                        }
+
+
+                        if (secList.size() != 0) {
+                            secString = secList.get(section.getSelectedItemPosition());
+
+                        } else {
+                            secString = "";
+                        }
+
+
+                        if (areaList.size() != 0) {
+                            areaString = areaList.get(area.getSelectedItemPosition());
+
+                        } else {
+                            areaString = "";
+                        }
+
+
+                        assestItem.setAssesstMangment(manageString);
+                        assestItem.setAssesstDEPARTMENT(depString);
+                        assestItem.setAssesstSECTION(secString);
+                        assestItem.setAssesstAREANAME(areaString);
+
+                        assestItem.setAssesstBarcode(itemCodeText.getText().toString());
+                        assestItem.setAssesstName(itemName.getText().toString());
+                        assestItem.setAssesstType(assestItemsList.get(0).getAssesstType());
+                        assestItem.setAssesstNo(assestItemsList.get(0).getAssesstNo());
+
+                        assestItem.setAssesstQty(itemQty.getText().toString());
+                        assestItem.setAssesstDate(convertToEnglish(today));
+                        assestItem.setAssesstCode(assestItemsList.get(0).getAssesstCode());
+                        assestItem.setIsExport("0");
+
+                        InventDB.addAssetsItemInfo(assestItem);
+                        progressDialog();
+
+                        itemCodeText.requestFocus();
+
+                        itemQty.setEnabled(true);
+                        itemCodeText.setEnabled(true);
+
+                        save.setClickable(true);
+                        itemCodeText.setText("");
+                        itemQty.setText("1");
+                        itemName.setText("");
+                        isEnter[0] = false;
+
+                        assestItemsList.clear();
+                    } else {
+                        TostMesage(CollectingData.this.getResources().getString(R.string.insertData));
+                        itemCodeText.setSelectAllOnFocus(true);
+                        itemCodeText.requestFocus();
+                    }
+                } else {
+                    TostMesage(CollectingData.this.getResources().getString(R.string.insertData));
+                    itemCodeText.setSelectAllOnFocus(true);
+                    itemCodeText.requestFocus();
+                }
+
+            }
+        });
+
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransferPhar.setClickable(true);
+                collTranseOpen = false;
                 noEnterData[0] = false;
                 dialog.dismiss();
             }
@@ -3156,7 +3427,7 @@ public class CollectingData extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     void showTransferDialog() {
-        final Dialog dialogTransfer = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        final Dialog dialogTransfer = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogTransfer.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogTransfer.setCancelable(false);
         if (controll.isYellow) {
@@ -3857,7 +4128,7 @@ public class CollectingData extends AppCompatActivity {
 
 
     void upDateDialog(final TextView edit1, final int switches, final EditText edit, final TextView AllQty) {
-        final Dialog dialogUpdate = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        final Dialog dialogUpdate = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogUpdate.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogUpdate.setCancelable(false);
         if (controll.isYellow) {
@@ -4184,7 +4455,7 @@ public class CollectingData extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     void SearchDialog(final EditText itemCodeText, final int swSearch) {
-        final Dialog dialogSearch = new Dialog(CollectingData.this, R.style.Theme_Dialog);
+        final Dialog dialogSearch = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogSearch.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogSearch.setCancelable(false);
         if (controll.isYellow) {
@@ -4982,6 +5253,7 @@ public class CollectingData extends AppCompatActivity {
         UpdateQty = (LinearLayout) findViewById(R.id.UpdateQty);
         home = (TextView) findViewById(R.id.home);
         itemAssest = findViewById(R.id.itemAssest);
+        TransferPhar=findViewById(R.id.TransferPhar);
 
         collectByORG.setVisibility(View.GONE);
         collectingByExpiry.setVisibility(View.GONE);
@@ -4992,6 +5264,7 @@ public class CollectingData extends AppCompatActivity {
         itemAssest.setOnClickListener(showDialogOnClick);
 //        collectByORG.setOnClickListener(showDialogOnClick);
         transferData.setOnClickListener(showDialogOnClick);
+        TransferPhar.setOnClickListener(showDialogOnClick);
 //        collectingByExpiry.setOnClickListener(showDialogOnClick);
 //        collectByReceipt.setOnClickListener(showDialogOnClick);
 

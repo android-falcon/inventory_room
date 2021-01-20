@@ -11,7 +11,7 @@
         android:id="@+id/textView60"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:background="@drawable/bac_"
         android:gravity="center"
         android:padding="10dp"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+           android:layout_margin="10dp"
             android:padding="5dp">
 
             <TableRow
@@ -119,6 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bac_frame_no"
+               android:layout_margin="5dp"
                 android:padding="5dp">
 
 
@@ -135,6 +136,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:background="@drawable/bac_frame_no"
                 android:padding="5dp">
 
@@ -156,7 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="bottom"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -169,16 +171,16 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
+                <!--<TextView-->
 
-                    android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/ic_save_black_24dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/ic_save_black_24dp"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
 
                 <TextView
                     android:id="@+id/textView1152"
@@ -186,6 +188,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:text="@string/save"
+                    android:drawableStart="@drawable/ic_save_black_24dp"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -213,16 +218,16 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/ic_exit_to_app_black_24dp"
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
 
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
 
                 <TextView
                     android:id="@+id/textVie_152"
@@ -232,6 +237,9 @@
                     android:text="@string/exit"
                     android:textColor="@color/white"
                     android:textSize="12sp"
+                    android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
+                    android:padding="10dp"
+                    android:gravity="center"
                     android:textStyle="bold" />
             </LinearLayout>
 

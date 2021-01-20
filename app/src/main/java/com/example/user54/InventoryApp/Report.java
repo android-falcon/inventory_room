@@ -150,7 +150,7 @@ public class Report extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("ClickableViewAccessibility")
     void showExportToTextDialog() {
-        dialog = new Dialog(Report.this,R.style.Theme_Dialog);
+        dialog = new Dialog(Report.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         if(controll.isYellow){
@@ -359,7 +359,7 @@ public class Report extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     void showExportNewItemList() {
-        dialog = new Dialog(Report.this,R.style.Theme_Dialog);
+        dialog = new Dialog(Report.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         if(controll.isYellow){
@@ -1192,7 +1192,7 @@ public class Report extends AppCompatActivity {
     }
 
     void showExportTransferItemDialog() {
-        dialog = new Dialog(Report.this);
+        dialog = new Dialog(Report.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
 //        dialog.setContentView(R.layout.export_transfer_item_data);
@@ -1220,7 +1220,7 @@ public class Report extends AppCompatActivity {
     }
 
     void showExportItemDataByExpiryDateDialog() {
-        dialog = new Dialog(Report.this);
+        dialog = new Dialog(Report.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.export_item_data_by_expiry);
@@ -1241,7 +1241,7 @@ public class Report extends AppCompatActivity {
     }
 
     void showExportAlternativeCodeDialog() {
-        dialog = new Dialog(Report.this);
+        dialog = new Dialog(Report.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.export_alternatev_code);

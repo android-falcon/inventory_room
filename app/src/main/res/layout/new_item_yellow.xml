@@ -180,16 +180,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView-->
 
-                            android:layout_width="0dp"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_search_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_search_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView_52"
@@ -197,6 +197,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/search"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_search_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -226,16 +229,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView-->
 
-                            android:layout_width="0dp"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_save_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_save_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView52"
@@ -243,6 +246,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/save"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_save_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -271,16 +277,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView-->
 
-                            android:layout_width="0dp"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_transform_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_transform_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView512"
@@ -288,6 +294,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/alternate"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_transform_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -323,16 +332,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView-->
 
-                            android:layout_width="match_parent"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_delete_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_delete_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView_152"
@@ -340,6 +349,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:text="@string/delete_item"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_delete_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -367,16 +379,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView-->
 
-                            android:layout_width="match_parent"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_delete_sweep_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_delete_sweep_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textVie152"
@@ -384,6 +396,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:text="@string/delete_all_item"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_delete_sweep_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -418,15 +433,15 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_clear_all_black_24dp"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                        <!--<TextView-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_clear_all_black_24dp"-->
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView152"
@@ -434,6 +449,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:text="@string/clear"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_clear_all_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -463,16 +481,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="38dp"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/ic_exit_to_app_black_24dp"
+                        <!--<TextView-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="38dp"-->
+                            <!--android:layout_margin="5dp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
 
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            <!--android:textAllCaps="false"-->
+                            <!--android:textColor="@color/black"-->
+                            <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textVie_152"
@@ -480,6 +498,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:text="@string/exit"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />

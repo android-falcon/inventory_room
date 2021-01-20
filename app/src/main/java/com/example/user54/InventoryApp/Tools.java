@@ -388,7 +388,7 @@ public class Tools extends AppCompatActivity {
 
 
     void showReceiveFromServerDialog() {
-        final Dialog MainSettingdialog = new Dialog(Tools.this, R.style.Theme_Dialog);
+        final Dialog MainSettingdialog = new Dialog(Tools.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         MainSettingdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         MainSettingdialog.setCancelable(false);
         MainSettingdialog.setContentView(R.layout.main_setting_dialog_new);

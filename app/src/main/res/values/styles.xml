@@ -1,25 +1,27 @@
 <resources>
 
     <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/color1</item>
-        <item name="colorPrimaryDark">@color/color1</item>
-        <item name="colorAccent">@color/color1</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/pinkLow</item>
+        <item name="android:textColorSecondary">@color/pinkLow</item>
     </style>
 
     <style name="MyTheme" parent="@android:style/Theme.Dialog">
         <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
         <item name="android:windowBackground">@drawable/no_thing</item>
         <item name="android:textColorPrimary">#000000</item>
-        <item name="colorAccent">@color/orFloor</item>
+        <item name="colorAccent">@color/pinkLow</item>
         <item name="android:textColor">#000000</item>
     </style>
     <style name="CustomAlertDialogStyle">
 
         <item name="android:bottomBright">@drawable/no_thing</item>
         <item name="android:bottomDark">@drawable/no_thing</item>
-        <item name="android:bottomMedium">@color/orFloor</item>
+        <item name="android:bottomMedium">@color/pinkLow</item>
         <item name="android:centerBright">@drawable/no_thing</item>
         <item name="android:centerDark">@drawable/no_thing</item>
         <item name="android:centerMedium">@drawable/no_thing</item>
@@ -32,7 +34,8 @@
     </style>
 
     <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
-
+        <item name="android:windowFullscreen">true</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
         <item name="android:windowMinWidthMajor">100%</item>
         <item name="android:windowMinWidthMinor">100%</item>
     </style>
