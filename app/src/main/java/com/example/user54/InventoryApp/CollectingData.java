@@ -407,7 +407,7 @@ public class CollectingData extends AppCompatActivity {
 
                         if (mainSetting.size() != 0) {
 
-                            importJson sendCloud = new importJson(CollectingData.this, itemCode.getText().toString(), 0);
+                            importJson sendCloud = new importJson(CollectingData.this, itemCode.getText().toString(), 0,"","");
                             sendCloud.startSending("gETiTEM");
 //                          isEnter[0]=false;
                             itemCode.setSelectAllOnFocus(true);

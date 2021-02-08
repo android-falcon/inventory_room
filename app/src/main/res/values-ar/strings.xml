@@ -235,6 +235,8 @@
     <string name="enter_location">ادخل الموقع</string>
     <string name="newItemList">New Item List</string>
     <string name="maxNo">اكبر رقم مكون من 5 خانات </string>
+    <string name="fromDate">من تاريخ : </string>
+    <string name="toDate">الى تاريخ : </string>
 
 
 </resources>

@@ -55,13 +55,17 @@ public class importJson {
     String JsonResponseSaveSwitch;
     SweetAlertDialog pd = null;
           String isAssetsIn,ip,QrUse;
+          String fromDate,ToDate;
 
 
-    public importJson(Context context,String itemCodes,int is) {//, JSONObject obj
+    public importJson(Context context,String itemCodes,int is,String fromDate,String toDate) {//, JSONObject obj
 //        this.obj = obj;
         this.context = context;
         dbHandler = new InventoryDatabase(context);
         this.itemCode=itemCodes;
+        this.fromDate=fromDate;
+        this.ToDate=toDate;
+        Log.e("DateFromTo","tt = "+fromDate+"  "+toDate);
         if(is!=0) {
             pd = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
             pd.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
@@ -164,7 +168,11 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("split ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8")  ;
+               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8")  ;
+
+//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
+//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
+
 ////
 
                 URL url = new URL(link);
@@ -351,6 +359,9 @@ public class importJson {
                     Log.e("splitSwitch ",""+maxInDate);
                 }
                 String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8");
+
+//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
+//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
 ////
                 URL url = new URL(link);
 
@@ -606,6 +617,8 @@ public class importJson {
                     Log.e("splitSwitch ",""+maxInDate);
                 }
                 String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8");
+//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
+//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
 ////
                 URL url = new URL(link);
 

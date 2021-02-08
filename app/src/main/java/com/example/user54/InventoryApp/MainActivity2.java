@@ -1,18 +1,23 @@
 package com.example.user54.InventoryApp;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,8 +36,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 //WORK
@@ -45,6 +52,10 @@ public class MainActivity2 extends AppCompatActivity {
 //    LinearLayout master;
     InventoryDatabase InventoryDb;
     String QrUse="0";
+    String today,fromDateString="",ToDateString="";
+    Date currentTimeAndDate;
+    SimpleDateFormat df;
+    private Calendar myCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +68,10 @@ public class MainActivity2 extends AppCompatActivity {
         }
 
         InventoryDb=new InventoryDatabase(MainActivity2.this);
+        myCalendar = Calendar.getInstance();
+         currentTimeAndDate = Calendar.getInstance().getTime();
+         df = new SimpleDateFormat("dd/MM/yyyy");
+        today = df.format(currentTimeAndDate);
 
 //        new SweetAlertDialog(MainActivity2.this)
 //                .setTitleText("Here's a message!")
@@ -242,8 +257,8 @@ public class MainActivity2 extends AppCompatActivity {
 //                     sendCloud.startSending("ItemSwitch");
                     List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
                     if(mainSetting.size()!=0) {
-
-                        alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "", mainSetting.get(0).getIsAssest());
+                        DateDialog(1, 2,mainSetting.get(0).getIsAssest());
+                       // alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "", mainSetting.get(0).getIsAssest());
                     }else{
 
                         new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.WARNING_TYPE)
@@ -381,7 +396,12 @@ public class MainActivity2 extends AppCompatActivity {
     void messages(int y){
         List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
         if(mainSetting.size()!=0) {
+            if(y==2||y==3||y==5 ) {
+                DateDialog(2, y,"");
+            }else {
             alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), y, "", "");
+            }
+
         }else{
 
             new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.WARNING_TYPE)
@@ -554,7 +574,7 @@ public class MainActivity2 extends AppCompatActivity {
 //                             progressDialog();
                                 break;
                             case 2:
-                                importJson sendCloud = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
 
                                 if(ItemCode.equals("1")) {
                                     sendCloud.startSending("GetAssest");
@@ -572,7 +592,7 @@ public class MainActivity2 extends AppCompatActivity {
                                 sDialog.dismissWithAnimation();
                                 break;
                             case 3:
-                                importJson sendCloud2 = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud2 = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
                                 sendCloud2.startSending("ItemSwitch");
 
 //                                importJson sendCloud2 = new importJson(MainActivity2.this,"");
@@ -583,7 +603,7 @@ public class MainActivity2 extends AppCompatActivity {
                                 sDialog.dismissWithAnimation();
                                 break;
                             case 4:
-                                importJson sendCloud3 = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud3 = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
                                 sendCloud3.startSending("GetStory");
 
 //                                importJson sendCloud2 = new importJson(MainActivity2.this,"");
@@ -595,7 +615,7 @@ public class MainActivity2 extends AppCompatActivity {
                                 break;
 
                             case 5:
-                                importJson sendCloud5 = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud5 = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
                                 sendCloud5.startSending("itemUnite");
 
 //                                importJson sendCloud2 = new importJson(MainActivity2.this,"");
@@ -607,14 +627,14 @@ public class MainActivity2 extends AppCompatActivity {
                                 break;
 
                             case 6:
-                                importJson sendCloud6 = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud6 = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
                                 sendCloud6.startSending("GetAssest");
 
                                 sDialog.dismissWithAnimation();
                                 break;
 
                             case 7:
-                                importJson sendCloud7 = new importJson(MainActivity2.this,"",1);
+                                importJson sendCloud7 = new importJson(MainActivity2.this,"",1,fromDateString,ToDateString);
                                 sendCloud7.startSending("SyncItemQR");
 
                                 sDialog.dismissWithAnimation();
@@ -638,5 +658,137 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
 
+    void DateDialog(final int cases , final int y, final String isAssest) {
+
+        final TextView fromDateText = new TextView(MainActivity2.this);
+        final TextView toDateText = new TextView(MainActivity2.this);
+
+        final TextView fromDate = new TextView(MainActivity2.this);
+        final TextView toDate = new TextView(MainActivity2.this);
+//        final TextView textView = new TextView(CollectingData.this);
+        //fromDate.setHint(MainActivity2.this.getResources().getString(R.string.enter_location));
+        fromDate.setTextColor(Color.BLACK);
+        toDate.setTextColor(Color.BLACK);
+        toDateText.setTextColor(Color.BLACK);
+        fromDateText.setTextColor(Color.BLACK);
+
+        fromDate.setGravity(Gravity.CENTER);
+        toDate.setGravity(Gravity.CENTER);
+
+        if (SweetAlertDialog.DARK_STYLE) {
+            fromDate.setTextColor(Color.BLACK);
+        }
+
+        toDateText.setText(MainActivity2.this.getResources().getString(R.string.toDate));
+        fromDateText.setText(MainActivity2.this.getResources().getString(R.string.fromDate));
+        fromDate.setPadding(10,10,10,10);
+        toDate.setPadding(10,10,10,10);
+
+        LinearLayout linearLayoutHF = new LinearLayout(getApplicationContext());
+        linearLayoutHF.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutHF.addView(fromDateText);
+        linearLayoutHF.addView(fromDate);
+        linearLayoutHF.setPadding(10,10,10,10);
+
+        LinearLayout linearLayoutHT = new LinearLayout(getApplicationContext());
+        linearLayoutHT.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutHT.addView(toDateText);
+        linearLayoutHT.addView(toDate);
+        linearLayoutHT.setPadding(10,10,10,10);
+
+
+        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(linearLayoutHF);
+        linearLayout.addView(linearLayoutHT);
+
+        fromDateString=today;
+        ToDateString=today;
+        fromDate.setText(today);
+        toDate.setText(today);
+        fromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateClick(fromDate);
+            }
+        });
+        toDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateClick(toDate);
+            }
+        });
+
+        final SweetAlertDialog dialog = new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.NORMAL_TYPE);
+        dialog.setTitleText(MainActivity2.this.getResources().getString(R.string.location));
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                String from = fromDate.getText().toString();
+                String to = toDate.getText().toString();
+//                        textView.setText("");
+                if (!from.equals("")&&!to.equals("")) {
+
+                    fromDateString=from;
+                    ToDateString=to;
+
+                    switch (cases){
+                        case 1:
+                             alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "",isAssest);
+
+                            break;
+                        case 2:
+                            alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), y, "", "");
+                            break;
+                    }
+
+                        dialog.dismissWithAnimation();
+
+
+
+                } else {
+                    Toast.makeText(MainActivity2.this, "Please Enter from Date And To Date ", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+//                        .hideConfirmButton();
+
+        dialog.setCustomView(linearLayout);
+        dialog.show();
+
+    }
+
+
+    public void DateClick(TextView dateText){
+
+        new DatePickerDialog(MainActivity2.this, openDatePickerDialog(dateText), myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    public DatePickerDialog.OnDateSetListener openDatePickerDialog(final TextView DateText) {
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, month);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                String myFormat = "dd/MM/yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                DateText.setText(sdf.format(myCalendar.getTime()));
+            }
+
+        };
+        return date;
+    }
+    public String convertToEnglish(String value) {
+        String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫", "."));
+        return newValue;
+    }
 
 }

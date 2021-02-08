@@ -1078,7 +1078,7 @@ TextView barCodTextTemp;
                             List<MainSetting> mainSetting=InventDB.getAllMainSetting();
                             if(mainSetting.size()!=0) {
 
-                                importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0);
+                                importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0,"","");
                                 sendCloud.startSending("ItemPrice");
 //                          isEnter[0]=false;
                                 itemCode.setSelectAllOnFocus(true);

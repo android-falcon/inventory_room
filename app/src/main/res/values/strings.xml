@@ -231,5 +231,7 @@
     <string name="enter_location">Enter Location</string>
     <string name="newItemList">New Item List</string>
     <string name="maxNo">max Length Of Qty 5</string>
+    <string name="fromDate">From Date : </string>
+    <string name="toDate">To Date : </string>
 
 </resources>
