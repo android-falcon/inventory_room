@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -37,13 +36,11 @@ import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Port.AlertView;
 import com.example.user54.InventoryApp.Model.ItemCard;
-import com.example.user54.InventoryApp.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.sewoo.port.android.BluetoothPort;
 import com.sewoo.request.android.RequestHandler;
 
 import java.io.File;
@@ -180,10 +177,11 @@ public class BluetoothConnectMenu extends Activity {
 
         while (iter.hasNext()) {
             BluetoothDevice pairedDevice = (BluetoothDevice) iter.next();
-            if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
+           // if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
+            Log.e("bloututhyyyy","paierd ="+pairedDevice.getAddress());
                 this.remoteDevices.add(pairedDevice);
                 this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
-            }
+          //  }
         }
 
     }
