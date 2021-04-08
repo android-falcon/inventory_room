@@ -46,6 +46,7 @@ public class Report extends AppCompatActivity {
     TextView home;
     String today;
     InventoryDatabase InventDB;
+    
     public static List<ItemInfo> ItemInfoListForPrint;
     List<ItemInfo> itemInfos;
     List<ItemCard> itemCard;
