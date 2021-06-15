@@ -109,7 +109,7 @@ public class ExportJeson {
                 }
                 String link = "http://"+ip + "/ExportData";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  +
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
@@ -239,7 +239,7 @@ public class ExportJeson {
                 }
                 String link = "http://"+ip + "/ExportData2";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
@@ -363,7 +363,7 @@ public class ExportJeson {
                 }
                 String link = "http://"+ip + "/ExportTransfer";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
@@ -492,7 +492,7 @@ public class ExportJeson {
                 String link = "http://"+ip + "/uPDATEqTY";
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
@@ -747,7 +747,7 @@ public class ExportJeson {
                 }
                 String link = "http://"+ip + "/SaveAssets";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  +
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);

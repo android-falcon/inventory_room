@@ -1406,30 +1406,55 @@ TextView barCodTextTemp;
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(PriceEditTextTag.getText().toString().equals("*")){
-                    showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                    ItemCodeEditTextTag.setText("");
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ItemCodeEditTextTag.requestFocus();
+                if(!PriceEditTextTag.getText().toString().equals("")) {
+                    if (PriceEditTextTag.getText().toString().equals("*")) {
+                        showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                        ItemCodeEditTextTag.setText("");
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ItemCodeEditTextTag.requestFocus();
+                            }
+                        });
+                        PriceEditTextTag.setText("");
+                        ItemNameEditTextTag.setText("");
+                        pricePrint.setText("");
+                    } else if (PriceEditTextTag.getText().toString().equals("-1")) {
+                        showAlertDialog(getResources().getString(R.string.falidTogetdata));
+                        ItemCodeEditTextTag.setText("");
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ItemCodeEditTextTag.requestFocus();
+                            }
+                        });
+                        PriceEditTextTag.setText("");
+                        ItemNameEditTextTag.setText("");
+                        pricePrint.setText("");
+                    } else {
+                        itemNamePrint.setText(ItemNameEditTextTag.getText().toString());
+                        exp.setText(ExpEditTextTag.getText().toString());
+
+                        pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+
+                        pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+
+                        pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+
+                        itemNamePrint2.setText(ItemNameEditTextTag.getText().toString());
+                        itemNamePrint3.setText(ItemNameEditTextTag.getText().toString());
+                        exp2.setText(ExpEditTextTag.getText().toString());
+                        itemText.setText(ItemCodeEditTextTag.getText().toString());
+
+                        try {
+                            Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+                            barcodeShelfPrint.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint2.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    PriceEditTextTag.setText("");
-                    ItemNameEditTextTag.setText("");
-                    pricePrint.setText("");
-                }else if(PriceEditTextTag.getText().toString().equals("-1")){
-                    showAlertDialog(getResources().getString(R.string.falidTogetdata));
-                    ItemCodeEditTextTag.setText("");
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ItemCodeEditTextTag.requestFocus();
-                        }
-                    });
-                    PriceEditTextTag.setText("");
-                    ItemNameEditTextTag.setText("");
-                    pricePrint.setText("");
+                    }
                 }
             }
 
@@ -1590,6 +1615,7 @@ TextView barCodTextTemp;
 
                           importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
                           sendCloud.startSending("ItemPrice");
+
 
 
                       }

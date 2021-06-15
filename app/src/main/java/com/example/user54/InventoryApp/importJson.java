@@ -170,7 +170,7 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("split ",""+maxInDate);
                 }
-               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
                              "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
@@ -179,7 +179,7 @@ public class importJson {
 ////
 
                 URL url = new URL(link);
-                Log.e("urlString = ",""+url.toString());
+                Log.e("urlStringCard = ",""+url.toString()+"   "+data);
 
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setDoOutput(true);
@@ -361,7 +361,7 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
@@ -620,7 +620,7 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
 //                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
@@ -736,7 +736,7 @@ public class importJson {
                 String link = "http://"+ip + "/GetJRDITEMPRICE";
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
-                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")  +
+                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")  + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
@@ -884,7 +884,7 @@ public class importJson {
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
                 String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")+"&"
-                        +"STORENO=" + URLEncoder.encode(STORE, "UTF-8")  +
+                        +"STORENO=" + URLEncoder.encode(STORE, "UTF-8")  + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
