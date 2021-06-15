@@ -693,7 +693,7 @@ public class importJson {
                     pd.dismiss();
                     new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText(context.getResources().getString(R.string.ops))
-                            .setContentText("Fali to import Item Unit")
+                            .setContentText("Failed to import Item Unit")
                             .show();
                 }
             }
@@ -1028,8 +1028,8 @@ public class importJson {
                 String link = "http://"+ip + "/GetSore";
 
                 //
-//                String data = "compno=" + URLEncoder.encode("736", "UTF-8") + "&" +
-//                        "compyear=" + URLEncoder.encode("2019", "UTF-8") ;
+                String data = "CONO=" + URLEncoder.encode(CompanyNo, "UTF-8") ;//+ "&" +
+                      //  "compyear=" + URLEncoder.encode("2019", "UTF-8") ;
 ////
                 URL url = new URL(link);
 
@@ -1038,10 +1038,10 @@ public class importJson {
                 httpURLConnection.setDoInput(true);
                 httpURLConnection.setRequestMethod("POST");
 
-//                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-//                wr.writeBytes(data);
-//                wr.flush();
-//                wr.close();
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
 
                 InputStream inputStream = httpURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
