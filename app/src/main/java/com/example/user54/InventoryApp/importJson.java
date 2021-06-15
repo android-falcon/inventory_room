@@ -54,7 +54,7 @@ public class importJson {
     String JsonResponseSaveQRCode;
     String JsonResponseSaveSwitch;
     SweetAlertDialog pd = null;
-          String isAssetsIn,ip,QrUse;
+          String isAssetsIn,ip,QrUse,onlinePrice,CompanyNo;
           String fromDate,ToDate;
 
 
@@ -88,6 +88,8 @@ public class importJson {
             this.ip = mainSettings.get(0).getIP();
             this.isAssetsIn = mainSettings.get(0).getIsAssest();
             this.QrUse = mainSettings.get(0).getIsQr();
+            this.onlinePrice=mainSettings.get(0).getOnlinePrice();
+            this.CompanyNo=mainSettings.get(0).getCompanyNo();
         }
 
         if (flag.equals("ItemCard"))
@@ -168,7 +170,8 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("split ",""+maxInDate);
                 }
-               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8")  ;
+               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+                             "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
 //                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
@@ -358,7 +361,8 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8");
+                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
 //                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
@@ -616,7 +620,8 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8");
+                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 //                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
 //                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
 ////
@@ -731,7 +736,8 @@ public class importJson {
                 String link = "http://"+ip + "/GetJRDITEMPRICE";
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
-                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8") ;
+                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")  +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
                 URL url = new URL(link);
@@ -878,7 +884,8 @@ public class importJson {
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
                 String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")+"&"
-                        +"STORENO=" + URLEncoder.encode(STORE, "UTF-8") ;
+                        +"STORENO=" + URLEncoder.encode(STORE, "UTF-8")  +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
                 URL url = new URL(link);

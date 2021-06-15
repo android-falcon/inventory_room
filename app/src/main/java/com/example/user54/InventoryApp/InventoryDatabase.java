@@ -30,7 +30,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =22;//version Db
+    private static final int DATABASE_VERSION =23;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -206,6 +206,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String STORNO = "STORNO";
     private static final String IS_ASSEST = "IS_ASSEST";
     private static final String IS_QRJARD = "IS_QRJARD";
+    private static final String ONLINE_PRICE = "ONLINE_PRICE";
+    private static final String COMPANY_NO = "COMPANY_NO";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -469,7 +471,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + IP_SETTING + " NVARCHAR   ,"
                 + STORNO + " NVARCHAR   ,"
                 + IS_ASSEST + " NVARCHAR   ,"
-                + IS_QRJARD + " NVARCHAR " + ")";
+                + IS_QRJARD + " NVARCHAR   ,"
+                + ONLINE_PRICE + " NVARCHAR   ,"
+                + COMPANY_NO + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -752,6 +756,18 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             Log.e("upgrade", "ITEM_CARD TABLE  IS_NEW");
         }
+
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + ONLINE_PRICE + " TEXT"+" DEFAULT '0'");
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + COMPANY_NO + " TEXT"+" DEFAULT '290'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "ITEM_CARD TABLE  IS_NEW");
+        }
+
+
+
     }
 
 
@@ -859,6 +875,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(STORNO,  convertToEnglish(mainSetting.getStorNo()));
         values.put(IS_ASSEST,  convertToEnglish(mainSetting.getIsAssest()));
         values.put(IS_QRJARD,  convertToEnglish(mainSetting.getIsQr()));
+
+        values.put(ONLINE_PRICE,  convertToEnglish(mainSetting.getOnlinePrice()));
+        values.put(COMPANY_NO,  convertToEnglish(mainSetting.getCompanyNo()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -1646,6 +1665,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setStorNo(cursor.getString(1));
                 item.setIsAssest(cursor.getString(2));
                 item.setIsQr(cursor.getString(3));
+                item.setOnlinePrice(cursor.getString(4));
+                item.setCompanyNo(cursor.getString(5));
+
                 passwords.add(item);
 
             } while (cursor.moveToNext());

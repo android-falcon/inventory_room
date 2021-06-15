@@ -136,7 +136,7 @@ public class Item extends AppCompatActivity {
 
     }
 TextView barCodTextTemp;
-    String StkNo="";
+    String StkNo="",isOnlinePrice="0";
 
     boolean openBarCodeRedar =false;
 
@@ -1249,6 +1249,7 @@ TextView barCodTextTemp;
         List<MainSetting> mainSettings = InventDB.getAllMainSetting();
         if (mainSettings.size() != 0) {
             StkNo=mainSettings.get(0).getStorNo();
+            isOnlinePrice=mainSettings.get(0).getOnlinePrice();
         }
 
         ArrayAdapter   DesignAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, designList);
@@ -1396,6 +1397,47 @@ TextView barCodTextTemp;
 
 
 
+        PriceEditTextTag.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(PriceEditTextTag.getText().toString().equals("*")){
+                    showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                    ItemCodeEditTextTag.setText("");
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ItemCodeEditTextTag.requestFocus();
+                        }
+                    });
+                    PriceEditTextTag.setText("");
+                    ItemNameEditTextTag.setText("");
+                    pricePrint.setText("");
+                }else if(PriceEditTextTag.getText().toString().equals("-1")){
+                    showAlertDialog(getResources().getString(R.string.falidTogetdata));
+                    ItemCodeEditTextTag.setText("");
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ItemCodeEditTextTag.requestFocus();
+                        }
+                    });
+                    PriceEditTextTag.setText("");
+                    ItemNameEditTextTag.setText("");
+                    pricePrint.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
         ItemCodeEditTextTag.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -1412,100 +1454,98 @@ TextView barCodTextTemp;
                     String itemSwitch = "",QRCode="",Price="";
                     if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
 //                        itemCardsList = InventDB.getAllItemCard();
-                        boolean isPriceUnite=false;
-                        if (itemCode.length() > 17) {
-                            QRCode = itemCode;
-                            itemCode=itemCode.substring(0, 16);
-                            Log.e("String ",""+itemCode);
 
-                        } else {
-                            itemCode = ItemCodeEditTextTag.getText().toString();
-                        }
+                      if(isOnlinePrice.equals("0")) {
+                          boolean isPriceUnite = false;
+                          if (itemCode.length() > 17) {
+                              QRCode = itemCode;
+                              itemCode = itemCode.substring(0, 16);
+                              Log.e("String ", "" + itemCode);
 
-                        List<ItemQR> QRList = findQRCode(itemCode, StkNo);
+                          } else {
+                              itemCode = ItemCodeEditTextTag.getText().toString();
+                          }
 
-                        if (QRList.size() != 0) {
-                            itemCode = QRList.get(0).getItemCode();
+                          List<ItemQR> QRList = findQRCode(itemCode, StkNo);
 
-                            Price = QRList.get(0).getSalesPrice();
+                          if (QRList.size() != 0) {
+                              itemCode = QRList.get(0).getItemCode();
 
-                            ItemCodeEditTextTag.setText(itemCode);
-                            isPriceUnite=true;
-                        }else{
-                            List<String>itemUnite=findUnite(itemCode);
-                            int uQty=1;
+                              Price = QRList.get(0).getSalesPrice();
 
-
-                            if(itemUnite.size()!=0){
-
-                                itemCode=itemUnite.get(0);
-                                uQty=Integer.parseInt(itemUnite.get(2));
-                                Price = itemUnite.get(1);
-                                isPriceUnite=true;
-
-                            }else{
-                                itemSwitch=findSwitch(itemCode);
-                                if(!itemSwitch.equals("")){
-                                    itemCode=itemSwitch;
-                                }
-                                uQty=1;
-                                isPriceUnite=false;
-                            }
-                        }
+                              ItemCodeEditTextTag.setText(itemCode);
+                              isPriceUnite = true;
+                          } else {
+                              List<String> itemUnite = findUnite(itemCode);
+                              int uQty = 1;
 
 
+                              if (itemUnite.size() != 0) {
+
+                                  itemCode = itemUnite.get(0);
+                                  uQty = Integer.parseInt(itemUnite.get(2));
+                                  Price = itemUnite.get(1);
+                                  isPriceUnite = true;
+
+                              } else {
+                                  itemSwitch = findSwitch(itemCode);
+                                  if (!itemSwitch.equals("")) {
+                                      itemCode = itemSwitch;
+                                  }
+                                  uQty = 1;
+                                  isPriceUnite = false;
+                              }
+                          }
 
 
-
-
-                        ItemCard itemCard=InventDB.getItemCardByBarCode(itemCode);
-                        String it=itemCard.getItemCode();
-                        Log.e("itemcard_oo",""+it);
+                          ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+                          String it = itemCard.getItemCode();
+                          Log.e("itemcard_oo", "" + it);
 //                        for (int i = 0; i < itemCardsList.size(); i++) {
-                        if(!TextUtils.isEmpty(it)) {
-                            if (it.equals(itemCode)) {
-                                isItemFound = true;
-                                ItemNameEditTextTag.setText(itemCard.getItemName());
-                                if(!isPriceUnite) {
-                                    PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
+                          if (!TextUtils.isEmpty(it)) {
+                              if (it.equals(itemCode)) {
+                                  isItemFound = true;
+                                  ItemNameEditTextTag.setText(itemCard.getItemName());
+                                  if (!isPriceUnite) {
+                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
 
-                                    pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
 
-                                    pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
 
-                                    pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
 
 
-                                }else{
-                                    PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+                                  } else {
+                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
 
-                                    pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
 
-                                    pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
 
-                                    pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-                                }
+                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                                  }
 //                            ExpEditTextTag.setText(itemCardsList.get(i).g());
-                                itemNamePrint.setText(itemCard.getItemName());
-                                exp.setText(ExpEditTextTag.getText().toString());
+                                  itemNamePrint.setText(itemCard.getItemName());
+                                  exp.setText(ExpEditTextTag.getText().toString());
 
-                                itemNamePrint2.setText(itemCard.getItemName());
-                                itemNamePrint3.setText(itemCard.getItemName());
-                                exp2.setText(ExpEditTextTag.getText().toString());
-                                itemText.setText(ItemCodeEditTextTag.getText().toString());
+                                  itemNamePrint2.setText(itemCard.getItemName());
+                                  itemNamePrint3.setText(itemCard.getItemName());
+                                  exp2.setText(ExpEditTextTag.getText().toString());
+                                  itemText.setText(ItemCodeEditTextTag.getText().toString());
 
-                                try {
-                                    Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
-                                    barcodeShelfPrint.setImageBitmap(bitmapBa);
-                                    barcodeShelfPrint2.setImageBitmap(bitmapBa);
-                                    barcodeShelfPrint3.setImageBitmap(bitmapBa);
-                                } catch (WriterException e) {
-                                    e.printStackTrace();
-                                }
+                                  try {
+                                      Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+                                      barcodeShelfPrint.setImageBitmap(bitmapBa);
+                                      barcodeShelfPrint2.setImageBitmap(bitmapBa);
+                                      barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                                  } catch (WriterException e) {
+                                      e.printStackTrace();
+                                  }
 
 //                                break;
 
-                            }
+                              }
 
 //                            else{
 //
@@ -1520,26 +1560,39 @@ TextView barCodTextTemp;
 //                        }
 //////
 
-                        }
+                              //
 
-                    if (isItemFound) {
+                          }
 
-                        //nothing
+                          if (isItemFound) {
 
-                    } else {
+                              //nothing
+
+                          } else {
 //                        save.setClickable(false);
-                        showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                        ItemCodeEditTextTag.setText("");
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ItemCodeEditTextTag.requestFocus();
-                            }
-                        });
-                        PriceEditTextTag.setText("");
-                        ItemNameEditTextTag.setText("");
-                        pricePrint.setText("");
-                    }
+                              showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                              ItemCodeEditTextTag.setText("");
+                              new Handler().post(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      ItemCodeEditTextTag.requestFocus();
+                                  }
+                              });
+                              PriceEditTextTag.setText("");
+                              ItemNameEditTextTag.setText("");
+                              pricePrint.setText("");
+                          }
+
+                      }else{
+
+                          textView=PriceEditTextTag;
+                          textItemName= ItemNameEditTextTag;
+
+                          importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
+                          sendCloud.startSending("ItemPrice");
+
+
+                      }
 
 
                     }
@@ -2253,25 +2306,25 @@ TextView barCodTextTemp;
                 i[0]++;
                 switch (i[0]) {
                     case 0:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blueDark));
                         break;
                     case 1:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_50));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.cancel_button));
                         break;
                     case 2:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.gray));
                         break;
                     case 3:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_20));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blueLight));
                         break;
                     case 4:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_blue_grey_80));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.gray));
                         break;
                     case 5:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.warning_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.searchButton));
                         break;
                     case 6:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.layou3));
                         break;
                 }
             }

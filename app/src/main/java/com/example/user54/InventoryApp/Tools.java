@@ -396,6 +396,8 @@ public class Tools extends AppCompatActivity {
 
         LinearLayout exit, save;
 
+        final EditText companyNo=MainSettingdialog.findViewById(R.id.companyNo);
+        final CheckBox onlinePrice =MainSettingdialog.findViewById(R.id.onlineCheckBox);
         final TextView StoreName = MainSettingdialog.findViewById(R.id.StoreName);
         final EditText ipSetting = MainSettingdialog.findViewById(R.id.ipSetting);
         final CheckBox AssestCheckBox = MainSettingdialog.findViewById(R.id.AssestCheckBox);
@@ -440,6 +442,13 @@ public class Tools extends AppCompatActivity {
             ipSetting.setText(mainSettings.get(0).getIP());
             StoreName.setText(InventDB.getStkName(mainSettings.get(0).getStorNo()));
 
+            companyNo.setText(mainSettings.get(0).getCompanyNo());
+            if (mainSettings.get(0).getOnlinePrice().equals("1")) {
+                onlinePrice.setChecked(true);
+            } else {
+                onlinePrice.setChecked(false);
+            }
+
             if (mainSettings.get(0).getIsAssest().equals("1")) {
                 AssestCheckBox.setChecked(true);
             } else {
@@ -454,6 +463,8 @@ public class Tools extends AppCompatActivity {
 //            StkNo = StkAdapter.getItem(index);
             Log.e("indexofSpinner = ", "= " + index + "   " + StkNo + "    " + mainSettings.get(0).getStorNo());
             stkSpinner.setSelection(index);
+        }else {
+            companyNo.setText("290");
         }
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -470,6 +481,7 @@ public class Tools extends AppCompatActivity {
                     String Store = "0";
                     String isAssest = "0";//0->not 1-->assest
                     String isQr="0";//0->not 1-->QR
+                    String isOnline="0";//0->not 1-->online
                     if (StokNo.size() != 0) {
                         Store = stkSpinner.getSelectedItem().toString();
                     } else {
@@ -488,8 +500,13 @@ public class Tools extends AppCompatActivity {
                     } else {
                         isQr = "0";
                     }
+                    if (onlinePrice.isChecked()) {
+                        isOnline = "1";
+                    } else {
+                        isOnline = "0";
+                    }
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr));
+                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString()));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     MainSettingdialog.dismiss();
 

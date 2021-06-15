@@ -102,13 +102,15 @@ public class ExportJeson {
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
                 final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
-                String ip="";
+                String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
+                    CompanyNo=mainSettings.get(0).getCompanyNo();
                 }
                 String link = "http://"+ip + "/ExportData";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
 
@@ -230,13 +232,15 @@ public class ExportJeson {
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
                 final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
-                String ip="";
+                String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
+                    CompanyNo=mainSettings.get(0).getCompanyNo();
                 }
                 String link = "http://"+ip + "/ExportData2";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
 
@@ -352,13 +356,15 @@ public class ExportJeson {
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
                 final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
-                String ip="";
+                String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
+                    CompanyNo=mainSettings.get(0).getCompanyNo();
                 }
                 String link = "http://"+ip + "/ExportTransfer";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
 
@@ -478,14 +484,16 @@ public class ExportJeson {
         protected String doInBackground(String... params) {
             try {
                 final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
-                String ip="";
+                String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
+                    CompanyNo=mainSettings.get(0).getCompanyNo();
                 }
                 String link = "http://"+ip + "/uPDATEqTY";
 //                String link = controll.URL + "GetJRDITEMPRICE";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 //
                 URL url = new URL(link);
@@ -732,13 +740,15 @@ public class ExportJeson {
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
                 final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
-                String ip="";
+                String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
+                    CompanyNo=mainSettings.get(0).getCompanyNo();
                 }
                 String link = "http://"+ip + "/SaveAssets";
 //
-                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8") ;
+                String data = "JSONSTR=" + URLEncoder.encode(obj.toString(), "UTF-8")  +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
                 Log.e("tag_link", "ExportData -->" + link);
                 Log.e("tag_data", "ExportData -->" + data);
 

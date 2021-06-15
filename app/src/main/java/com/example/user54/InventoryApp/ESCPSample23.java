@@ -18,6 +18,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.print.Print;
 import com.sewoo.jpos.command.ESCPOS;
 import com.sewoo.jpos.command.ESCPOSConst;
 import com.sewoo.jpos.printer.ESCPOSPrinter;
@@ -34,7 +35,7 @@ import java.util.List;
 import static com.example.user54.InventoryApp.Report.ItemInfoListForPrint;
 
 
-public class ESCPSample2
+public class ESCPSample23
 {
 	private ESCPOSPrinter posPtr;
 	private final char ESC = ESCPOS.ESC;
@@ -47,7 +48,7 @@ public class ESCPSample2
 	List<Item>itemList;
 String today;
 	Context context;
-	public ESCPSample2(Context context)
+	public ESCPSample23(Context context)
 	{
 		posPtr = new ESCPOSPrinter();
 
@@ -205,26 +206,42 @@ String today;
 		return 0;
 	}
 
-	public int imageTest1() throws IOException
+	public int imageTest1(int count,Bitmap bitmap) throws IOException
 	{
 		int sts;
 
-		sts = posPtr.printerCheck();
-		if(sts != ESCPOSConst.LK_STS_NORMAL)
-		{
-			return sts;
-		}
+//		sts = posPtr.printerCheck();
+//		if(sts != ESCPOSConst.LK_STS_NORMAL)
+//		{
+//			Log.e("ESC mm = ", "" +sts);
+//
+//			return sts;
+//		}
+//
+//		sts = posPtr.status();
+//		if(sts != ESCPOSConst.LK_STS_NORMAL)
+//		{
+//			Log.e("ESC 2 mm = ", "" +sts);
+//			return sts;
+//		}
 
-		sts = posPtr.status();
-		if(sts != ESCPOSConst.LK_STS_NORMAL)
-		{
-			return sts;
-		}
-
+	//posPtr.setPageMode(true);
 		posPtr.setAsync(false);
+		//posPtr.printBitmap(bitmap, LKPrint.LK_ALIGNMENT_CENTER,100);
+		//posPtr.printText("trusrutsrt", LKPrint.LK_ALIGNMENT_CENTER, LKPrint.LK_FNT_DEFAULT, LKPrint.LK_TXT_3WIDTH | LKPrint.LK_TXT_3HEIGHT);
 
-		posPtr.printBitmap("//sdcard//temp//test//1512301638.png", LKPrint.LK_ALIGNMENT_CENTER);
-		posPtr.lineFeed(3);
+		posPtr.printBarCode("1234567890", LKPrint.LK_BCS_Code39, 40, 2, LKPrint.LK_ALIGNMENT_CENTER, LKPrint.LK_HRI_TEXT_BELOW);
+		//posPtr.printText("price : ", LKPrint.LK_ALIGNMENT_CENTER, LKPrint.LK_FNT_DEFAULT, LKPrint.LK_TXT_3WIDTH | LKPrint.LK_TXT_3HEIGHT);
+
+		//posPtr.cutPaper();
+//		Print print=new Print();
+//		try {
+//			print.PrintQRCode("12212544");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		posPtr.lineFeed(1);
+
 		return 0;
 	}
 
@@ -563,25 +580,25 @@ String today;
 //			posPtr.setPageMode(true);
 //			public int printAndroidFont(Typeface typeface, boolean isBold, String textString, int widthDots, int textSize, int alignment)
 
-			posPtr.printAndroidFont(null,true,context.getResources().getString(R.string.inventory_item)+"\n", nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
+//			posPtr.printAndroidFont(null,true,context.getResources().getString(R.string.inventory_item)+"\n", nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
 			posPtr.printAndroidFont(null,true,context.getResources().getString(R.string.item_type) +"" +"    " + "          التاريخ: " + today + "\n"  , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
-			posPtr.printAndroidFont(null,true,"--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
+//			posPtr.printAndroidFont(null,true,"--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
 
 
-				total_Qty=0;
-				posPtr.printAndroidFont(  null,true,"              "+context.getResources().getString(R.string.item_code) + context.getResources().getString(R.string.item_name) + "\t\t\t" + context.getResources().getString(R.string.item_qty) + "\t\t\t" + context.getResources().getString(R.string.item_price) + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
-				posPtr.printAndroidFont(  null,true,"--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
+//				total_Qty=0;
+//				posPtr.printAndroidFont(  null,true,"              "+context.getResources().getString(R.string.item_code) + context.getResources().getString(R.string.item_name) + "\t\t\t" + context.getResources().getString(R.string.item_qty) + "\t\t\t" + context.getResources().getString(R.string.item_price) + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
+//				posPtr.printAndroidFont(  null,true,"--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
+//
+//				for (int i = 0; i < ItemInfoListForPrint.size(); i++) {
+//						total_Qty+=ItemInfoListForPrint.get(i).getItemQty();
+//						posPtr.printAndroidFont(null,true,  ItemInfoListForPrint.get(i).getItemCode() + "     " + ItemInfoListForPrint.get(i).getItemName() + "\t\t\t\t" + ItemInfoListForPrint.get(i).getItemQty() + "\t\t\t\t" +ItemInfoListForPrint.get(i).getSalePrice()+ "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
+//
+//
+//				}
+//
 
-				for (int i = 0; i < ItemInfoListForPrint.size(); i++) {
-						total_Qty+=ItemInfoListForPrint.get(i).getItemQty();
-						posPtr.printAndroidFont(null,true,  ItemInfoListForPrint.get(i).getItemCode() + "     " + ItemInfoListForPrint.get(i).getItemName() + "\t\t\t\t" + ItemInfoListForPrint.get(i).getItemQty() + "\t\t\t\t" +ItemInfoListForPrint.get(i).getSalePrice()+ "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
-
-
-				}
-
-
-			posPtr.printAndroidFont(  null,true, "--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
-			posPtr.printAndroidFont(  null,true, "اجمالي الكمية  : " + total_Qty + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
+//			posPtr.printAndroidFont(  null,true, "--------------------------------------------------------------------------------" + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_CENTER);
+//			posPtr.printAndroidFont(  null,true, "اجمالي الكمية  : " + total_Qty + "\n" , nLineWidth, 24, ESCPOSConst.LK_ALIGNMENT_LEFT);
 
 			posPtr.printPageModeData();
 			posPtr.setPageMode(true);
