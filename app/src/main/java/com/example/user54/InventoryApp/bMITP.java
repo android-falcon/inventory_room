@@ -3,6 +3,7 @@ package com.example.user54.InventoryApp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,21 +12,33 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.user54.InventoryApp.Model.ItemCard;
+import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Port.AlertView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.sewoo.request.android.RequestHandler;
 
 import java.io.File;
@@ -34,9 +47,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
+import static com.example.user54.InventoryApp.Report.ItemInfoListForPrint;
 
 
 // Source code recreated from a .class file by IntelliJ IDEA
@@ -407,57 +428,99 @@ public class bMITP extends Activity {
                 toast.show();
 
 
+
                 int count =Integer.parseInt(getData);
-                ESCPSample2 sample = new ESCPSample2(bMITP.this);
-
-                  switch (count){
-
-                      case 0:
-
-                          try {
-                              sample.printMultilingualFontEsc(1);
-//                              sample.printMultilingualFont();
-                          } catch (UnsupportedEncodingException e) {
-                              e.printStackTrace();
-                          }
-
-                          break;
-                      case 1:
-
-                          break;
-
-                      case 2:
+//                ESCPSample2 sample = new ESCPSample2(bMITP.this);
+                try {
+//                int count = Integer.parseInt(getData);
+                    CPCLSample2 sample = new CPCLSample2(bMITP.this);
 
 
+                    switch (Integer.parseInt(getData)){
+//
+//                        case 0:
+//                            sample.selectBlackMarkPaper();
+//                            Bitmap bitmap=null;
+//                            if(Item.itemCardForPrint.getItemG().equals("0")) {
+//                                bitmap = convertLayoutToImage_shelfTag(Item.itemCardForPrint);
+//                                Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
+//
+//                            }else  if(Item.itemCardForPrint.getItemG().equals("1")){
+//                                bitmap = convertLayoutToImage_shelfTag_Design2(Item.itemCardForPrint);
+//                                Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
+//                            }else {
+//                                bitmap = convertLayoutToImage_shelfTag_Design3(Item.itemCardForPrint);
+//                                Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
+//                            }
+//                            if(bitmap!=null) {
+//                                Log.e("Count = ",""+ Item.itemCardForPrint.getCostPrc());
+//                                sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap);
+//                            }else{
+////                            Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            break;
 
-                          break;
+                        case 1:
+                            sample.selectGapPaper();
+                            for(int i = 0; i< Item.barcodeListForPrint.size(); i++) {
+                                Bitmap bitmaps = convertLayoutToImage_Barcode(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice());
+                                if (bitmaps != null) {
+                                    Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc());
+                                    sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps);
+                                } else {
+//                                Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            break;
+//                        case 2:
+//                            sample.selectContinuousPaper();
+//                            double totalQty=0.0;
+//                            if(ItemInfoListForPrint.size()!=0) {
+//                                Bitmap bitmap1 = convertLayoutToImage_Report_titel(null, "-1");
+//                                sample.imageTestEnglishReport(1, bitmap1);
+//
+//                                for (int i = 0; i < ItemInfoListForPrint.size(); i++) {
+//                                    Bitmap bitmap2 = convertLayoutToImage_Report(ItemInfoListForPrint.get(i), i+"");
+//                                    sample.imageTestEnglishReport(1, bitmap2);
+//
+//                                    totalQty+=ItemInfoListForPrint.get(i).getItemQty();
+//                                }
+//
+//                                Bitmap bitmap5 = convertLayoutToImage_Report(null, "-4");
+//                                sample.imageTestEnglishReport(1, bitmap5);
+//                                ItemInfo item=new ItemInfo();
+//                                item.setItemQty((float) totalQty);
+//                                Bitmap bitmap4 = convertLayoutToImage_Report(item, "-3");
+//                                sample.imageTestEnglishReport(1, bitmap4);
+//
+//
+//                                Bitmap bitmap3 = convertLayoutToImage_Report(null, "-2");
+//                                sample.imageTestEnglishReport(1, bitmap3);
+//                            }else{
+////                            Toast.makeText(BluetoothConnectMenu.this, "No Item For Print ", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            break;
 
-                      case 3:
+//                        case 3:
+//                            sample.selectGapPaper();
+//                            for(int i = 0; i< Item.barcodeListForPrintAssest.size(); i++) {
+//                                Bitmap bitmaps = convertLayoutToImage_Assesst(Item.barcodeListForPrintAssest.get(i), Item.itemAssesstForPrint.getPrice());
+//                                if (bitmaps != null) {
+//                                    Log.e("Count = ", "" + Item.itemAssesstForPrint.getCount());
+//                                    sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemAssesstForPrint.getCount()), bitmaps);
+//                                } else {
+////                                Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                            break;
 
-                          break;
-
-                      case 4:
-
-                          break;
-                      case 5:
-
-
-                          break;
-                      case 6:
-
-
-
-                          break;
-                      case 7:// print last voucher
-
-
-                          break;
-
-                  }
-
-
+                    }
                     finish();
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 if (bMITP.this.chkDisconnect.isChecked()) {
                     bMITP.this.registerReceiver(bMITP.this.disconnectReceiver, new IntentFilter("android.bluetooth.device.action.ACL_CONNECTED"));
@@ -468,10 +531,80 @@ public class bMITP extends Activity {
                     this.dialog.dismiss();
                 }
 
-                AlertView.showAlert("Disconnect Bluetoothُ", "Try Again ,,,.", bMITP.this.context);
+//                AlertView.showAlert("Disconnect Bluetoothُ", "Try Again ...", BluetoothConnectMenu.this.context);
+                new SweetAlertDialog(bMITP.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...Try Again")
+                        .setContentText("Disconnect Bluetooth")
+                        .show();
+
+
+
             }
 
             super.onPostExecute(result);
+//
+//                  switch (count){
+//
+//                      case 0:
+//
+//                          try {
+//                              sample.printMultilingualFontEsc(1);
+////                              sample.printMultilingualFont();
+//                          } catch (UnsupportedEncodingException e) {
+//                              e.printStackTrace();
+//                          }
+//
+//                          break;
+//                      case 1:
+//
+//                          break;
+//
+//                      case 2:
+//
+//
+//
+//                          break;
+//
+//                      case 3:
+//
+//                          break;
+//
+//                      case 4:
+//
+//                          break;
+//                      case 5:
+//
+//
+//                          break;
+//                      case 6:
+//
+//
+//
+//                          break;
+//                      case 7:// print last voucher
+//
+//
+//                          break;
+//
+//                  }
+//
+//
+//                    finish();
+//
+//
+//                if (bMITP.this.chkDisconnect.isChecked()) {
+//                    bMITP.this.registerReceiver(bMITP.this.disconnectReceiver, new IntentFilter("android.bluetooth.device.action.ACL_CONNECTED"));
+//                    bMITP.this.registerReceiver(bMITP.this.disconnectReceiver, new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED"));
+//                }
+//            } else {
+//                if (this.dialog.isShowing()) {
+//                    this.dialog.dismiss();
+//                }
+//
+//                AlertView.showAlert("Disconnect Bluetoothُ", "Try Again ,,,.", bMITP.this.context);
+//            }
+//
+//            super.onPostExecute(result);
         }
     }
 
@@ -480,5 +613,108 @@ public class bMITP extends Activity {
         return newValue;
     }
 
+    private Bitmap convertLayoutToImage_Barcode(ItemCard itemCard, String index) {
+        LinearLayout linearView = null;
+        final Dialog dialog_Header = new Dialog(bMITP.this);
+        dialog_Header.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog_Header.setCancelable(false);
+        dialog_Header.setContentView(R.layout.barcode_print_dialog);
 
+
+        TextView itemName,price,BarcodeText,exp ;
+
+        LinearLayout ExpLiner,priceLiner;
+
+//        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
+        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+
+        itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
+        price = (TextView) dialog_Header.findViewById(R.id.price);
+        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
+//        exp=(TextView) dialog_Header.findViewById(R.id.exp);
+
+        ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
+
+        BarcodeText.setText(itemCard.getItemCode());
+        itemName.setText(itemCard.getItemName());
+        if(index.equals("**")){
+            priceLiner.setVisibility(View.INVISIBLE);
+        }else{
+            //price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+" JD");
+        }
+
+//        if(itemCard.getDepartmentId().equals("**")){
+//            ExpLiner.setVisibility(View.INVISIBLE);
+//        }else{
+//            exp.setText(itemCard.getDepartmentId());
+//        }
+
+
+        try {
+            Bitmap bitmaps = encodeAsBitmap(itemCard.getItemCode(), BarcodeFormat.CODE_128, 50, 50);
+            barcode.setImageBitmap(bitmaps);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+
+        linearView = (LinearLayout) dialog_Header.findViewById(R.id.shelfTagLiner);
+
+        linearView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        linearView.layout(1, 1, linearView.getMeasuredWidth(), linearView.getMeasuredHeight());
+
+        Log.e("size of img ", "width=" + linearView.getMeasuredWidth() + "      higth =" + linearView.getHeight());
+        dialog_Header.show();
+        linearView.setDrawingCacheEnabled(true);
+        linearView.buildDrawingCache();
+        Bitmap bit =linearView.getDrawingCache();
+
+        return bit;// creates bitmap and returns the same
+
+
+    }
+    private static String guessAppropriateEncoding(CharSequence contents) {
+        // Very crude at the moment
+        for (int i = 0; i < contents.length(); i++) {
+            if (contents.charAt(i) > 0xFF) {
+                return "UTF-8";
+            }
+        }
+        return null;
+    }
+    Bitmap encodeAsBitmap(String contents, BarcodeFormat format, int img_width, int img_height) throws WriterException {
+        String contentsToEncode = contents;
+        if (contentsToEncode == null) {
+            return null;
+        }
+        Map<EncodeHintType, Object> hints = null;
+        String encoding = guessAppropriateEncoding(contentsToEncode);
+        if (encoding != null) {
+            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, encoding);
+        }
+        MultiFormatWriter writer = new MultiFormatWriter();
+        BitMatrix result;
+        try {
+            result = writer.encode(contentsToEncode, format, img_width, img_height, hints);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int width = result.getWidth();
+        int height = result.getHeight();
+        int[] pixels = new int[width * height];
+        for (int y = 0; y < height; y++) {
+            int offset = y * width;
+            for (int x = 0; x < width; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
 }

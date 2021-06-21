@@ -233,5 +233,6 @@
     <string name="maxNo">max Length Of Qty 5</string>
     <string name="fromDate">From Date : </string>
     <string name="toDate">To Date : </string>
+    <string name="checkBlutoothPrinterPaired">checkBlutoothPrinterPaired</string>
 
 </resources>

@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,7 +89,7 @@ public class BluetoothConnectMenu extends Activity {
     private EditText btAddrBox;
     private Button connectButton;
     private Button searchButton;
-
+    public static final String SECURE_SETTINGS_BLUETOOTH_ADDRESS = "bluetooth_address";
     LinearLayout item;
     private ListView list;
     private BluetoothPort bluetoothPort;
@@ -116,18 +117,6 @@ public class BluetoothConnectMenu extends Activity {
 
     }
 
-    private void bluetoothSetup() {
-        this.clearBtDevData();
-        this.bluetoothPort = BluetoothPort.getInstance();
-        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (this.mBluetoothAdapter != null) {
-            if (!this.mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE");
-                this.startActivityForResult(enableBtIntent, 2);
-            }
-
-        }
-    }
 
     private void loadSettingFile() {
 //        int rin = false;
@@ -174,25 +163,44 @@ public class BluetoothConnectMenu extends Activity {
     private void clearBtDevData() {
         this.remoteDevices = new Vector();
     }
-
     private void addPairedDevices() {
         Iterator iter = this.mBluetoothAdapter.getBondedDevices().iterator();
 
-        while (iter.hasNext()) {
-            BluetoothDevice pairedDevice = (BluetoothDevice) iter.next();
-            if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
-                this.remoteDevices.add(pairedDevice);
-                this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
-            }
+        while(iter.hasNext()) {
+            BluetoothDevice pairedDevice = (BluetoothDevice)iter.next();
+//            if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {
+            this.remoteDevices.add(pairedDevice);
+            this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
         }
+        Log.e("remoteDevices",""+remoteDevices.size());
+//        }
 
     }
+
+//    private void addPairedDevices() {
+//        Iterator iter = this.mBluetoothAdapter.getBondedDevices().iterator();
+//
+//        while (iter.hasNext()) {
+//            BluetoothDevice pairedDevice = (BluetoothDevice) iter.next();
+////            if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
+//                this.remoteDevices.add(pairedDevice);
+//                this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
+////            }
+//        }
+//
+//    }
 
     double size_subList = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.bluetooth_menu);
+        getNewMethod();
+      //  previousMethod();
+
+    }
+
+    private void previousMethod() {
         this.btAddrBox = (EditText) this.findViewById(R.id.EditTextAddressBT);
         this.connectButton = (Button) this.findViewById(R.id.ButtonConnectBT);
         BluetoothConnectMenu.this.connectButton.setEnabled(true);
@@ -284,10 +292,10 @@ public class BluetoothConnectMenu extends Activity {
                         key = remoteDevice.getName() + "\n[" + remoteDevice.getAddress() + "] [Paired]";
                     }
 
-                    if (BluetoothConnectMenu.this.bluetoothPort.isValidAddress(remoteDevice.getAddress())) {
-                        BluetoothConnectMenu.this.remoteDevices.add(remoteDevice);
-                        BluetoothConnectMenu.this.adapter.add(key);
-                    }
+//                    if (BluetoothConnectMenu.this.bluetoothPort.isValidAddress(remoteDevice.getAddress())) {
+                    BluetoothConnectMenu.this.remoteDevices.add(remoteDevice);
+                    BluetoothConnectMenu.this.adapter.add(key);
+//                    }
                 }
 
             }
@@ -330,6 +338,169 @@ public class BluetoothConnectMenu extends Activity {
             coon();
         }else{
             Toast.makeText(context, "Please Connect to Bluetooth ", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void getNewMethod() {
+      //  //this.mainLinearPrinting= (LinearLayout) this.findViewById(R.id.mainLinearPrinting);
+       // text_hideDialog = (TextView) this.findViewById(R.id.text_hideDialog);
+        this.btAddrBox = (EditText)this.findViewById(R.id.EditTextAddressBT);
+        this.connectButton = (Button)this.findViewById(R.id.ButtonConnectBT);
+        BluetoothConnectMenu.this.connectButton.setEnabled(true);
+        this.searchButton = (Button)this.findViewById(R.id.ButtonSearchBT);
+        this.list = (ListView)this.findViewById(R.id.BtAddrListView);
+        this.chkDisconnect = (CheckBox)this.findViewById(R.id.check_disconnect);
+        this.chkDisconnect.setChecked(true);
+        this.context = this;
+    //    obj=new DatabaseHandler(bMITP.this);
+
+
+//
+        getData = getIntent().getStringExtra("printKey");
+//        Bundle bundle = getIntent().getExtras();
+//         allStudents = (List<Item>) bundle.get("ExtraData");
+//
+//         Log.e("all",allStudents.get(0).getBarcode());
+
+        Log.e("printKey",""+getData);
+        this.loadSettingFile();
+        this.bluetoothSetup();
+        this.connectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!BluetoothConnectMenu.this.bluetoothPort.isConnected()) {
+                    try {
+                        BluetoothConnectMenu.this.btConn(BluetoothConnectMenu.this.mBluetoothAdapter.getRemoteDevice(BluetoothConnectMenu.this.btAddrBox.getText().toString()));
+                    } catch (IllegalArgumentException var3) {
+                        Log.e("BluetoothConnectMenu", var3.getMessage(), var3);
+                        AlertView.showAlert(var3.getMessage(), BluetoothConnectMenu.this.context);
+                        return;
+                    } catch (IOException var4) {
+                        Log.e("BluetoothConnectMenu", var4.getMessage(), var4);
+                        AlertView.showAlert(var4.getMessage(), BluetoothConnectMenu.this.context);
+                        return;
+                    }
+                } else {
+                    BluetoothConnectMenu.this.btDisconn();
+                }
+
+            }
+        });
+        this.searchButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!BluetoothConnectMenu.this.mBluetoothAdapter.isDiscovering()) {
+                    BluetoothConnectMenu.this.clearBtDevData();
+                    BluetoothConnectMenu.this.adapter.clear();
+                    BluetoothConnectMenu.this.mBluetoothAdapter.startDiscovery();
+                } else {
+                    BluetoothConnectMenu.this.mBluetoothAdapter.cancelDiscovery();
+                }
+
+            }
+        });
+        this.adapter = new ArrayAdapter(BluetoothConnectMenu.this , R.layout.cci );
+
+        this.list.setAdapter(this.adapter);
+        this.addPairedDevices();
+        BluetoothDevice btDev = null;
+
+
+                if(remoteDevices.size()!=0)
+                {
+                    String s="";
+
+                    try {
+                        btDev = (BluetoothDevice) BluetoothConnectMenu.this.remoteDevices.elementAt(0);
+                    }
+                    catch (Exception e)
+                    {       }
+
+                    try {
+                        if (BluetoothConnectMenu.this.mBluetoothAdapter.isDiscovering()) {
+                            BluetoothConnectMenu.this.mBluetoothAdapter.cancelDiscovery();
+                        }
+
+                        BluetoothConnectMenu.this.btAddrBox.setText(btDev.getAddress());
+                        BluetoothConnectMenu.this.btConn(btDev);
+                    } catch (IOException var8) {
+                        AlertView.showAlert(var8.getMessage(), BluetoothConnectMenu.this.context);
+                    }
+
+                }
+                else {
+                    new SweetAlertDialog(BluetoothConnectMenu.this, SweetAlertDialog.ERROR_TYPE)
+
+                            .setContentText(getResources().getString(R.string.checkBlutoothPrinterPaired))
+                            .setConfirmButton(getResources().getString(R.string.ok), new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    finish();
+                                }
+                            })
+                            .show();
+
+                }
+
+
+
+
+        this.discoveryResult = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                BluetoothDevice remoteDevice = (BluetoothDevice)intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
+                if (remoteDevice != null) {
+                    String key;
+                    if (remoteDevice.getBondState() != 12) {
+                        key = remoteDevice.getName() + "\n[" + remoteDevice.getAddress() + "]";
+                    } else {
+                        key = remoteDevice.getName() + "\n[" + remoteDevice.getAddress() + "] [Paired]";
+                    }
+
+
+                    BluetoothConnectMenu.this.remoteDevices.add(remoteDevice);
+                    BluetoothConnectMenu.this.adapter.add(key);
+
+
+
+
+//                    if (bMITP.this.bluetoothPort.isValidAddress(remoteDevice.getAddress())) {
+
+                }
+//                }
+
+            }
+        };
+        this.registerReceiver(this.discoveryResult, new IntentFilter("android.bluetooth.device.action.FOUND"));
+        this.searchStart = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                BluetoothConnectMenu.this.connectButton.setEnabled(false);
+                BluetoothConnectMenu.this.btAddrBox.setEnabled(false);
+//                BluetoothConnectMenu.this.searchButton.setText(BluetoothConnectMenu.this.getResources().getString(2131034114));
+
+                BluetoothConnectMenu.this.searchButton.setText("stop ");
+            }
+        };
+        this.registerReceiver(this.searchStart, new IntentFilter("android.bluetooth.adapter.action.DISCOVERY_STARTED"));
+        this.searchFinish = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                BluetoothConnectMenu.this.connectButton.setEnabled(true);
+                BluetoothConnectMenu.this.btAddrBox.setEnabled(true);
+//                BluetoothConnectMenu.this.searchButton.setText(BluetoothConnectMenu.this.getResources().getString(2131034113));
+                BluetoothConnectMenu.this.searchButton.setText("search");
+
+            }
+        };
+        this.registerReceiver(this.searchFinish, new IntentFilter("android.bluetooth.adapter.action.DISCOVERY_FINISHED"));
+        if (this.chkDisconnect.isChecked()) {
+            this.disconnectReceiver = new BroadcastReceiver() {
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    BluetoothDevice device = (BluetoothDevice)intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
+                    if (!"android.bluetooth.device.action.ACL_CONNECTED".equals(action) && "android.bluetooth.device.action.ACL_DISCONNECTED".equals(action)) {
+                        BluetoothConnectMenu.this.DialogReconnectionOption();
+                    }
+
+                }
+            };
         }
 
     }
@@ -408,6 +579,18 @@ public class BluetoothConnectMenu extends Activity {
     private void btConn(BluetoothDevice btDev) throws IOException {
         (new BluetoothConnectMenu.connTask()).execute(new BluetoothDevice[]{btDev});
     }
+    private void bluetoothSetup() {
+        this.clearBtDevData();
+        this.bluetoothPort = BluetoothPort.getInstance();
+        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (this.mBluetoothAdapter != null) {
+            if (!this.mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE");
+                this.startActivityForResult(enableBtIntent, 2);
+            }
+
+        }
+    }
 
     private void btDisconn() {
         try {
@@ -438,6 +621,7 @@ public class BluetoothConnectMenu extends Activity {
         }
 
         protected void onPreExecute() {
+            String s="";
 
 
             dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -449,7 +633,7 @@ public class BluetoothConnectMenu extends Activity {
 
         protected Integer doInBackground(BluetoothDevice... params) {
             Integer retVal = null;
-
+            String s="";
             try {
                 BluetoothConnectMenu.this.bluetoothPort.connect(params[0]);
                 BluetoothConnectMenu.this.lastConnAddr = params[0].getAddress();
