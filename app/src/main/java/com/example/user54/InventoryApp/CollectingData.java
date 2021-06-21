@@ -4905,25 +4905,25 @@ public class CollectingData extends AppCompatActivity {
                 i[0]++;
                 switch (i[0]) {
                     case 0:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blueDark));
                         break;
                     case 1:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_50));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.cancel_button));
                         break;
                     case 2:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.gray));
                         break;
                     case 3:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_20));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blueLight));
                         break;
                     case 4:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_blue_grey_80));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.gray));
                         break;
                     case 5:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.warning_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.searchButton));
                         break;
                     case 6:
-                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                        pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.layou3));
                         break;
                 }
             }

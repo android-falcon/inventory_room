@@ -98,7 +98,10 @@
             </intent-filter>
         </activity>
 
-
+<activity android:name=".Activity_Main"></activity>
+        <activity android:name=".Activity_Setting"></activity>
+        <activity android:name=".Activity_DeviceList"></activity>
+        <activity android:name=".Activity_Wifi"></activity>
 
         <activity android:name=".Item"
             android:screenOrientation="portrait"
