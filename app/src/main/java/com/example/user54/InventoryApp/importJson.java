@@ -1488,9 +1488,9 @@ public class importJson {
                     obj.setInDate(finalObject.getString("InDate"));
 
                     dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
-//                    dbHandler.deleteItemCardSwitchByItemCode(finalObject.getString("ItemOCode"));
-//                    dbHandler.deleteItemCardUnitByItemCode(finalObject.getString("ItemOCode"));
-//                    dbHandler.deleteItemCardQRByItemCode(finalObject.getString("ItemOCode"));
+                    dbHandler.deleteItemCardSwitchByItemCode(finalObject.getString("ItemOCode"));
+                    dbHandler.deleteItemCardUnitByItemCode(finalObject.getString("ItemOCode"));
+                    dbHandler.deleteItemCardQRByItemCode(finalObject.getString("ItemOCode"));
 
                     itemCard.add(obj);
 //                    if(stopBollen){
