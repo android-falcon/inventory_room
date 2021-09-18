@@ -119,7 +119,8 @@ public class importJson {
             new SyncItemQR().execute();
         }
 
-
+        if (flag.equals("ItemCost"))
+            new SyncItemCoastPrice().execute();
 
 
     }
@@ -170,11 +171,12 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("split ",""+maxInDate);
                 }
-               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
-                             "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+//               String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
+//                             "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
-//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
-//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
+                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8") + "&" +
+                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")   + "&" +
+                             "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
 ////
 
@@ -361,11 +363,12 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
-                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+//                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
+//                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 
-//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
-//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
+                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8") + "&" +
+                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  + "&" +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
 ////
                 URL url = new URL(link);
 
@@ -620,10 +623,12 @@ public class importJson {
                     maxInDate=date[2]+"/"+date[1]+"/"+date[0];
                     Log.e("splitSwitch ",""+maxInDate);
                 }
-                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
+//                String data = "MAXDATE=" + URLEncoder.encode(maxInDate, "UTF-8") + "&" +
+//                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+
+                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+ "&" +
+                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  + "&" +
                         "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
-//                String data = "FROM_DATE=" + URLEncoder.encode(fromDate, "UTF-8")+
-//                        "TO_DATE=" + URLEncoder.encode(ToDate, "UTF-8")  ;
 ////
                 URL url = new URL(link);
 
@@ -804,10 +809,157 @@ public class importJson {
 
 
                         controll.F_D= finalObject.getString("F_D");
-                        controll.Item_name= finalObject.getString("ItemNameA");
+                        controll.Item_name= finalObject.getString("ITEMNAMEA");
                         textView.setText(controll.F_D);
                         textItemName.setText(controll.Item_name);
                                 Log.e("TAG_itemPrice", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
+
+                    }
+
+                    if(pdItem !=null) {
+                        pdItem.dismissWithAnimation();
+//                        new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+//                                .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
+//                                .setContentText(context.getResources().getString(R.string.importSuc))
+//                                .show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else if(JsonResponse != null && JsonResponse.contains("No Parameter Found.")){
+                Log.e("TAG_itemPrice", "****No Parameter Found.");
+
+                if(pdItem !=null) {
+                    pdItem.dismissWithAnimation();
+                }
+
+                textView.setText("*");
+
+
+
+            } else {
+                Log.e("TAG_itemPrice", "****Failed to export data");
+
+                if(pdItem !=null) {
+                    pdItem.dismissWithAnimation();
+                }
+
+                textView.setText("-1");
+            }
+//            progressDialog.dismiss();
+        }
+    }
+
+
+    private class SyncItemCoastPrice extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+        SweetAlertDialog pdItem=null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            progressDialog = new ProgressDialog(context,R.style.MyTheme);
+//            progressDialog.setCancelable(false);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progressDialog.setProgress(0);
+//            progressDialog.show();
+
+            pdItem = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pdItem.setTitleText(context.getResources().getString(R.string.itemCost));
+            pdItem.setCancelable(false);
+            pdItem.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+                String ip="";
+                if(mainSettings.size()!=0) {
+                    ip= mainSettings.get(0).getIP();
+                }
+                String link = "http://"+ip + "/GetJRDItemCostPrice";
+//                String link = controll.URL + "GetJRDITEMPRICE";
+//
+                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")  + "&" +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+
+//
+                URL url = new URL(link);
+                Log.e("TAG_itemPrice", "link -->" +link);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "TAG_itemPrice -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+            if (JsonResponse != null && JsonResponse.contains("F_D")) {
+                Log.e("TAG_itemPrice", "****Success");
+
+                try {
+
+                    JSONArray parentArray = new JSONArray(JsonResponse);
+
+                    Log.e("TAG_itemPrice", " "+parentArray.toString());
+                    Log.e("TAG_itemPriceR", " "+JsonResponse);
+                    for (int i = 0; i < parentArray.length(); i++) {
+                        JSONObject finalObject = parentArray.getJSONObject(i);
+
+
+                        controll.F_D= finalObject.getString("F_D");
+                        controll.Item_name= finalObject.getString("ITEMNAMEA");
+                        textView.setText(controll.F_D);
+                        textItemName.setText(controll.Item_name);
+                        Log.e("TAG_itemCOST", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
 
                     }
 
@@ -1336,6 +1488,9 @@ public class importJson {
                     obj.setInDate(finalObject.getString("InDate"));
 
                     dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
+//                    dbHandler.deleteItemCardSwitchByItemCode(finalObject.getString("ItemOCode"));
+//                    dbHandler.deleteItemCardUnitByItemCode(finalObject.getString("ItemOCode"));
+//                    dbHandler.deleteItemCardQRByItemCode(finalObject.getString("ItemOCode"));
 
                     itemCard.add(obj);
 //                    if(stopBollen){

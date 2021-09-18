@@ -22,6 +22,7 @@ public class AssestItem {
     private String assesstAREANAME;
     private String assesstBarcode;
     private String isExport;
+    private String serial;
 
 
     public AssestItem() {
@@ -167,6 +168,14 @@ public class AssestItem {
 
     public void setIsExport(String isExport) {
         this.isExport = isExport;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 
     public JSONObject getJSONObjectAssets() { // for server

@@ -105,7 +105,7 @@ public class CPCLSample2 {
     public void imageTestEnglish(int count, Bitmap testB) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight() , count);
         this.cpclPrinter.setMedia(this.paperType);
-        this.cpclPrinter.setJustification(1);
+      //  this.cpclPrinter.setJustification(1);
         this.cpclPrinter.printBitmap(testB, 0, 0);//x=400
 
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//sample_3.jpg", 100, 200);
@@ -117,7 +117,7 @@ public class CPCLSample2 {
     public void imageTestEnglishBarcode(int count, Bitmap testB) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight()+70 , count);
         this.cpclPrinter.setMedia(this.paperType);
-        this.cpclPrinter.setJustification(1);
+       // this.cpclPrinter.setJustification(1);
         this.cpclPrinter.printBitmap(testB, 0, 0);//x=400
 
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//sample_3.jpg", 100, 200);

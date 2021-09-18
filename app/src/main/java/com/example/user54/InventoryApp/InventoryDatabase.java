@@ -30,7 +30,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =23;//version Db
+    private static final int DATABASE_VERSION =25;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -254,7 +254,23 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String ASSESST_DATE_INFO = "ASSESST_DATE_INFO";
     private static final String ASSESST_ISEXPORT_INFO = "ASSESST_ISEXPORT_INFO";
     private static final String ASSESST_BARCODE_INFO = "ASSESST_BARCODE_INFO";
+    private static final String ASSESST_SERIAL_INFO = "ASSESST_SERIAL_INFO";
+    //___________________________________________________________________________________
+    private static final String ASSEST_TABLE_INFO_BACKUP = "ASSEST_TABLE_INFO_BACKUP";
 
+    private static final String ASSESST_CODE_INFO_BACKUP = "ASSESST_CODE_BACKUP";
+    private static final String ASSESST_NAME_INFO_BACKUP= "ASSESST_NAME_BACKUP";
+    private static final String ASSESST_TYPE_INFO_BACKUP = "ASSESST_TYPE_BACKUP";
+    private static final String ASSESST_NO_INFO_BACKUP = "ASSESST_NO_BACKUP";
+    private static final String ASSESST_MAINMNG_INFO_BACKUP= "ASSESST_MAINMNG_BACKUP";
+    private static final String ASSESST_DEPARTMENT_INFO_BACKUP = "ASSESST_DEPARTMENT_BACKUP";
+    private static final String ASSESST_SECTION_INFO_BACKUP = "ASSESST_SECTION_BACKUP";
+    private static final String ASSESST_AREANAME_INFO_BACKUP = "ASSESST_AREANAME_BACKUP";
+    private static final String ASSESST_QTY_INFO_BACKUP = "ASSESST_QTY_INFO_BACKUP";
+    private static final String ASSESST_DATE_INFO_BACKUP = "ASSESST_DATE_INFO_BACKUP";
+    private static final String ASSESST_ISEXPORT_INFO_BACKUP = "ASSESST_ISEXPORT_INFO_BACKUP";
+    private static final String ASSESST_BARCODE_INFO_BACKUP = "ASSESST_BARCODE_INFO_BACKUP";
+    private static final String ASSESST_SERIAL_INFO_BACKUP = "ASSESST_SERIAL_INFO_BACKUP";
     //________________________________________________________________________________
 
     private static final String ITEMS_INFO_BACKUP = "ITEMS_INFO_BACKUP";
@@ -519,9 +535,25 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + ASSESST_QTY_INFO + " NVARCHAR   ,"
                 + ASSESST_DATE_INFO + " NVARCHAR   ,"
                 + ASSESST_ISEXPORT_INFO + " NVARCHAR   ,"
-                + ASSESST_BARCODE_INFO + " NVARCHAR " + ")";
+                + ASSESST_BARCODE_INFO + " NVARCHAR   ,"
+                + ASSESST_SERIAL_INFO + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_ASSEST_INFO_TABLE);
-
+//=========================================================================================
+        String CREATE_TABLE_ASSEST_INFO_BACKUP_TABLE = "CREATE TABLE " + ASSEST_TABLE_INFO_BACKUP + "("
+                + ASSESST_CODE_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_NAME_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_NO_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_TYPE_INFO_BACKUP+ " NVARCHAR   ,"
+                + ASSESST_MAINMNG_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_DEPARTMENT_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_SECTION_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_AREANAME_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_QTY_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_DATE_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_ISEXPORT_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_BARCODE_INFO_BACKUP + " NVARCHAR   ,"
+                + ASSESST_SERIAL_INFO_BACKUP + " NVARCHAR " + ")";
+        Idb.execSQL(CREATE_TABLE_ASSEST_INFO_BACKUP_TABLE);
         //=========================================================================================
 
         String CREATE_TABLE_ITEMS_INFO_BACKUP = "CREATE TABLE " + ITEMS_INFO_BACKUP + "("
@@ -766,7 +798,34 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             Log.e("upgrade", "ITEM_CARD TABLE  IS_NEW");
         }
 
+        try {
+            Idb.execSQL("ALTER TABLE ASSEST_TABLE_INFO ADD " + ASSESST_SERIAL_INFO + " TEXT"+" DEFAULT '0'");
 
+        }catch (Exception e){
+            Log.e("upgrade", "ASSEST_TABLE_INFO");
+        }
+
+
+        try {
+            String CREATE_TABLE_ASSEST_INFO_BACKUP_TABLE = "CREATE TABLE " + ASSEST_TABLE_INFO_BACKUP + "("// this for add item from table ASSEST_TABLE_INFO becuse use serial
+                    + ASSESST_CODE_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_NAME_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_NO_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_TYPE_INFO_BACKUP+ " NVARCHAR   ,"
+                    + ASSESST_MAINMNG_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_DEPARTMENT_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_SECTION_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_AREANAME_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_QTY_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_DATE_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_ISEXPORT_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_BARCODE_INFO_BACKUP + " NVARCHAR   ,"
+                    + ASSESST_SERIAL_INFO_BACKUP + " NVARCHAR " + ")";
+            Idb.execSQL(CREATE_TABLE_ASSEST_INFO_BACKUP_TABLE);
+
+        }catch (Exception e){
+            Log.e("upgrade", "ASSEST_TABLE_INFO_backup");
+        }
 
     }
 
@@ -1162,13 +1221,35 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(ASSESST_DATE_INFO, assestItem.getAssesstDate());
         values.put(ASSESST_ISEXPORT_INFO, assestItem.getIsExport());
         values.put(ASSESST_BARCODE_INFO, assestItem.getAssesstBarcode());
+        values.put(ASSESST_SERIAL_INFO, assestItem.getSerial());
 
 
         Idb.insert(ASSEST_TABLE_INFO, null, values);
         Idb.close();
     }
 
+    public void addAssetsItemInfoBackup(AssestItem assestItem) {
+        Idb = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put(ASSESST_CODE_INFO_BACKUP,assestItem.getAssesstCode());
+        values.put(ASSESST_NAME_INFO_BACKUP, assestItem.getAssesstName());
+        values.put(ASSESST_NO_INFO_BACKUP, assestItem.getAssesstNo());
+        values.put(ASSESST_TYPE_INFO_BACKUP, assestItem.getAssesstType());
+        values.put(ASSESST_MAINMNG_INFO_BACKUP, assestItem.getAssesstMangment());
+        values.put(ASSESST_DEPARTMENT_INFO_BACKUP, assestItem.getAssesstDEPARTMENT());
+        values.put(ASSESST_SECTION_INFO_BACKUP, assestItem.getAssesstSECTION());
+        values.put(ASSESST_AREANAME_INFO_BACKUP, assestItem.getAssesstAREANAME());
+        values.put(ASSESST_QTY_INFO_BACKUP, assestItem.getAssesstQty());
+        values.put(ASSESST_DATE_INFO_BACKUP, assestItem.getAssesstDate());
+        values.put(ASSESST_ISEXPORT_INFO_BACKUP, assestItem.getIsExport());
+        values.put(ASSESST_BARCODE_INFO_BACKUP, assestItem.getAssesstBarcode());
+        values.put(ASSESST_SERIAL_INFO_BACKUP, assestItem.getSerial());
+
+
+        Idb.insert(ASSEST_TABLE_INFO_BACKUP, null, values);
+        Idb.close();
+    }
     public void addAssetsItemList(List<AssestItem> assestItemList) {
 
         SQLiteDatabase Idb = this.getReadableDatabase();
@@ -1873,6 +1954,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setAssesstDate(cursor.getString(9));
                 item.setIsExport(cursor.getString(10));
                 item.setAssesstBarcode(cursor.getString(11));
+                item.setSerial(cursor.getString(12));
 
 
                 assestItems.add(item);
@@ -1880,7 +1962,39 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }
         return assestItems;
     }
+    public ArrayList<AssestItem> getAllAssesstItemInfoBackup() {
+        ArrayList<AssestItem> assestItems = new ArrayList<>();
 
+        String selectQuery = "SELECT  * FROM " + ASSEST_TABLE_INFO_BACKUP;
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                AssestItem item = new AssestItem();
+
+                item.setAssesstCode(cursor.getString(0));
+                item.setAssesstName(cursor.getString(1));
+                item.setAssesstNo(cursor.getString(2));
+                item.setAssesstType(cursor.getString(3));
+
+                item.setAssesstMangment(cursor.getString(4));
+                item.setAssesstDEPARTMENT(cursor.getString(5));
+                item.setAssesstSECTION(cursor.getString(6));
+                item.setAssesstAREANAME(cursor.getString(7));
+
+                item.setAssesstQty(cursor.getString(8));
+                item.setAssesstDate(cursor.getString(9));
+                item.setIsExport(cursor.getString(10));
+                item.setAssesstBarcode(cursor.getString(11));
+                item.setSerial(cursor.getString(12));
+
+
+                assestItems.add(item);
+            } while (cursor.moveToNext());
+        }
+        return assestItems;
+    }
     public ArrayList<ItemCard> getAllItemCardNotExport() {
         ArrayList<ItemCard> itemCards = new ArrayList<>();
 
@@ -2143,7 +2257,16 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
 
     }
 
+    public void updateExpTableAss(String TableName ,String newValue,String serialNo,String itemCode) {
+        Idb = this.getWritableDatabase();
+        String filter=ASSESST_SERIAL_INFO + " = '" + serialNo + "' and " + ASSESST_CODE_INFO + " = '" + itemCode + "'";
+        ContentValues args = new ContentValues();
+        args.put(ASSESST_QTY_INFO, newValue);
 
+        Idb.update(TableName, args, filter, null);
+
+
+    }
     public void updateTransferTable(String TableName ,String newValue,String serialNo,String itemCode) {
         Idb = this.getWritableDatabase();
         String filter=ROW_INDEX8 + " = '" + serialNo + "' and " + ITEM_CODE8 + " = '" + itemCode + "'";
@@ -2174,7 +2297,26 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         return maxNo;
 
     }
+    public int  getMaxSerialAss(){
+        int maxNo=0;
+        //select IFNULL(Max(VHF_NO),0)  FROM TRANSFER_ITEMS_INFO
 
+
+        String selectQuery = "select IFNULL(Max(ASSESST_SERIAL_INFO),1)  FROM ASSEST_TABLE_INFO";
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                maxNo=cursor.getInt(0);
+
+
+            } while (cursor.moveToNext());
+        }
+        return maxNo;
+
+    }
     public String  getMaxInDate(String tableName){
         String maxNo="";
         //select IFNULL(Max(VHF_NO),0)  FROM TRANSFER_ITEMS_INFO
@@ -2331,6 +2473,27 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         db.close();
 
     }
+
+    public void deleteItemCardSwitchByItemCode(String ItemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+ITEM_SWITCH+" where ITEM_O_CODE = '"+ItemCode +"'"); //delete item code rows in a table
+        db.close();
+
+    }
+
+    public void deleteItemCardUnitByItemCode(String ItemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+ITEM_UNITS+" where ITEM_O_CODE = '"+ItemCode +"'"); //delete item code rows in a table
+        db.close();
+
+    }
+
+    public void deleteItemCardQRByItemCode(String ItemCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+ITEM_QR_CODE_TABLE+" where ITEM_CODE = '"+ItemCode +"'"); //delete item code rows in a table
+        db.close();
+
+    }
     public void deleteItemCardByItemCodetest(String ItemCode) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+ITEM_CARD+" where ITEM_CODE = '"+ItemCode +"'"); //delete item code rows in a table
@@ -2364,7 +2527,9 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         Idb.execSQL("DELETE FROM "+ITEMS_INFO+" where ITEM_CODE = '"+ItemCode +"' and SERIAL_NO = '"+SERIALNo+"'"); //delete all rows in a table
     }
 
-
+    public void deleteItemFromItemInfoAssest(String ItemCode,String SERIALNo) {
+        Idb.execSQL("DELETE FROM "+ASSEST_TABLE_INFO+" where ASSESST_CODE = '"+ItemCode +"' and ASSESST_SERIAL_INFO = '"+SERIALNo+"'"); //delete all rows in a table
+    }
     public String convertToEnglish(String value) {
         String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫","."));
         return newValue;
