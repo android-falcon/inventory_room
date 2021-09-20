@@ -113,6 +113,7 @@ public class CollectingData extends AppCompatActivity {
     DecimalFormat numberFormat = new DecimalFormat("0.000");
 
     String LocationEdite = "";
+    int serial=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -2306,6 +2307,7 @@ public class CollectingData extends AppCompatActivity {
                         }
 
 
+                        serial=InventDB.getMaxSerialAss();
                         assestItem.setAssesstMangment(manageString);
                         assestItem.setAssesstDEPARTMENT(depString);
                         assestItem.setAssesstSECTION(secString);
@@ -2320,6 +2322,7 @@ public class CollectingData extends AppCompatActivity {
                         assestItem.setAssesstDate(convertToEnglish(today));
                         assestItem.setAssesstCode(assestItemsList.get(0).getAssesstCode());
                         assestItem.setIsExport("0");
+                        assestItem.setSerial(""+(serial+1));
 
                         InventDB.addAssetsItemInfo(assestItem);
                         progressDialog();

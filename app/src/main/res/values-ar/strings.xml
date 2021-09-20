@@ -577,7 +577,10 @@
     </string-array>
 
     <string name="sdk_type">mkt</string>
-    <string name="companyNo">Company No</string>
+    <string name="companyNo">رقم الشركة</string>
+    <string name="check_cost">فحص التكلفة</string>
+    <string name="itemCost">فحص التكلفة</string>
+    <string name="Export_Assest">Export Assest</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

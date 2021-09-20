@@ -75,7 +75,7 @@ public class Item extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 42;
 
-    boolean updateOpen = false, openSearch = false, openSave = false, openShelfTag =false,openBarcode = false,openPrice=false,openAssesst=false,openUpdateQty=false;
+    boolean updateOpen = false, openSearch = false, openSave = false, openShelfTag =false,openBarcode = false,openPrice=false,openAssesst=false,openUpdateQty=false,openCost=false;
     int textId = 0;
     String today;
     InventoryDatabase InventDB;
@@ -91,7 +91,7 @@ public class Item extends AppCompatActivity {
     TableRow row;
     public static List<ItemCard> barcodeListForPrint;
     public static List<AssestItem> barcodeListForPrintAssest;
-    LinearLayout newItem, importText, pBarcode, pShelfTag ,ItemPrice,Assesst;
+    LinearLayout newItem, importText, pBarcode, pShelfTag ,ItemPrice,ItemCost,Assesst;
     public static List<ItemCard> itemList;
     public static List<AssestItem> itemListAssest;
     ArrayList<ItemCard> itemCodeCard ;
@@ -118,6 +118,7 @@ public class Item extends AppCompatActivity {
         pShelfTag.startAnimation(animFadein);
         ItemPrice.startAnimation(animFadein);
         Assesst.startAnimation(animFadein);
+        ItemCost.startAnimation(animFadein);
 
 
         barcodeListForPrint=new ArrayList<>();
@@ -171,6 +172,11 @@ TextView barCodTextTemp;
                     ItemPrice.setClickable(false);
                     openPrice=true;
                     showItemPriceDialog();
+                    break;
+                case R.id.ItemCost:
+                    ItemCost.setClickable(false);
+                    openCost=true;
+                    showItemCostDialog();
                     break;
                 case R.id.Assesst:
                     Assesst.setClickable(false);
@@ -1157,6 +1163,203 @@ TextView barCodTextTemp;
                 itemName.setText("");
                 salesPrice.setText("");
                 SearchDialog(itemCode, 4);
+            }
+        });
+
+
+
+        dialogBarCode.show();
+    }
+
+    void showItemCostDialog() {
+        final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogBarCode.setCancelable(false);
+        if(controll.isYellow){
+            dialogBarCode.setContentView(R.layout.check_cost_yellow);
+        }else{
+            dialogBarCode.setContentView(R.layout.check_cost_yellow);
+        }
+//
+
+
+        GifImageButton gib = new GifImageButton(this);
+        gib.setImageResource(R.drawable.barcode_scanner);
+        final MediaController mc = new MediaController(this);
+        mc.setMediaPlayer((GifDrawable) gib.getDrawable());
+        mc.setAnchorView(gib);
+        mc.show();
+
+
+        final Boolean[] isFound = {false};
+        final boolean[] isEnter = {true};
+
+        dialogBarCode.setCanceledOnTouchOutside(false);
+
+        final int[] count1 = {1};
+
+        final TextView salesPrice,itemName;
+
+        Button exit,prepare;
+        ImageView search;
+        final EditText itemCode;
+
+        salesPrice= dialogBarCode.findViewById(R.id.salesPrice);
+        search=  dialogBarCode.findViewById(R.id.search);
+
+        exit =  dialogBarCode.findViewById(R.id.exit);
+
+        itemName= dialogBarCode.findViewById(R.id.itemName);
+        itemCode= (EditText) dialogBarCode.findViewById(R.id.itemCode);
+
+//        prepare.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!itemCode.getText().toString().equals("")&& openPrice){
+//                    textView=salesPrice;
+//                    importJson sendCloud = new importJson(Item.this,itemCode.getText().toString());
+//                    sendCloud.startSending("ItemPrice");
+//
+//                }
+//            }
+//        });
+
+        textView=salesPrice;
+        textItemName= itemName;
+        textView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(textView.getText().toString().equals("-1")){
+                    showAlertDialog(getResources().getString(R.string.falidTogetdata));
+                    salesPrice.setText("");
+                    itemName.setText("");
+
+                }else if(textView.getText().toString().equals("*")){
+                    showAlertDialog(getResources().getString(R.string.thisitemnotfound));
+                    salesPrice.setText("");
+                    itemName.setText("");
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        Button barcode;
+        barcode = dialogBarCode.findViewById(R.id.barcode);
+        barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openBarCodeRedar = true;
+                openCost = false;
+                readBarCode(itemCode,6);
+            }
+        });
+
+
+        itemCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_NULL  ) {
+//                    if (isEnter[0]) {
+                    if(!itemCode.getText().toString().equals("")&& openCost ){
+                        textView=salesPrice;
+                        textItemName= itemName;
+                        List<MainSetting> mainSetting=InventDB.getAllMainSetting();
+                        if(mainSetting.size()!=0) {
+
+                            importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0,"","");
+                            sendCloud.startSending("ItemCost");
+//                          isEnter[0]=false;
+                            itemCode.setSelectAllOnFocus(true);
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemCode.requestFocus();
+
+                                }
+                            });
+                        }else{
+
+                            new SweetAlertDialog(Item.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.mainSetting) + "!")
+                                    .setContentText(getResources().getString(R.string.nomainSetting))
+                                    .setConfirmText(getResources().getString(R.string.cancel))
+                                    .showCancelButton(false)
+                                    .setCancelClickListener(null)
+                                    .setConfirmClickListener(null).show();
+
+
+                        }
+
+
+
+                    }
+
+//                    }
+
+                }
+
+
+                return false;
+            }
+        });
+
+//        itemCode.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+////
+////                if(!itemCode.getText().toString().equals("")&& openPrice){
+////                    textView=salesPrice;
+////                    importJson sendCloud = new importJson(Item.this,itemCode.getText().toString());
+////                    sendCloud.startSending("ItemPrice");
+////
+////
+////                }
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ItemCost.setClickable(true);
+                dialogBarCode.dismiss();
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSearch = true;
+                openCost = false;
+                itemName.setText("");
+                salesPrice.setText("");
+                SearchDialog(itemCode, 6);
             }
         });
 
@@ -2475,6 +2678,9 @@ TextView barCodTextTemp;
                     case 5:
                         openAssesst = true;
                         break;
+                    case 6:
+                        openCost = true;
+                        break;
                 }
 
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
@@ -2517,6 +2723,12 @@ TextView barCodTextTemp;
                         break;
                     case 4:
                         openPrice = true;
+                        break;
+                    case 5:
+                        openAssesst = true;
+                        break;
+                    case 6:
+                        openCost = true;
                         break;
 
                 }
@@ -2639,6 +2851,9 @@ TextView barCodTextTemp;
                     case 5:
                         openAssesst = true;
                         break;
+                    case 6:
+                        openCost = true;
+                        break;
                 }
 
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
@@ -2681,6 +2896,12 @@ TextView barCodTextTemp;
                         break;
                     case 4:
                         openPrice = true;
+                        break;
+                    case 5:
+                        openAssesst = true;
+                        break;
+                    case 6:
+                        openCost = true;
                         break;
 
                 }
@@ -2748,6 +2969,12 @@ TextView barCodTextTemp;
                         break;
                     case 4:
                         openPrice = true;
+                        break;
+                    case 5:
+                        openAssesst = true;
+                        break;
+                    case 6:
+                        openCost = true;
                         break;
                 }
 
@@ -3028,6 +3255,9 @@ TextView barCodTextTemp;
             case 5:
                 openAssesst = true;
                 break;
+            case 6:
+                openCost = true;
+                break;
 
 //            case 6:
 //                collTransfer = true;
@@ -3073,6 +3303,8 @@ TextView barCodTextTemp;
         pBarcode = (LinearLayout) findViewById(R.id.barcode);
         pShelfTag = (LinearLayout) findViewById(R.id.shelf);
         ItemPrice= (LinearLayout) findViewById(R.id.ItemPrice);
+        ItemCost= (LinearLayout) findViewById(R.id.ItemCost);
+
         Assesst= (LinearLayout) findViewById(R.id.Assesst);
 
         importText.setVisibility(View.GONE);
@@ -3082,6 +3314,7 @@ TextView barCodTextTemp;
         pShelfTag.setOnClickListener(showDialogOnClick);
         ItemPrice.setOnClickListener(showDialogOnClick);
         Assesst.setOnClickListener(showDialogOnClick);
+        ItemCost.setOnClickListener(showDialogOnClick);
         Clickable();
 
     }

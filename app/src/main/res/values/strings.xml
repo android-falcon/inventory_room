@@ -572,6 +572,9 @@
 
     <string name="sdk_type">mkt</string>
     <string name="companyNo">Company No</string>
+    <string name="check_cost">Check Cost</string>
+    <string name="itemCost">Import Item Cost</string>
+    <string name="Export_Assest">Export Assest</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>
