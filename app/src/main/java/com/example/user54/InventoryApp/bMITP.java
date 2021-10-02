@@ -3,6 +3,7 @@ package com.example.user54.InventoryApp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,16 +12,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -709,7 +714,7 @@ public class bMITP extends Activity {
         if (contentsToEncode == null) {
             return null;
         }
-        Map<EncodeHintType, Object> hints = null;
+        EnumMap<EncodeHintType, Object> hints = null;
         String encoding = guessAppropriateEncoding(contentsToEncode);
         if (encoding != null) {
             hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);

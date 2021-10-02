@@ -1582,7 +1582,7 @@ public class importJson {
                         obj.setInDate(finalObject.getString("INDATE"));
 
                         itemCard.add(obj);
-                        dbHandler.deleteItemSwitchByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemNCode());
+                      //  dbHandler.deleteItemSwitchByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemNCode());
 
                     }
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
@@ -1656,7 +1656,7 @@ public class importJson {
                     obj.setLotNo(finalObject.getString("LOTNUMBER"));
 
                     itemQRS.add(obj);
-                    dbHandler.deleteItemQRByItemCode(itemQRS.get(i).getItemCode(),itemQRS.get(i).getQrCode());
+                    //dbHandler.deleteItemQRByItemCode(itemQRS.get(i).getItemCode(),itemQRS.get(i).getQrCode());
 
                 }
 
@@ -1812,7 +1812,7 @@ public class importJson {
 
 
                     itemCard.add(obj);
-                    dbHandler.deleteItemUniteByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemBarcode());
+                    //dbHandler.deleteItemUniteByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemBarcode());
 
                 }
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
