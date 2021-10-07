@@ -98,6 +98,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation"
+            android:stateNotNeeded="true"/>
+
 <activity android:name=".Activity_Main"></activity>
         <activity android:name=".Activity_Setting"></activity>
         <activity android:name=".Activity_DeviceList"></activity>

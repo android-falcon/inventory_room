@@ -715,7 +715,7 @@ public class bMITP extends Activity {
         if (contentsToEncode == null) {
             return null;
         }
-        Map<EncodeHintType, Object> hints = null;
+        EnumMap<EncodeHintType, Object> hints = null;
         String encoding = guessAppropriateEncoding(contentsToEncode);
         if (encoding != null) {
             hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);

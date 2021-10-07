@@ -704,8 +704,8 @@ public class MainActivity2 extends AppCompatActivity {
 
         fromDateString=today;
         ToDateString=today;
-        fromDate.setText(today);
-        toDate.setText(today);
+        fromDate.setText(convertToEnglish(today));
+        toDate.setText(convertToEnglish(today));
         fromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -219,8 +219,8 @@
     <string name="assfailedtoExport">فشل تصدير الاصول !!</string>
     <string name="assetsExport">تصدير الاصول !!</string>
     <string name="allAssestExport">تم تصدير جميع الاصول !!</string>
-    <string name="export_db">تصدير DB</string>
-    <string name="import_db">استيراد Db</string>
+    <string name="export_db">backup DB</string>
+    <string name="import_db">return Db</string>
     <string name="Permission_">الاذونات</string>
     <string name="Permission_Please">الرجاء السماح للتطبيق بالتخزين </string>
     <string name="AssetsSave">Save Assets In Db</string>
