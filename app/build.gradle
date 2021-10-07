@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories {
+        mavenCentral()
+    }
 }
 
 dependencies {
@@ -33,4 +36,7 @@ dependencies {
     implementation files('libs/Sewoo_Android_1087.jar')
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
+    implementation 'com.google.zxing:core:3.2.1'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+
 }

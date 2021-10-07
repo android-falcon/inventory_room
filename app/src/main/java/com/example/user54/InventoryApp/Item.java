@@ -96,6 +96,7 @@ public class Item extends AppCompatActivity {
     public static List<AssestItem> itemListAssest;
     ArrayList<ItemCard> itemCodeCard ;
     ArrayList<AssestItem> itemAssetsCa ;
+    public static EditText ItemCodeEditTextTag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1391,7 +1392,7 @@ TextView barCodTextTemp;
         final LinearLayout exit,printShelfTag,ClearButtonTag,shelfTagLiner1,shelfTagLiner,shelfTagLiner3;
         Button SearchButtonTag;
         ImageButton upCount, downCount;
-        final EditText ItemCodeEditTextTag;
+
         final ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3;
         final CheckBox PriceCheckBoxTag,ExpCheckBoxTag;
         final LinearLayout priceLinerPrint,ExpLinerTag;
@@ -1828,6 +1829,185 @@ TextView barCodTextTemp;
                 }
                 return false;
             }});
+
+//        ItemCodeEditTextTag.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//                if(s.toString().trim().length()!=0){
+//
+//                    boolean isItemFound = false;
+//
+//                    String itemCode = ItemCodeEditTextTag.getText().toString();
+//                    String itemName = ItemNameEditTextTag.getText().toString();
+//
+//                    String itemSwitch = "",QRCode="",Price="";
+//                    if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
+////                        itemCardsList = InventDB.getAllItemCard();
+//
+//                        if(isOnlinePrice.equals("0")) {
+//                            boolean isPriceUnite = false;
+//                            if (itemCode.length() > 17) {
+//                                QRCode = itemCode;
+//                                itemCode = itemCode.substring(0, 16);
+//                                Log.e("String ", "" + itemCode);
+//
+//                            } else {
+//                                itemCode = ItemCodeEditTextTag.getText().toString();
+//                            }
+//
+//                            List<ItemQR> QRList = findQRCode(itemCode, StkNo);
+//
+//                            if (QRList.size() != 0) {
+//                                itemCode = QRList.get(0).getItemCode();
+//
+//                                Price = QRList.get(0).getSalesPrice();
+//
+//                                ItemCodeEditTextTag.setText(itemCode);
+//                                isPriceUnite = true;
+//                            } else {
+//                                List<String> itemUnite = findUnite(itemCode);
+//                                int uQty = 1;
+//
+//
+//                                if (itemUnite.size() != 0) {
+//
+//                                    itemCode = itemUnite.get(0);
+//                                    uQty = Integer.parseInt(itemUnite.get(2));
+//                                    Price = itemUnite.get(1);
+//                                    isPriceUnite = true;
+//
+//                                } else {
+//                                    itemSwitch = findSwitch(itemCode);
+//                                    if (!itemSwitch.equals("")) {
+//                                        itemCode = itemSwitch;
+//                                    }
+//                                    uQty = 1;
+//                                    isPriceUnite = false;
+//                                }
+//                            }
+//
+//
+//                            ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+//                            String it = itemCard.getItemCode();
+//                            Log.e("itemcard_oo", "" + it);
+////                        for (int i = 0; i < itemCardsList.size(); i++) {
+//                            if (!TextUtils.isEmpty(it)) {
+//                                if (it.equals(itemCode)) {
+//                                    isItemFound = true;
+//                                    ItemNameEditTextTag.setText(itemCard.getItemName());
+//                                    if (!isPriceUnite) {
+//                                        PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
+//
+//                                        pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                        pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                        pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//
+//                                    } else {
+//                                        PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+//
+//                                        pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                                        pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                                        pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//                                    }
+////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+//                                    itemNamePrint.setText(itemCard.getItemName());
+//                                    exp.setText(ExpEditTextTag.getText().toString());
+//
+//                                    itemNamePrint2.setText(itemCard.getItemName());
+//                                    itemNamePrint3.setText(itemCard.getItemName());
+//                                    exp2.setText(ExpEditTextTag.getText().toString());
+//                                    itemText.setText(ItemCodeEditTextTag.getText().toString());
+//
+//                                    try {
+//                                        Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+//                                        barcodeShelfPrint.setImageBitmap(bitmapBa);
+//                                        barcodeShelfPrint2.setImageBitmap(bitmapBa);
+//                                        barcodeShelfPrint3.setImageBitmap(bitmapBa);
+//                                    } catch (WriterException e) {
+//                                        e.printStackTrace();
+//                                    }
+//
+////                                break;
+//
+//                                }
+//
+////                            else{
+////
+////                                ItemNameEditTextTag.setText("");
+////                                PriceEditTextTag.setText("");
+//////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+////                                itemNamePrint.setText("");
+////                                pricePrint.setText("");
+////
+////
+////                            }
+////                        }
+////////
+//
+//                                //
+//
+//                            }
+//
+//                            if (isItemFound) {
+//
+//                                //nothing
+//
+//                            } else {
+////                        save.setClickable(false);
+//                                showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+//                                ItemCodeEditTextTag.setText("");
+//                                new Handler().post(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        ItemCodeEditTextTag.requestFocus();
+//                                    }
+//                                });
+//                                PriceEditTextTag.setText("");
+//                                ItemNameEditTextTag.setText("");
+//                                pricePrint.setText("");
+//                            }
+//
+//                        }else{
+//
+//                            textView=PriceEditTextTag;
+//                            textItemName= ItemNameEditTextTag;
+//
+//                            importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
+//                            sendCloud.startSending("ItemPrice");
+//
+//
+//
+//                        }
+//
+//
+//                    }
+//
+//
+//                }
+//
+//
+//
+//
+//            }
+//        });
+
+
 
 
 //        ItemCodeEditTextTag.addTextChangedListener(new TextWatcher() {
@@ -3230,9 +3410,14 @@ TextView barCodTextTemp;
         intentIntegrator.setDesiredBarcodeFormats(intentIntegrator.ALL_CODE_TYPES);
         intentIntegrator.setBeepEnabled(false);
         intentIntegrator.setCameraId(0);
+        intentIntegrator.setOrientationLocked(true);
+
         intentIntegrator.setPrompt("SCAN");
         intentIntegrator.setBarcodeImageEnabled(false);
         intentIntegrator.initiateScan();
+
+
+//        scanActivity();
 
         openBarCodeRedar = false;
         switch (swBarcode) {
@@ -3267,6 +3452,14 @@ TextView barCodTextTemp;
 
     }
 
+    private void scanActivity() {
+
+
+        Intent i = new Intent(Item.this, ScanActivity.class);
+        i.putExtra("key", "1");
+        startActivity(i);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -3279,6 +3472,7 @@ TextView barCodTextTemp;
                 TostMesage(getResources().getString(R.string.cancel));
             } else {
                 Log.d("MainActivity", "Scanned");
+                Log.e("MainActivity", "Result.getContents()"+Result.getContents().toString());
 //                Toast.makeText(this, getString(R.string.scan) + Result.getContents(), Toast.LENGTH_SHORT).show();
 //                TostMesage(getResources().getString(R.string.scan)+Result.getContents());
                 barCodTextTemp.setText(Result.getContents() + "");
