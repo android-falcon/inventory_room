@@ -489,7 +489,7 @@ public class BluetoothConnectMenu extends Activity {
                 switch (Integer.parseInt(getData)){
 
                     case 0:
-                        sample.selectBlackMarkPaper();
+//                        sample.selectBlackMarkPaper();
                         Bitmap bitmap=null;
                         if(Item.itemCardForPrint.getItemG().equals("0")) {
                              bitmap = convertLayoutToImage_shelfTag(Item.itemCardForPrint);
@@ -653,7 +653,7 @@ public class BluetoothConnectMenu extends Activity {
         linearView.layout(1, 1, linearView.getMeasuredWidth(), linearView.getMeasuredHeight());
 
         Log.e("size of img ", "width=" + linearView.getMeasuredWidth() + "      higth =" + linearView.getHeight());
-        dialog_Header.show();
+//        dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
         Bitmap bit =linearView.getDrawingCache();
