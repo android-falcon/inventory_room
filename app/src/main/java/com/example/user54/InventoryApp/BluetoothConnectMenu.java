@@ -489,7 +489,7 @@ public class BluetoothConnectMenu extends Activity {
                 switch (Integer.parseInt(getData)){
 
                     case 0:
-                        sample.selectBlackMarkPaper();
+                       // sample.selectBlackMarkPaper();
                         Bitmap bitmap=null;
                         if(Item.itemCardForPrint.getItemG().equals("0")) {
                              bitmap = convertLayoutToImage_shelfTag(Item.itemCardForPrint);
@@ -506,6 +506,8 @@ public class BluetoothConnectMenu extends Activity {
                             Log.e("Count = ",""+ Item.itemCardForPrint.getCostPrc());
                             sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap);
                         }else{
+                            Log.e("Count = ","Can not print ");
+
 //                            Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
                         }
 

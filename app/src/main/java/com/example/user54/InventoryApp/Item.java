@@ -575,7 +575,7 @@ TextView barCodTextTemp;
 
 //                    boolean Permission= isStoragePermissionGranted();
 //                    if(Permission) {
-                        Intent intentBarcode = new Intent(Item.this, bMITP.class);
+                        Intent intentBarcode = new Intent(Item.this, BluetoothConnectMenu.class);
                         intentBarcode.putExtra("printKey", "1");
                         startActivity(intentBarcode);
 //                    }else{
