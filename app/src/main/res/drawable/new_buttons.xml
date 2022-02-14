@@ -19,8 +19,8 @@
     <item>
         <shape>
             <gradient
-                android:startColor="#f5eee7"
-                android:endColor="#e9d7c8"
+                android:startColor="@color/orFloor"
+                android:endColor="@color/orFloor"
                 android:angle="90" />
             <!--<stroke-->
                 <!--android:width="3dp"-->

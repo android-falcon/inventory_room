@@ -581,6 +581,7 @@
     <string name="check_cost">فحص التكلفة</string>
     <string name="itemCost">فحص التكلفة</string>
     <string name="Export_Assest">Export Assest</string>
+    <string name="PrinterType">نوع الطابعة</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

@@ -2865,8 +2865,12 @@ TextView barCodTextTemp;
 
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
 
-                itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
-                textId = 0;
+                try {
+                    itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
+                    textId = 0;
+                }catch (Exception e ){
+
+                }
                 dialogSearch.dismiss();
 
             }

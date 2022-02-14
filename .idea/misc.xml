@@ -8,7 +8,43 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/new_buttons.xml" value="0.2203125" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_setting.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_wifi.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/alert_dialog_not_found.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/app.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu_esc.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/boom.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/cci.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/change_password.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/change_password_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/change_password_yellow1.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/check_cost_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/check_price_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/check_price_yellow2.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/collecting_data_by_expiry_data.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_alternatev_code.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_item_data_by_expiry.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_item_data_to_text.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_item_data_to_text_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_transfer_item_data.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/export_transfer_item_data_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/import_iteams_from_text_file.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu2.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu2_new.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu2_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_row.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_row_search.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/location_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log_activaty.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log_activaty_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/mac_adreass_activity_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/main_setting_dialog_new.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/menue.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/tools_yellow.xml" value="0.20416666666666666" />
       </map>

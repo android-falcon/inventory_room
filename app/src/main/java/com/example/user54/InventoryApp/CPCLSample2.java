@@ -9,20 +9,24 @@ package com.example.user54.InventoryApp;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.tscdll.TSCActivity;
 import com.sewoo.jpos.printer.CPCLPrinter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.List;
 
 
 public class CPCLSample2 {
     private CPCLPrinter cpclPrinter = new CPCLPrinter();
-    private int paperType = 2;
+    private int paperType = 1;
 
     private DecimalFormat decimalFormat;
     Context context;
@@ -102,10 +106,13 @@ public class CPCLSample2 {
         this.cpclPrinter.printForm();
     }
 
-    public void imageTestEnglish(int count, Bitmap testB) throws IOException {//
+    public void imageTestEnglish(int count, Bitmap testB,String printType) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight() , count);
         this.cpclPrinter.setMedia(this.paperType);
-//        this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
+        if(printType.equals("1")){
+            Log.e("PrintType","imageTestEnglish "+printType);
+                    this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
+        }
         this.cpclPrinter.printBitmap(testB, 0, 0);//x=400
 
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//sample_3.jpg", 100, 200);
@@ -114,15 +121,47 @@ public class CPCLSample2 {
     }
 
 
-    public void imageTestEnglishBarcode(int count, Bitmap testB) throws IOException {//
+    public void imageTestEnglishBarcode(int count, Bitmap testB,String printType) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight()+70 , count);
         this.cpclPrinter.setMedia(this.paperType);
-//        this.cpclPrinter.setJustification(1);
+        if(printType.equals("1")){
+            Log.e("PrintType","imageTestEnglishBarcode "+printType);
+            this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
+        }
         this.cpclPrinter.printBitmap(testB, 0, 0);//x=400
 
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//sample_3.jpg", 100, 200);
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//sample_4.jpg", 120, 245);
         this.cpclPrinter.printForm();
+    }
+
+    public void imageTestTSC(String address,int sensorType){
+        try {
+
+            TSCActivity TscDll = new TSCActivity();
+            TscDll.openport(address);
+            TscDll.downloadpcx("UL.PCX");
+            TscDll.downloadbmp("Triangle.bmp");
+            TscDll.downloadttf("ARIAL.TTF");
+            TscDll.setup(70, 110, 4, 4, sensorType, 0, 0);
+            TscDll.clearbuffer();
+//        TscDll.sendcommand("SET TEAR ON\n");
+//        TscDll.sendcommand("SET COUNTER @1 1\n");
+//        TscDll.sendcommand("@1 = \"0001\"\n");
+//        TscDll.sendcommand("TEXT 100,300,\"3\",0,1,1,@1\n");
+//        TscDll.sendcommand("PUTPCX 100,300,\"UL.PCX\"\n");
+//        TscDll.sendcommand("PUTBMP 100,520,\"Triangle.bmp\"\n");
+//        TscDll.sendcommand("TEXT 100,760,\"ARIAL.TTF\",0,15,15,\"THIS IS ARIAL FONT\"\n");
+//        TscDll.barcode(100, 100, "128", 100, 1, 0, 3, 3, "123456789");
+//        TscDll.printerfont(100, 250, "3", 0, 1, 1, "987654321");
+            String status = TscDll.printerstatus();
+            //text1.setText(status);
+//        TscDll.printlabel(2, 1);
+//TscDll.sendfile("zpl.txt");
+            TscDll.closeport(5000);
+        }catch (Exception e){
+
+        }
     }
 
     public void imageTestEnglishReport(int count, Bitmap testB) throws IOException {//
@@ -137,9 +176,23 @@ public class CPCLSample2 {
     }
 
     public void dmStamp(int count, Bitmap bitmap) throws IOException {
-        this.cpclPrinter.setForm(0, 200, 200, 406, count);
+        this.cpclPrinter.setForm(0, 200, 200, 120, count);
         this.cpclPrinter.setMedia(this.paperType);
-        this.cpclPrinter.printBitmap(bitmap, 0, 100);
+        this.cpclPrinter.printBitmap(bitmap, 200, 0);//70
+        Log.e("PrintType","dmStamp");
+//        this.cpclPrinter.printBitmap("//sdcard//temp//test//denmark_flag.jpg", 222, 55);
+//        this.cpclPrinter.setCPCLBarcode(0, 0, 0);
+//        this.cpclPrinter.printCPCLBarcode(0, "128", 2, 1, 30, 19, 290, "0123456", 1);
+//        this.cpclPrinter.printCPCLText(0, 0, 1, 21, 345, "Quantity 001", 1);
+        this.cpclPrinter.printForm();
+    }
+
+
+    public void dmStamp2(int count, Bitmap bitmap) throws IOException {
+        this.cpclPrinter.setForm(0, 200, 200, 120, count);
+        this.cpclPrinter.setMedia(this.paperType);
+        this.cpclPrinter.printBitmap(bitmap, 70, 0);
+        Log.e("PrintType","dmStamp2");
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//denmark_flag.jpg", 222, 55);
 //        this.cpclPrinter.setCPCLBarcode(0, 0, 0);
 //        this.cpclPrinter.printCPCLBarcode(0, "128", 2, 1, 30, 19, 290, "0123456", 1);

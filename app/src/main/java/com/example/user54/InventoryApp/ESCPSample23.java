@@ -227,7 +227,7 @@ String today;
 
 	//posPtr.setPageMode(true);
 		posPtr.setAsync(false);
-		//posPtr.printBitmap(bitmap, LKPrint.LK_ALIGNMENT_CENTER,100);
+		posPtr.printBitmap(bitmap, LKPrint.LK_ALIGNMENT_CENTER,100);
 		//posPtr.printText("trusrutsrt", LKPrint.LK_ALIGNMENT_CENTER, LKPrint.LK_FNT_DEFAULT, LKPrint.LK_TXT_3WIDTH | LKPrint.LK_TXT_3HEIGHT);
 
 		posPtr.printBarCode("1234567890", LKPrint.LK_BCS_Code39, 40, 2, LKPrint.LK_ALIGNMENT_CENTER, LKPrint.LK_HRI_TEXT_BELOW);

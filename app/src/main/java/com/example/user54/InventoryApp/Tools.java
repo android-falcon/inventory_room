@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -402,6 +403,9 @@ public class Tools extends AppCompatActivity {
         final EditText ipSetting = MainSettingdialog.findViewById(R.id.ipSetting);
         final CheckBox AssestCheckBox = MainSettingdialog.findViewById(R.id.AssestCheckBox);
         final CheckBox QrCheckBox = MainSettingdialog.findViewById(R.id.QrCheckBox);
+        final RadioButton sewPrinter = MainSettingdialog.findViewById(R.id.SPrinter);
+        final RadioButton TscPrinter = MainSettingdialog.findViewById(R.id.TSCPrinter);
+        final RadioButton zebraPrinter = MainSettingdialog.findViewById(R.id.ZePrinter);
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
         String StkNo = "";
@@ -463,6 +467,21 @@ public class Tools extends AppCompatActivity {
 //            StkNo = StkAdapter.getItem(index);
             Log.e("indexofSpinner = ", "= " + index + "   " + StkNo + "    " + mainSettings.get(0).getStorNo());
             stkSpinner.setSelection(index);
+
+            if (mainSettings.get(0).getPrinterType().equals("0")) {
+                sewPrinter.setChecked(true);
+                zebraPrinter.setChecked(false);
+                TscPrinter.setChecked(false);
+            } else  if (mainSettings.get(0).getPrinterType().equals("1")) {
+                zebraPrinter.setChecked(true);
+                sewPrinter.setChecked(false);
+                TscPrinter.setChecked(false);
+            }else  if (mainSettings.get(0).getPrinterType().equals("2")) {
+                TscPrinter.setChecked(true);
+                sewPrinter.setChecked(false);
+                zebraPrinter.setChecked(false);
+            }
+
         }else {
             companyNo.setText("290");
         }
@@ -482,6 +501,7 @@ public class Tools extends AppCompatActivity {
                     String isAssest = "0";//0->not 1-->assest
                     String isQr="0";//0->not 1-->QR
                     String isOnline="0";//0->not 1-->online
+                    String printerType="0";
                     if (StokNo.size() != 0) {
                         Store = stkSpinner.getSelectedItem().toString();
                     } else {
@@ -494,7 +514,6 @@ public class Tools extends AppCompatActivity {
                         isAssest = "0";
                     }
 
-
                     if (QrCheckBox.isChecked()) {
                         isQr = "1";
                     } else {
@@ -506,7 +525,15 @@ public class Tools extends AppCompatActivity {
                         isOnline = "0";
                     }
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString()));
+                    if (sewPrinter.isChecked()) {
+                        printerType = "0";
+                    } else if (zebraPrinter.isChecked()) {
+                        printerType = "1";
+                    }else if (TscPrinter.isChecked()) {
+                        printerType = "2";
+                    }
+
+                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     MainSettingdialog.dismiss();
 
