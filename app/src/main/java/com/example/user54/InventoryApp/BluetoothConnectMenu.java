@@ -735,15 +735,15 @@ public class BluetoothConnectMenu extends Activity {
 
         BarcodeText.setText(itemCard.getItemCode());
         itemName.setText(itemCard.getItemName());
-        if (itemCard.getSalePrc().equals("**")) {
+        if(itemCard.getSalePrc().equals("**")){
             priceLiner.setVisibility(View.INVISIBLE);
-        } else {
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + "JD");
+        }else{
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+"JD");
         }
 
-        if (itemCard.getDepartmentId().equals("**")) {
+        if(itemCard.getDepartmentId().equals("**")){
             ExpLiner.setVisibility(View.INVISIBLE);
-        } else {
+        }else{
             exp.setText(itemCard.getDepartmentId());
         }
 
