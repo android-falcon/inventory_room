@@ -26,7 +26,7 @@ public class ItemCard {
     private String inDate;
     private String isExport;
     private String isNew;
-
+    private String itemUnit;
     private boolean check;
     public ItemCard() {
 
@@ -53,6 +53,14 @@ public class ItemCard {
         this.isExport = isExport;
         this.isNew = isNew;
         this.check = check;
+    }
+
+    public String getItemUnit() {
+        return itemUnit;
+    }
+
+    public void setItemUnit(String itemUnit) {
+        this.itemUnit = itemUnit;
     }
 
     public String getItemCode() {

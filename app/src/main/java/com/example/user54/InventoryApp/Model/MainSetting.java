@@ -8,7 +8,7 @@ public class MainSetting {
     private String isQr;
     private String onlinePrice;
     private String companyNo;
-
+    private String printerType;
 
     public MainSetting() {
     }
@@ -20,13 +20,22 @@ public class MainSetting {
         this.isQr = isQr;
     }
 
-    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
         this.isQr = isQr;
         this.onlinePrice = onlinePrice;
         this.companyNo = companyNo;
+        this.printerType = printerType;
+    }
+
+    public String getPrinterType() {
+        return printerType;
+    }
+
+    public void setPrinterType(String printerType) {
+        this.printerType = printerType;
     }
 
     public String getIP() {

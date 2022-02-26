@@ -30,7 +30,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =25;//version Db
+    private static final int DATABASE_VERSION =26;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -208,6 +208,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String IS_QRJARD = "IS_QRJARD";
     private static final String ONLINE_PRICE = "ONLINE_PRICE";
     private static final String COMPANY_NO = "COMPANY_NO";
+    private static final String PRINTER_TYPE="PRINTER_TYPE";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -489,7 +490,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + IS_ASSEST + " NVARCHAR   ,"
                 + IS_QRJARD + " NVARCHAR   ,"
                 + ONLINE_PRICE + " NVARCHAR   ,"
-                + COMPANY_NO + " NVARCHAR " + ")";
+                + COMPANY_NO + " NVARCHAR   ,"
+                + PRINTER_TYPE + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -827,6 +829,13 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             Log.e("upgrade", "ASSEST_TABLE_INFO_backup");
         }
 
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + PRINTER_TYPE + " TEXT"+" DEFAULT '0'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE TABLE  PRINTER_TYPE");
+        }
+
     }
 
 
@@ -937,6 +946,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
         values.put(ONLINE_PRICE,  convertToEnglish(mainSetting.getOnlinePrice()));
         values.put(COMPANY_NO,  convertToEnglish(mainSetting.getCompanyNo()));
+        values.put(PRINTER_TYPE,  convertToEnglish(mainSetting.getPrinterType()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -1603,7 +1613,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public List<String> getItemUnite(String ITEM_BARCODE) {
 //        String itemSwitch = "";
         List<String>itemSwitch=new ArrayList<>();
-        String selectQuery = "SELECT ITEM_O_CODE , SALE_PRICE , CALC_QTY  FROM " + ITEM_UNITS +" where ITEM_BARCODE = '"+ITEM_BARCODE+"'";
+        String selectQuery = "SELECT ITEM_O_CODE , SALE_PRICE , CALC_QTY , ITEM_U  FROM " + ITEM_UNITS +" where ITEM_BARCODE = '"+ITEM_BARCODE+"'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 
@@ -1613,10 +1623,11 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
             Log.e("SalesPri",""+cursor.getString(1));
             Log.e("SalesPri",""+cursor.getString(0));
+            Log.e("SalesPrname",""+cursor.getString(3));
             itemSwitch.add(cursor.getString(0));
             itemSwitch.add(cursor.getString(1));
             itemSwitch.add(cursor.getString(2));
-
+            itemSwitch.add(cursor.getString(3));
 
 
 //            } while (cursor.moveToNext());
@@ -1748,6 +1759,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setIsQr(cursor.getString(3));
                 item.setOnlinePrice(cursor.getString(4));
                 item.setCompanyNo(cursor.getString(5));
+                item.setPrinterType(cursor.getString(6));
 
                 passwords.add(item);
 

@@ -148,6 +148,28 @@
                         android:layout_marginBottom="5dp">
 
                         <TextView
+                            android:layout_width="95dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/itemUnit"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/ItemUnitEditTextTag"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bac_frame_no"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp">
+
+                        <TextView
                             android:id="@+id/textView331"
                             android:layout_width="95dp"
                             android:layout_height="wrap_content"

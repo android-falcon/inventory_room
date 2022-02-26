@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemInfo;
+import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Port.AlertView;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.google.zxing.BarcodeFormat;
@@ -179,11 +180,11 @@ public class BluetoothConnectMenu extends Activity {
 
         while (iter.hasNext()) {
             BluetoothDevice pairedDevice = (BluetoothDevice) iter.next();
-           // if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
-            Log.e("bloututhyyyy","paierd ="+pairedDevice.getAddress());
-                this.remoteDevices.add(pairedDevice);
-                this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
-          //  }
+            // if (this.bluetoothPort.isValidAddress(pairedDevice.getAddress())) {//note
+            Log.e("bloututhyyyy", "paierd =" + pairedDevice.getAddress());
+            this.remoteDevices.add(pairedDevice);
+            this.adapter.add(pairedDevice.getName() + "\n[" + pairedDevice.getAddress() + "] [Paired]");
+            //  }
         }
 
     }
@@ -201,7 +202,7 @@ public class BluetoothConnectMenu extends Activity {
         this.chkDisconnect = (CheckBox) this.findViewById(R.id.check_disconnect);
         this.chkDisconnect.setChecked(true);
         this.context = this;
-        item=this.findViewById(R.id.item);
+        item = this.findViewById(R.id.item);
 //        obj = new DatabaseHandler(BluetoothConnectMenu.this);
         long_listItems = new ArrayList<Item>();
         decimalFormat = new DecimalFormat("##.000");
@@ -326,15 +327,15 @@ public class BluetoothConnectMenu extends Activity {
             };
         }
         item.setVisibility(View.GONE);
-        if(remoteDevices.size()!=0) {
+        if (remoteDevices.size() != 0) {
             coon();
-        }else{
+        } else {
             Toast.makeText(context, "Please Connect to Bluetooth ", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void coon(){
+    public void coon() {
         if (!BluetoothConnectMenu.this.bluetoothPort.isConnected()) {
             try {
                 BluetoothConnectMenu.this.btConn(BluetoothConnectMenu.this.mBluetoothAdapter.getRemoteDevice(remoteDevices.get(0).getAddress()));
@@ -432,7 +433,7 @@ public class BluetoothConnectMenu extends Activity {
     }
 
     class connTask extends AsyncTask<BluetoothDevice, Void, Integer> {
-        private final  SweetAlertDialog dialog = new SweetAlertDialog(BluetoothConnectMenu.this, SweetAlertDialog.PROGRESS_TYPE);
+        private final SweetAlertDialog dialog = new SweetAlertDialog(BluetoothConnectMenu.this, SweetAlertDialog.PROGRESS_TYPE);
 
         connTask() {
         }
@@ -483,93 +484,139 @@ public class BluetoothConnectMenu extends Activity {
 //                toast.show();
                 try {
 //                int count = Integer.parseInt(getData);
-                CPCLSample2 sample = new CPCLSample2(BluetoothConnectMenu.this);
+                    CPCLSample2 sample = new CPCLSample2(BluetoothConnectMenu.this);
+                    String PrintType = "0";
+                    try {
+                        InventoryDatabase InventDB = new InventoryDatabase(context);
+                        final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
 
-
-                switch (Integer.parseInt(getData)){
-
-                    case 0:
-                       // sample.selectBlackMarkPaper();
-                        Bitmap bitmap=null;
-                        if(Item.itemCardForPrint.getItemG().equals("0")) {
-                             bitmap = convertLayoutToImage_shelfTag(Item.itemCardForPrint);
-                            Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
-
-                        }else  if(Item.itemCardForPrint.getItemG().equals("1")){
-                             bitmap = convertLayoutToImage_shelfTag_Design2(Item.itemCardForPrint);
-                            Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
-                        }else {
-                            bitmap = convertLayoutToImage_shelfTag_Design3(Item.itemCardForPrint);
-                            Log.e("Count = ",""+ Item.itemCardForPrint.getFDPRC());
+                        if (mainSettings.size() != 0) {
+                            PrintType = mainSettings.get(0).getPrinterType();
+                        } else {
+                            PrintType = "0";
                         }
-                        if(bitmap!=null) {
-                            Log.e("Count = ",""+ Item.itemCardForPrint.getCostPrc());
-                            sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap);
-                        }else{
-                            Log.e("Count = ","Can not print ");
+
+                    } catch (Exception e) {
+                        PrintType = "0";
+                    }
+                    switch (Integer.parseInt(getData)) {
+
+                        case 0:
+                            //
+                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                                sample.selectBlackMarkPaper();
+                                if(PrintType.equals("2")){
+                                    sample.imageTestTSC(remoteDevices.get(0).getAddress(),1);
+                                }
+                            }
+
+                            Bitmap bitmap = null;
+                            if (Item.itemCardForPrint.getItemG().equals("0")) {
+                                bitmap = convertLayoutToImage_shelfTag(Item.itemCardForPrint);
+                                Log.e("Count = ", "" + Item.itemCardForPrint.getFDPRC());
+
+                            } else if (Item.itemCardForPrint.getItemG().equals("1")) {
+                                bitmap = convertLayoutToImage_shelfTag_Design2(Item.itemCardForPrint);
+                                Log.e("Count = ", "" + Item.itemCardForPrint.getFDPRC());
+                            } else {
+                                bitmap = convertLayoutToImage_shelfTag_Design3(Item.itemCardForPrint);
+                                Log.e("Count = ", "" + Item.itemCardForPrint.getFDPRC());
+                            }
+                            if (bitmap != null) {
+                                Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc() + "   " + remoteDevices.get(0).getAddress());
+                                Log.e("PrintType","Blutoo "+PrintType);
+                                if (PrintType.equals("0")) {
+                                    sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
+                                } else if (PrintType.equals("1")) {
+                                    sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
+                                } else if (PrintType.equals("2")) {
+                                    sample.dmStamp(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap);
+                                }
+
+
+                            } else {
+                                Log.e("Count = ", "Can not print ");
 
 //                            Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
-                        }
+                            }
 
-                        break;
+                            break;
 
-                    case 1:
-                        sample.selectGapPaper();
-                        for(int i = 0; i< Item.barcodeListForPrint.size(); i++) {
-                            Bitmap bitmaps = convertLayoutToImage_Barcode(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice());
-                            if (bitmaps != null) {
-                                Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc());
-                                sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps);
-                            } else {
+                        case 1:
+                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                                sample.selectGapPaper();
+                                if(PrintType.equals("2")){
+                                    sample.imageTestTSC(remoteDevices.get(0).getAddress(),0);
+                                }
+                            }
+                            for (int i = 0; i < Item.barcodeListForPrint.size(); i++) {
+                                Bitmap bitmaps = convertLayoutToImage_Barcode(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice());
+                                if (bitmaps != null) {
+                                    Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc());
+                                    if(PrintType.equals("0")){
+                                        sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps,PrintType);
+                                    }else if (PrintType.equals("1")){
+                                        sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps,PrintType);
+
+                                    }else if(PrintType.equals("2")){
+                                        sample.dmStamp2(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps);
+
+                                    }
+
+                                } else {
 //                                Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                        break;
-                    case 2:
-                        sample.selectContinuousPaper();
-                        double totalQty=0.0;
-                        if(ItemInfoListForPrint.size()!=0) {
-                            Bitmap bitmap1 = convertLayoutToImage_Report_titel(null, "-1");
-                            sample.imageTestEnglishReport(1, bitmap1);
-
-                            for (int i = 0; i < ItemInfoListForPrint.size(); i++) {
-                                Bitmap bitmap2 = convertLayoutToImage_Report(ItemInfoListForPrint.get(i), i+"");
-                                sample.imageTestEnglishReport(1, bitmap2);
-
-                                totalQty+=ItemInfoListForPrint.get(i).getItemQty();
+                            break;
+                        case 2:
+                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                                sample.selectContinuousPaper();
                             }
+                            double totalQty = 0.0;
+                            if (ItemInfoListForPrint.size() != 0) {
+                                Bitmap bitmap1 = convertLayoutToImage_Report_titel(null, "-1");
+                                sample.imageTestEnglishReport(1, bitmap1);
 
-                            Bitmap bitmap5 = convertLayoutToImage_Report(null, "-4");
-                            sample.imageTestEnglishReport(1, bitmap5);
-                            ItemInfo item=new ItemInfo();
-                            item.setItemQty((float) totalQty);
-                            Bitmap bitmap4 = convertLayoutToImage_Report(item, "-3");
-                            sample.imageTestEnglishReport(1, bitmap4);
+                                for (int i = 0; i < ItemInfoListForPrint.size(); i++) {
+                                    Bitmap bitmap2 = convertLayoutToImage_Report(ItemInfoListForPrint.get(i), i + "");
+                                    sample.imageTestEnglishReport(1, bitmap2);
+
+                                    totalQty += ItemInfoListForPrint.get(i).getItemQty();
+                                }
+
+                                Bitmap bitmap5 = convertLayoutToImage_Report(null, "-4");
+                                sample.imageTestEnglishReport(1, bitmap5);
+                                ItemInfo item = new ItemInfo();
+                                item.setItemQty((float) totalQty);
+                                Bitmap bitmap4 = convertLayoutToImage_Report(item, "-3");
+                                sample.imageTestEnglishReport(1, bitmap4);
 
 
-                            Bitmap bitmap3 = convertLayoutToImage_Report(null, "-2");
-                            sample.imageTestEnglishReport(1, bitmap3);
-                        }else{
+                                Bitmap bitmap3 = convertLayoutToImage_Report(null, "-2");
+                                sample.imageTestEnglishReport(1, bitmap3);
+                            } else {
 //                            Toast.makeText(BluetoothConnectMenu.this, "No Item For Print ", Toast.LENGTH_SHORT).show();
-                        }
-
-                        break;
-
-                    case 3:
-                        sample.selectGapPaper();
-                        for(int i = 0; i< Item.barcodeListForPrintAssest.size(); i++) {
-                            Bitmap bitmaps = convertLayoutToImage_Assesst(Item.barcodeListForPrintAssest.get(i), Item.itemAssesstForPrint.getPrice());
-                            if (bitmaps != null) {
-                                Log.e("Count = ", "" + Item.itemAssesstForPrint.getCount());
-                                sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemAssesstForPrint.getCount()), bitmaps);
-                            } else {
-//                                Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        break;
 
-                }
-                finish();
+                            break;
+
+                        case 3:
+                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                                sample.selectGapPaper();
+                            }
+                            for (int i = 0; i < Item.barcodeListForPrintAssest.size(); i++) {
+                                Bitmap bitmaps = convertLayoutToImage_Assesst(Item.barcodeListForPrintAssest.get(i), Item.itemAssesstForPrint.getPrice());
+                                if (bitmaps != null) {
+                                    Log.e("Count = ", "" + Item.itemAssesstForPrint.getCount());
+                                    sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemAssesstForPrint.getCount()), bitmaps,PrintType);
+                                } else {
+//                                Toast.makeText(context, "CAN NOT PRINT", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            break;
+
+                    }
+                    finish();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -590,7 +637,6 @@ public class BluetoothConnectMenu extends Activity {
                         .show();
 
 
-
             }
 
             super.onPostExecute(result);
@@ -598,7 +644,7 @@ public class BluetoothConnectMenu extends Activity {
 
     }
 
-    public void finishDialog(){
+    public void finishDialog() {
         finish();
     }
 
@@ -611,31 +657,31 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName, price, BarcodeText, exp;
 
-        LinearLayout ExpLiner,priceLiner;
+        LinearLayout ExpLiner, priceLiner;
 
-        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
-        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+        ExpLiner = (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
+        priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
-        exp=(TextView) dialog_Header.findViewById(R.id.exp);
+        BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
+        exp = (TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
-        if(itemCard.getSalePrc().equals("**")){
+        itemName.setText(itemCard.getItemName()+"/"+itemCard.getItemUnit());
+        if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
-        }else{
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+"JD");
+        } else {
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + "JD");
         }
 
-        if(itemCard.getDepartmentId().equals("**")){
+        if (itemCard.getDepartmentId().equals("**")) {
             ExpLiner.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             exp.setText(itemCard.getDepartmentId());
         }
 
@@ -655,15 +701,16 @@ public class BluetoothConnectMenu extends Activity {
         linearView.layout(1, 1, linearView.getMeasuredWidth(), linearView.getMeasuredHeight());
 
         Log.e("size of img ", "width=" + linearView.getMeasuredWidth() + "      higth =" + linearView.getHeight());
-//        dialog_Header.show();
+        // dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
 
     }
+
     private Bitmap convertLayoutToImage_shelfTag_Design2(ItemCard itemCard) {
         LinearLayout linearView = null;
         final Dialog dialog_Header = new Dialog(BluetoothConnectMenu.this);
@@ -672,22 +719,22 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog_design2);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName, price, BarcodeText, exp;
 
-        LinearLayout ExpLiner,priceLiner;
+        LinearLayout ExpLiner, priceLiner;
 
-        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
-        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+        ExpLiner = (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
+        priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
-        exp=(TextView) dialog_Header.findViewById(R.id.exp);
+        BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
+        exp = (TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
+        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
         if(itemCard.getSalePrc().equals("**")){
             priceLiner.setVisibility(View.INVISIBLE);
         }else{
@@ -719,12 +766,13 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
 
     }
+
     private Bitmap convertLayoutToImage_shelfTag_Design3(ItemCard itemCard) {
         LinearLayout linearView = null;
         final Dialog dialog_Header = new Dialog(BluetoothConnectMenu.this);
@@ -733,28 +781,28 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog_design3);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName,price,itemBar;//,BarcodeText;//,exp ;
+        TextView itemName, price, itemBar;//,BarcodeText;//,exp ;
 
         LinearLayout priceLiner;//ExpLiner,
 
 //        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
-        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+        priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-         itemBar= (TextView) dialog_Header.findViewById(R.id.itemBar);
+        itemBar = (TextView) dialog_Header.findViewById(R.id.itemBar);
 //        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
 //        exp=(TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
 //        BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
-        itemBar.setText(""+itemCard.getItemCode());
-        if(itemCard.getSalePrc().equals("**")){
+        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
+        itemBar.setText("" + itemCard.getItemCode());
+        if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
-        }else{
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+"JD");
+        } else {
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + "JD");
         }
 
 //        if(itemCard.getDepartmentId().equals("**")){
@@ -782,14 +830,14 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
 
     }
 
-    private Bitmap convertLayoutToImage_Barcode(ItemCard itemCard,String index) {
+    private Bitmap convertLayoutToImage_Barcode(ItemCard itemCard, String index) {
         LinearLayout linearView = null;
         final Dialog dialog_Header = new Dialog(BluetoothConnectMenu.this);
         dialog_Header.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -797,26 +845,26 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.barcode_print_dialog);
 
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName, price, BarcodeText, exp;
 
-        LinearLayout ExpLiner,priceLiner;
+        LinearLayout ExpLiner, priceLiner;
 
 //        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
-        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+        priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
+        BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
 //        exp=(TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
         itemName.setText(itemCard.getItemName());
-        if(index.equals("**")){
+        if (index.equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
-        }else{
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+" JD");
+        } else {
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
         }
 
 //        if(itemCard.getDepartmentId().equals("**")){
@@ -844,7 +892,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
@@ -860,16 +908,16 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.barcode_print_dialog);
 
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName, price, BarcodeText, exp;
 
-        LinearLayout ExpLiner,priceLiner;
+        LinearLayout ExpLiner, priceLiner;
 
 //        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
-        priceLiner= (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
+        priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
+        BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
 //        exp=(TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
@@ -910,7 +958,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
@@ -925,44 +973,42 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.row_for_print);
 //        List list2 = ((List) ((ArrayList) long_listItems).clone());
 
-        TextView itemName,price,ItemCode,Qty ;
+        TextView itemName, price, ItemCode, Qty;
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        ItemCode=(TextView) dialog_Header.findViewById(R.id.itemCode);
-        Qty=(TextView) dialog_Header.findViewById(R.id.qty);
+        ItemCode = (TextView) dialog_Header.findViewById(R.id.itemCode);
+        Qty = (TextView) dialog_Header.findViewById(R.id.qty);
 
 
-        if(Integer.parseInt(index)==-1){
+        if (Integer.parseInt(index) == -1) {
             ItemCode.setText("Item Code");
             itemName.setText("Item Name");
             price.setText("Price");
             Qty.setText("Qty");
-        }else if (Integer.parseInt(index)==-2){
-                ItemCode.setText(" ");
-                itemName.setText("   ");
-                price.setText(" ");
-                Qty.setText(" ");
-        } else if (Integer.parseInt(index)==-3){
-                ItemCode.setText(" ");
-                itemName.setText("Total Qty =");
-                price.setText(" ");
-                Qty.setText(itemInfo.getItemQty()+"");
+        } else if (Integer.parseInt(index) == -2) {
+            ItemCode.setText(" ");
+            itemName.setText("   ");
+            price.setText(" ");
+            Qty.setText(" ");
+        } else if (Integer.parseInt(index) == -3) {
+            ItemCode.setText(" ");
+            itemName.setText("Total Qty =");
+            price.setText(" ");
+            Qty.setText(itemInfo.getItemQty() + "");
 
-        }else if (Integer.parseInt(index)==-4){
+        } else if (Integer.parseInt(index) == -4) {
             ItemCode.setText("----------------------");
             itemName.setText("----------------------");
             price.setText("----------------");
             Qty.setText("----------------");
-        }else{
+        } else {
             ItemCode.setText(itemInfo.getItemCode());
             itemName.setText(itemInfo.getItemName());
-            price.setText(itemInfo.getSalePrice()+"");
-            Qty.setText(itemInfo.getItemQty()+"");
+            price.setText(itemInfo.getSalePrice() + "");
+            Qty.setText(itemInfo.getItemQty() + "");
 
         }
-
-
 
 
         linearView = (LinearLayout) dialog_Header.findViewById(R.id.LinerRaw);
@@ -975,7 +1021,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
@@ -991,31 +1037,29 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.title_for_print);
 
 
-        TextView itemName,price,ItemCode,Qty,accu,date ;
+        TextView itemName, price, ItemCode, Qty, accu, date;
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
-        ItemCode=(TextView) dialog_Header.findViewById(R.id.itemCode);
-        Qty=(TextView) dialog_Header.findViewById(R.id.qty);
-        accu=(TextView) dialog_Header.findViewById(R.id.accu);
-        date=(TextView) dialog_Header.findViewById(R.id.date);
+        ItemCode = (TextView) dialog_Header.findViewById(R.id.itemCode);
+        Qty = (TextView) dialog_Header.findViewById(R.id.qty);
+        accu = (TextView) dialog_Header.findViewById(R.id.accu);
+        date = (TextView) dialog_Header.findViewById(R.id.date);
         date.setText(today);
 
-        if(preparAc){
+        if (preparAc) {
             accu.setText("Not Accum");
-        }else{
+        } else {
             accu.setText("Accum");
         }
 
 
-        if(Integer.parseInt(index)==-1){
+        if (Integer.parseInt(index) == -1) {
             ItemCode.setText("Item Code");
             itemName.setText("Item Name");
             price.setText("Price");
             Qty.setText("Qty");
         }
-
-
 
 
         linearView = (LinearLayout) dialog_Header.findViewById(R.id.LinerRaw);
@@ -1028,7 +1072,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
-        Bitmap bit =linearView.getDrawingCache();
+        Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same
 
@@ -1081,7 +1125,7 @@ public class BluetoothConnectMenu extends Activity {
     }
 
     public String convertToEnglish(String value) {
-        String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫","."));
+        String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫", "."));
         return newValue;
     }
 

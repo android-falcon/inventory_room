@@ -1388,7 +1388,7 @@ TextView barCodTextTemp;
         final int[] count1 = {1};
         final int[] DesignType = {0};
 
-        final TextView countText,ItemNameEditTextTag,PriceEditTextTag,ExpEditTextTag,itemNamePrint,
+        final TextView countText,ItemNameEditTextTag,PriceEditTextTag,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,
                 pricePrint,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint3,pricePrint3;
         final LinearLayout exit,printShelfTag,ClearButtonTag,shelfTagLiner1,shelfTagLiner,shelfTagLiner3;
         Button SearchButtonTag;
@@ -1410,6 +1410,7 @@ TextView barCodTextTemp;
         ExpEditTextTag= (TextView) dialog.findViewById(R.id.ExpEditTextTag);
         itemNamePrint= (TextView) dialog.findViewById(R.id.itemNamePrint);
         pricePrint= (TextView) dialog.findViewById(R.id.pricePrint);
+        ItemUnitEditTextTag=(TextView)dialog.findViewById(R.id.ItemUnitEditTextTag);
         exp= (TextView) dialog.findViewById(R.id.exp);
 
         itemNamePrint2= (TextView) dialog.findViewById(R.id.itemName);//BarcodeText
@@ -1545,6 +1546,7 @@ TextView barCodTextTemp;
                 countText.setText("1");
                 ItemCodeEditTextTag.setText("");
                 ItemNameEditTextTag.setText("");
+                ItemUnitEditTextTag.setText("");
                 PriceEditTextTag.setText("");
                 new Handler().post(new Runnable() {
                     @Override
@@ -1623,6 +1625,7 @@ TextView barCodTextTemp;
                         });
                         PriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
+                        ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     } else if (PriceEditTextTag.getText().toString().equals("-1")) {
                         showAlertDialog(getResources().getString(R.string.falidTogetdata));
@@ -1635,9 +1638,10 @@ TextView barCodTextTemp;
                         });
                         PriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
+                        ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     } else {
-                        itemNamePrint.setText(ItemNameEditTextTag.getText().toString());
+                        itemNamePrint.setText(ItemNameEditTextTag.getText().toString()+"/"+ItemUnitEditTextTag.getText().toString());
                         exp.setText(ExpEditTextTag.getText().toString());
 
                         pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
@@ -1646,8 +1650,8 @@ TextView barCodTextTemp;
 
                         pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
 
-                        itemNamePrint2.setText(ItemNameEditTextTag.getText().toString());
-                        itemNamePrint3.setText(ItemNameEditTextTag.getText().toString());
+                        itemNamePrint2.setText(ItemNameEditTextTag.getText().toString()+" / "+ItemUnitEditTextTag.getText().toString());
+                        itemNamePrint3.setText(ItemNameEditTextTag.getText().toString()+" / "+ItemUnitEditTextTag.getText().toString());
                         exp2.setText(ExpEditTextTag.getText().toString());
                         itemText.setText(ItemCodeEditTextTag.getText().toString());
 
@@ -1681,7 +1685,7 @@ TextView barCodTextTemp;
                     String itemCode = ItemCodeEditTextTag.getText().toString();
                     String itemName = ItemNameEditTextTag.getText().toString();
 
-                    String itemSwitch = "",QRCode="",Price="";
+                    String itemSwitch = "",QRCode="",Price="",itemUnit="";
                     if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
 //                        itemCardsList = InventDB.getAllItemCard();
 
@@ -1715,6 +1719,7 @@ TextView barCodTextTemp;
                                   itemCode = itemUnite.get(0);
                                   uQty = Integer.parseInt(itemUnite.get(2));
                                   Price = itemUnite.get(1);
+                                  itemUnit=itemUnite.get(3);
                                   isPriceUnite = true;
 
                               } else {
@@ -1736,6 +1741,7 @@ TextView barCodTextTemp;
                               if (it.equals(itemCode)) {
                                   isItemFound = true;
                                   ItemNameEditTextTag.setText(itemCard.getItemName());
+                                  ItemUnitEditTextTag.setText(itemUnit);
                                   if (!isPriceUnite) {
                                       PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
 
@@ -1810,6 +1816,7 @@ TextView barCodTextTemp;
                               });
                               PriceEditTextTag.setText("");
                               ItemNameEditTextTag.setText("");
+                              ItemUnitEditTextTag.setText("");
                               pricePrint.setText("");
                           }
 
@@ -2134,6 +2141,7 @@ TextView barCodTextTemp;
                 if(!(ItemCodeEditTextTag.getText().toString().equals(""))&!(ItemNameEditTextTag.getText().toString().equals(""))) {
                     itemCardForPrint.setItemCode(ItemCodeEditTextTag.getText().toString());
                     itemCardForPrint.setItemName(ItemNameEditTextTag.getText().toString());
+                    itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
                     itemCardForPrint.setCostPrc(countText.getText().toString());
                     if(ExpCheckBoxTag.isChecked()){
                             itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
@@ -2866,8 +2874,12 @@ TextView barCodTextTemp;
 
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
 
-                itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
-                textId = 0;
+                try {
+                    itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
+                    textId = 0;
+                }catch (Exception e ){
+
+                }
                 dialogSearch.dismiss();
 
             }
