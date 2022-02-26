@@ -1613,7 +1613,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public List<String> getItemUnite(String ITEM_BARCODE) {
 //        String itemSwitch = "";
         List<String>itemSwitch=new ArrayList<>();
-        String selectQuery = "SELECT ITEM_O_CODE , SALE_PRICE , CALC_QTY  FROM " + ITEM_UNITS +" where ITEM_BARCODE = '"+ITEM_BARCODE+"'";
+        String selectQuery = "SELECT ITEM_O_CODE , SALE_PRICE , CALC_QTY , ITEM_U  FROM " + ITEM_UNITS +" where ITEM_BARCODE = '"+ITEM_BARCODE+"'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 
@@ -1623,10 +1623,11 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
             Log.e("SalesPri",""+cursor.getString(1));
             Log.e("SalesPri",""+cursor.getString(0));
+            Log.e("SalesPrname",""+cursor.getString(3));
             itemSwitch.add(cursor.getString(0));
             itemSwitch.add(cursor.getString(1));
             itemSwitch.add(cursor.getString(2));
-
+            itemSwitch.add(cursor.getString(3));
 
 
 //            } while (cursor.moveToNext());

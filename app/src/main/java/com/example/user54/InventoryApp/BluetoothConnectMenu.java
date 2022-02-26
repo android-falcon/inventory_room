@@ -672,7 +672,7 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
+        itemName.setText(itemCard.getItemName()+"/"+itemCard.getItemUnit());
         if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
         } else {
@@ -734,7 +734,7 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
+        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
         if(itemCard.getSalePrc().equals("**")){
             priceLiner.setVisibility(View.INVISIBLE);
         }else{
@@ -797,7 +797,7 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
 //        BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName());
+        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
         itemBar.setText("" + itemCard.getItemCode());
         if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);

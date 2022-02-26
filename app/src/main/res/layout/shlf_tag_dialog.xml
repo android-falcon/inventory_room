@@ -26,6 +26,16 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:id="@+id/itemUnit"-->
+<!--            android:layout_width="320dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="item Name"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="14sp"-->
+<!--            />-->
 
         <ImageView
             android:id="@+id/barcodeShelf"
@@ -66,7 +76,7 @@
                     android:layout_weight="2"
                     android:text="Price :"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -76,7 +86,7 @@
                     android:layout_weight="1"
                     android:text="545.0 JD"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout

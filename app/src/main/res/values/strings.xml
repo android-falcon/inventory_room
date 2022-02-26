@@ -576,6 +576,7 @@
     <string name="itemCost">Import Item Cost</string>
     <string name="Export_Assest">Export Assest</string>
     <string name="PrinterType">Printer Type</string>
+    <string name="itemUnit">item Unit</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>
