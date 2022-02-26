@@ -111,6 +111,7 @@ public class Item extends AppCompatActivity {
         InventDB = new InventoryDatabase(Item.this);
 
         initialization();
+        
 
 
         animFadein = AnimationUtils.loadAnimation(Item.this, R.anim.fade_in);
