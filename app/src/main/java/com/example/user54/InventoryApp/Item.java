@@ -113,6 +113,7 @@ public class Item extends AppCompatActivity {
         initialization();
 
 
+
         animFadein = AnimationUtils.loadAnimation(Item.this, R.anim.fade_in);
         newItem.startAnimation(animFadein);
         pBarcode.startAnimation(animFadein);
