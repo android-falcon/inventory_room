@@ -406,6 +406,8 @@ public class Tools extends AppCompatActivity {
         final RadioButton sewPrinter = MainSettingdialog.findViewById(R.id.SPrinter);
         final RadioButton TscPrinter = MainSettingdialog.findViewById(R.id.TSCPrinter);
         final RadioButton zebraPrinter = MainSettingdialog.findViewById(R.id.ZePrinter);
+        final RadioButton tallyPrinter = MainSettingdialog.findViewById(R.id.tallyPrinter);
+
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
         String StkNo = "";
@@ -471,14 +473,22 @@ public class Tools extends AppCompatActivity {
             if (mainSettings.get(0).getPrinterType().equals("0")) {
                 sewPrinter.setChecked(true);
                 zebraPrinter.setChecked(false);
+                tallyPrinter.setChecked(false);
                 TscPrinter.setChecked(false);
             } else  if (mainSettings.get(0).getPrinterType().equals("1")) {
                 zebraPrinter.setChecked(true);
                 sewPrinter.setChecked(false);
+                tallyPrinter.setChecked(false);
                 TscPrinter.setChecked(false);
             }else  if (mainSettings.get(0).getPrinterType().equals("2")) {
                 TscPrinter.setChecked(true);
                 sewPrinter.setChecked(false);
+                tallyPrinter.setChecked(false);
+                zebraPrinter.setChecked(false);
+            }else if(mainSettings.get(0).getPrinterType().equals("3")){
+                TscPrinter.setChecked(false);
+                sewPrinter.setChecked(false);
+                tallyPrinter.setChecked(true);
                 zebraPrinter.setChecked(false);
             }
 
@@ -531,6 +541,8 @@ public class Tools extends AppCompatActivity {
                         printerType = "1";
                     }else if (TscPrinter.isChecked()) {
                         printerType = "2";
+                    }else if(tallyPrinter.isChecked()){
+                        printerType= "3";
                     }
 
                     InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType));

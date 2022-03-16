@@ -107,8 +107,13 @@ public class CPCLSample2 {
     }
 
     public void imageTestEnglish(int count, Bitmap testB,String printType) throws IOException {//
-        this.cpclPrinter.setForm(0, 0, 0,testB.getHeight() , count);
-        this.cpclPrinter.setMedia(this.paperType);
+        if(printType.equals("3")) {
+            this.cpclPrinter.setForm(0, 0, 0, testB.getHeight()+70, count);
+        }else {
+            this.cpclPrinter.setForm(0, 0, 0, testB.getHeight() , count);
+            this.cpclPrinter.setMedia(this.paperType);
+
+        }
         if(printType.equals("1")){
             Log.e("PrintType","imageTestEnglish "+printType);
                     this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
@@ -123,7 +128,9 @@ public class CPCLSample2 {
 
     public void imageTestEnglishBarcode(int count, Bitmap testB,String printType) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight()+70 , count);
-        this.cpclPrinter.setMedia(this.paperType);
+        if(!printType.equals("3")) {
+            this.cpclPrinter.setMedia(this.paperType);
+        }
         if(printType.equals("1")){
             Log.e("PrintType","imageTestEnglishBarcode "+printType);
             this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo

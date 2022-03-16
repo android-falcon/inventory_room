@@ -502,8 +502,8 @@ public class BluetoothConnectMenu extends Activity {
                     switch (Integer.parseInt(getData)) {
 
                         case 0:
-                            //
-                            if (PrintType.equals("0")||PrintType.equals("2")) {
+
+                            if (PrintType.equals("0")||PrintType.equals("2")||PrintType.equals("3")) {
                                 sample.selectBlackMarkPaper();
                                 if(PrintType.equals("2")){
                                     sample.imageTestTSC(remoteDevices.get(0).getAddress(),1);
@@ -525,7 +525,7 @@ public class BluetoothConnectMenu extends Activity {
                             if (bitmap != null) {
                                 Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc() + "   " + remoteDevices.get(0).getAddress());
                                 Log.e("PrintType","Blutoo "+PrintType);
-                                if (PrintType.equals("0")) {
+                                if (PrintType.equals("0")||PrintType.equals("3")) {
                                     sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
                                 } else if (PrintType.equals("1")) {
                                     sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
@@ -543,7 +543,7 @@ public class BluetoothConnectMenu extends Activity {
                             break;
 
                         case 1:
-                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                            if (PrintType.equals("0")||PrintType.equals("2")||PrintType.equals("3")) {
                                 sample.selectGapPaper();
                                 if(PrintType.equals("2")){
                                     sample.imageTestTSC(remoteDevices.get(0).getAddress(),0);
@@ -553,7 +553,7 @@ public class BluetoothConnectMenu extends Activity {
                                 Bitmap bitmaps = convertLayoutToImage_Barcode(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice());
                                 if (bitmaps != null) {
                                     Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc());
-                                    if(PrintType.equals("0")){
+                                    if(PrintType.equals("0")||  PrintType.equals("3")){
                                         sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps,PrintType);
                                     }else if (PrintType.equals("1")){
                                         sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps,PrintType);
@@ -569,7 +569,7 @@ public class BluetoothConnectMenu extends Activity {
                             }
                             break;
                         case 2:
-                            if (PrintType.equals("0")||PrintType.equals("2")) {
+                            if (PrintType.equals("0")||PrintType.equals("2")|| PrintType.equals("3")) {
                                 sample.selectContinuousPaper();
                             }
                             double totalQty = 0.0;

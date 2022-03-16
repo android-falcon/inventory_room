@@ -268,6 +268,14 @@
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
+    <RadioButton
+        android:id="@+id/tallyPrinter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tally Printer"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 </RadioGroup>
                     </TableRow>
                 </TableLayout>
