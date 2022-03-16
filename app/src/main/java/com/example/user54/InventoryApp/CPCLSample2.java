@@ -108,10 +108,10 @@ public class CPCLSample2 {
 
     public void imageTestEnglish(int count, Bitmap testB,String printType) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight() , count);
-        this.cpclPrinter.setMedia(this.paperType);
+       // this.cpclPrinter.setMedia(this.paperType);
         if(printType.equals("1")){
             Log.e("PrintType","imageTestEnglish "+printType);
-                    this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
+               //     this.cpclPrinter.setJustification(1);// for zepra==1  orsewoo
         }
         this.cpclPrinter.printBitmap(testB, 0, 0);//x=400
 
