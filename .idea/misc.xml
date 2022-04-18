@@ -9,11 +9,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/new_buttons.xml" value="0.2203125" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_assets_data_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_collecting_data.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_collecting_data_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_main3.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_main3_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_main_printer.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_setting.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_wifi.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/add_currency_yellow.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/alert_dialog_not_found.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/app.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog2.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu_esc.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/boom.xml" value="0.1" />
@@ -45,8 +54,11 @@
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/mac_adreass_activity_yellow.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/main_setting_dialog_new.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/menue.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/note_dialog.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/print_shelf_tag_yellow.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design2.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design3.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/tools_yellow.xml" value="0.20416666666666666" />
       </map>
     </option>

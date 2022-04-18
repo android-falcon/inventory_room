@@ -28,6 +28,7 @@ public class ItemCard {
     private String isNew;
     private String itemUnit;
     private boolean check;
+    private String isUnite;
     public ItemCard() {
 
     }
@@ -53,6 +54,14 @@ public class ItemCard {
         this.isExport = isExport;
         this.isNew = isNew;
         this.check = check;
+    }
+
+    public String getIsUnite() {
+        return isUnite;
+    }
+
+    public void setIsUnite(String isUnite) {
+        this.isUnite = isUnite;
     }
 
     public String getItemUnit() {

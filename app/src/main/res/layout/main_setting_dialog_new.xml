@@ -278,6 +278,39 @@
         android:textStyle="bold" />
 </RadioGroup>
                     </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="@string/currencyType"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+                        <Spinner
+                            android:id="@+id/CurrencySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                        <TextView
+                            android:id="@+id/addCurrency"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:drawableStart="@drawable/ic_library_add_black_24dp"
+                            android:textColor="@color/white"
+                            android:drawableTint="@color/clearButton"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+
                 </TableLayout>
             </LinearLayout>
         </ScrollView>

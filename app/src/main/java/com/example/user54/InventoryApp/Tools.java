@@ -72,7 +72,9 @@ public class Tools extends AppCompatActivity {
     SweetAlertDialog dialogSwite;
     boolean isPermition=false;
     int flagINoUT=1;
-
+     Spinner CurrencySpinner;
+    List<String> currencyList=new ArrayList<>();
+    ArrayAdapter<String> currencyAdapter = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -407,17 +409,21 @@ public class Tools extends AppCompatActivity {
         final RadioButton TscPrinter = MainSettingdialog.findViewById(R.id.TSCPrinter);
         final RadioButton zebraPrinter = MainSettingdialog.findViewById(R.id.ZePrinter);
         final RadioButton tallyPrinter = MainSettingdialog.findViewById(R.id.tallyPrinter);
+        final TextView addCurrency=MainSettingdialog.findViewById(R.id.addCurrency);
 
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
         String StkNo = "";
-
+        final String[] currency = {"JD"};
         final Spinner stkSpinner = MainSettingdialog.findViewById(R.id.spinner);
+        CurrencySpinner = MainSettingdialog.findViewById(R.id.CurrencySpinner);
         ArrayAdapter<String> StkAdapter = null;
+
 
 
         final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
         final List<Stk> STKList = InventDB.getAllStk();
+        currencyList=InventDB.getAllCurrency();
         final List<String> StokNo = new ArrayList<>();
         if (STKList.size() != 0) {
             StokNo.clear();
@@ -431,11 +437,32 @@ public class Tools extends AppCompatActivity {
 
         }
 
+        if (currencyList.size() != 0) {
+
+            currencyAdapter = new ArrayAdapter<String>(Tools.this, R.layout.spinner_style, currencyList);
+            CurrencySpinner.setAdapter(currencyAdapter);
+
+        }
+
+
+
 
         stkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StoreName.setText(STKList.get(position).getStkName());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        CurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currency[0] =(currencyList.get(position));
             }
 
             @Override
@@ -469,6 +496,8 @@ public class Tools extends AppCompatActivity {
 //            StkNo = StkAdapter.getItem(index);
             Log.e("indexofSpinner = ", "= " + index + "   " + StkNo + "    " + mainSettings.get(0).getStorNo());
             stkSpinner.setSelection(index);
+            int indexCurrency = currencyList.indexOf(mainSettings.get(0).getCurrencyType());
+            CurrencySpinner.setSelection(indexCurrency);
 
             if (mainSettings.get(0).getPrinterType().equals("0")) {
                 sewPrinter.setChecked(true);
@@ -495,6 +524,19 @@ public class Tools extends AppCompatActivity {
         }else {
             companyNo.setText("290");
         }
+
+
+        addCurrency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                addCurrency();
+
+
+
+            }
+        });
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -545,7 +587,7 @@ public class Tools extends AppCompatActivity {
                         printerType= "3";
                     }
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType));
+                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType,currency[0]));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     MainSettingdialog.dismiss();
 
@@ -560,6 +602,54 @@ public class Tools extends AppCompatActivity {
         });
 
         MainSettingdialog.show();
+    }
+
+    void addCurrency (){
+
+        final Dialog currencyDialog = new Dialog(Tools.this,R.style.Theme_Dialog);
+        currencyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        currencyDialog.setCancelable(false);
+        currencyDialog.setContentView(R.layout.add_currency_yellow);
+        currencyDialog.setCanceledOnTouchOutside(false);
+
+        final EditText currencyEdit=currencyDialog.findViewById(R.id.addCurrencyE);
+
+        Button SaveCurrency,exitCurrency;
+        SaveCurrency=currencyDialog.findViewById(R.id.save);
+        exitCurrency=currencyDialog.findViewById(R.id.exit);
+        SaveCurrency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!currencyEdit.getText().toString().equals("")){
+
+                    InventDB.addCurrencyTable(currencyEdit.getText().toString());
+                    Toast.makeText(Tools.this, "Save Successful", Toast.LENGTH_SHORT).show();
+                   currencyList.clear();
+                    currencyList=InventDB.getAllCurrency();
+                    if (currencyList.size() != 0) {
+
+                        currencyAdapter = new ArrayAdapter<String>(Tools.this, R.layout.spinner_style, currencyList);
+                        CurrencySpinner.setAdapter(currencyAdapter);
+
+                    }
+                    currencyDialog.dismiss();
+
+                }else{
+                    currencyEdit.setError("Required!");
+                }
+            }
+        });
+        exitCurrency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                currencyDialog.dismiss();
+
+            }
+        });
+
+        currencyDialog.show();
+
     }
 
 

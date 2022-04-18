@@ -47,6 +47,7 @@ import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.UnitName;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -82,8 +83,11 @@ public class Item extends AppCompatActivity {
     ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
     Dialog dialog;
     Animation animFadein;
+    String uniteNames="";
     TextView Home;
     DecimalFormat numberFormat = new DecimalFormat("0.000");
+    //DecimalFormat numberFormat = new DecimalFormat("0.##");
+
     public static TextView textView,textItemName;
     public static ItemCard itemCardForPrint;
     public static AssestItem itemAssesstForPrint;
@@ -1410,7 +1414,7 @@ TextView barCodTextTemp;
         ExpEditTextTag= (TextView) dialog.findViewById(R.id.ExpEditTextTag);
         itemNamePrint= (TextView) dialog.findViewById(R.id.itemNamePrint);
         pricePrint= (TextView) dialog.findViewById(R.id.pricePrint);
-        ItemUnitEditTextTag=(TextView)dialog.findViewById(R.id.ItemUnitEditTextTag);
+        //ItemUnitEditTextTag=(TextView)dialog.findViewById(R.id.ItemUnitEditTextTag);
         exp= (TextView) dialog.findViewById(R.id.exp);
 
         itemNamePrint2= (TextView) dialog.findViewById(R.id.itemName);//BarcodeText
@@ -1438,7 +1442,8 @@ TextView barCodTextTemp;
         barcodeShelfPrint2= (ImageView) dialog.findViewById(R.id.barcodeShelf);
         barcodeShelfPrint3= (ImageView) dialog.findViewById(R.id.barcodeShelf3);
         Spinner designSpinner= dialog.findViewById(R.id.spinnerDesign);
-
+        Spinner uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
+        final CheckBox uniteCheckBoxTag=dialog.findViewById(R.id.uniteCheckBoxTag);
         upCount = (ImageButton) dialog.findViewById(R.id.up);
         downCount = (ImageButton) dialog.findViewById(R.id.down);
         ExpEditTextTag.setText(convertToEnglish(today));
@@ -1446,6 +1451,7 @@ TextView barCodTextTemp;
         shelfTagLiner1.setVisibility(View.GONE);
         shelfTagLiner.setVisibility(View.VISIBLE);
         List<String> designList=new ArrayList<>();
+        List<UnitName> uniteList=new ArrayList<>();
 
 
         designList.add(getResources().getString(R.string.des_1));
@@ -1458,9 +1464,21 @@ TextView barCodTextTemp;
             isOnlinePrice=mainSettings.get(0).getOnlinePrice();
         }
 
+      uniteList = InventDB.getAllUnite();
+        final List<String> listOfUnite=new ArrayList<>();
+
+        for (int i=0;i<uniteList.size();i++){
+            if(i==0){
+                uniteNames=uniteList.get(i).getItemUnitN();
+            }
+            listOfUnite.add(uniteList.get(i).getItemUnitN());
+        }
+
         ArrayAdapter   DesignAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, designList);
         designSpinner.setAdapter(DesignAdapter);
 
+        ArrayAdapter   uniteAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, listOfUnite);
+        uniteSpinner.setAdapter(uniteAdapter);
 
         designSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1492,6 +1510,20 @@ TextView barCodTextTemp;
                         break;
 
                 }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        uniteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                uniteNames=listOfUnite.get(position);
 
 
             }
@@ -1546,7 +1578,7 @@ TextView barCodTextTemp;
                 countText.setText("1");
                 ItemCodeEditTextTag.setText("");
                 ItemNameEditTextTag.setText("");
-                ItemUnitEditTextTag.setText("");
+//                ItemUnitEditTextTag.setText("");
                 PriceEditTextTag.setText("");
                 new Handler().post(new Runnable() {
                     @Override
@@ -1625,7 +1657,7 @@ TextView barCodTextTemp;
                         });
                         PriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
-                        ItemUnitEditTextTag.setText("");
+                  //      ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     } else if (PriceEditTextTag.getText().toString().equals("-1")) {
                         showAlertDialog(getResources().getString(R.string.falidTogetdata));
@@ -1638,10 +1670,10 @@ TextView barCodTextTemp;
                         });
                         PriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
-                        ItemUnitEditTextTag.setText("");
+                    //    ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     } else {
-                        itemNamePrint.setText(ItemNameEditTextTag.getText().toString()+"/"+ItemUnitEditTextTag.getText().toString());
+                        itemNamePrint.setText(ItemNameEditTextTag.getText().toString()+"/"+uniteNames);
                         exp.setText(ExpEditTextTag.getText().toString());
 
                         pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
@@ -1650,8 +1682,8 @@ TextView barCodTextTemp;
 
                         pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
 
-                        itemNamePrint2.setText(ItemNameEditTextTag.getText().toString()+" / "+ItemUnitEditTextTag.getText().toString());
-                        itemNamePrint3.setText(ItemNameEditTextTag.getText().toString()+" / "+ItemUnitEditTextTag.getText().toString());
+                        itemNamePrint2.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
+                        itemNamePrint3.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
                         exp2.setText(ExpEditTextTag.getText().toString());
                         itemText.setText(ItemCodeEditTextTag.getText().toString());
 
@@ -1741,7 +1773,7 @@ TextView barCodTextTemp;
                               if (it.equals(itemCode)) {
                                   isItemFound = true;
                                   ItemNameEditTextTag.setText(itemCard.getItemName());
-                                  ItemUnitEditTextTag.setText(itemUnit);
+                               //   ItemUnitEditTextTag.setText(itemUnit);
                                   if (!isPriceUnite) {
                                       PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
 
@@ -1816,7 +1848,7 @@ TextView barCodTextTemp;
                               });
                               PriceEditTextTag.setText("");
                               ItemNameEditTextTag.setText("");
-                              ItemUnitEditTextTag.setText("");
+                           //   ItemUnitEditTextTag.setText("");
                               pricePrint.setText("");
                           }
 
@@ -2141,7 +2173,7 @@ TextView barCodTextTemp;
                 if(!(ItemCodeEditTextTag.getText().toString().equals(""))&!(ItemNameEditTextTag.getText().toString().equals(""))) {
                     itemCardForPrint.setItemCode(ItemCodeEditTextTag.getText().toString());
                     itemCardForPrint.setItemName(ItemNameEditTextTag.getText().toString());
-                    itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
+                  //  itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
                     itemCardForPrint.setCostPrc(countText.getText().toString());
                     if(ExpCheckBoxTag.isChecked()){
                             itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
@@ -2159,6 +2191,15 @@ TextView barCodTextTemp;
                     }else{
                         itemCardForPrint.setSalePrc("**");
                     }
+
+                    if(uniteCheckBoxTag.isChecked()){
+                        itemCardForPrint.setIsUnite("");
+                        itemCardForPrint.setItemUnit(uniteNames);
+
+                    }else{
+                        itemCardForPrint.setIsUnite("**");
+                    }
+
 
 //                   boolean Permission= isStoragePermissionGranted();
 //                    if(Permission) {

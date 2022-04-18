@@ -200,6 +200,8 @@
     <string name="storeSave">تم حفظ Store بنجاح</string>
     <string name="Permission">No Bluetooth Permission</string>
     <string name="faildstore">فشل استيراد Store</string>
+    <string name="faildunite">فشل استيراد Unite</string>
+
     <string name="Import_Item_Card">Import Item Card</string>
     <string name="NotCorrectPassword">Not Correct Password</string>
     <string name="print_assesst">طباعة الاصول</string>
@@ -583,6 +585,9 @@
     <string name="Export_Assest">Export Assest</string>
     <string name="PrinterType">نوع الطابعة</string>
     <string name="itemUnit">item Unit</string>
+    <string name="currencyType">currency Type</string>
+    <string name="JD">Jd</string>
+    <string name="unitSave">Unit Save</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

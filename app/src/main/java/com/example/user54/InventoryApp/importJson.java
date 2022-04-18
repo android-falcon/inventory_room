@@ -2,7 +2,6 @@ package com.example.user54.InventoryApp;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -15,6 +14,7 @@ import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.Stk;
+import com.example.user54.InventoryApp.Model.UnitName;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,8 +37,6 @@ import static com.example.user54.InventoryApp.CollectingData.textItemNameUpdate;
 import static com.example.user54.InventoryApp.CollectingData.textViewUpdate;
 import static com.example.user54.InventoryApp.Item.textItemName;
 import static com.example.user54.InventoryApp.Item.textView;
-import static com.example.user54.InventoryApp.LogIn.intentControl;
-import static java.net.Proxy.Type.HTTP;
 
 public class importJson {
 
@@ -208,7 +206,7 @@ public class importJson {
                 inputStream.close();
                 httpURLConnection.disconnect();
 
-                Log.e("tag", "ItemOCode -->" + stringBuffer.toString());
+               // Log.e("tag", "ItemOCode -->" + stringBuffer.toString());
 
                 return stringBuffer.toString();
 
@@ -236,6 +234,12 @@ public class importJson {
             if (JsonResponse != null && JsonResponse.contains("ItemOCode")) {
                 Log.e("tag_ItemOCode", "****Success");
 //                progressDialog.dismiss();
+
+//                new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                        .setTitleText(context.getResources().getString(R.string.ops))
+//                        .setContentText("in save 242")
+//                        .show();
+
                 JsonResponseSave=JsonResponse;
                  new SaveItemCard().execute();
 //                try {
@@ -1269,19 +1273,188 @@ public class importJson {
                     pd.setTitleText(context.getResources().getString(R.string.storeSave));
 
 
-                       if(!isAssetsIn.equals("1")) {
-                           if(pd!=null) {
-                           pd.dismiss();
+//                       if(!isAssetsIn.equals("1")) {
+//                           if(pd!=null) {
+//                           pd.dismiss();
+//
+//                           new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+//                                   .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
+//                                   .setContentText(context.getResources().getString(R.string.importSuc))
+//                                   .show();
+//                       }
+//
+//                    }else{
+//                        pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+//                        pd.setTitleText(context.getResources().getString(R.string.storeSave));
+//                        new SyncGetAssest().execute();
+//                    }
 
-                           new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
-                                   .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
-                                   .setContentText(context.getResources().getString(R.string.importSuc))
-                                   .show();
-                       }
+                    new SyncGetItemUnitsU().execute();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.e("TAG_GetStor", "****Failed to export data");
+//                if(!isAssetsIn.equals("1")) {
+                if (pd != null) {
+                    pd.dismiss();
+                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText(context.getResources().getString(R.string.ops))
+                            .setContentText(context.getResources().getString(R.string.faildstore))
+                            .show();
+                    new SyncGetItemUnitsU().execute();
+                }
+//            }else{
+//                    pd.dismiss();
+//                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                            .setTitleText(context.getResources().getString(R.string.ops))
+//                            .setContentText(context.getResources().getString(R.string.faildstore))
+//                            .show();
+//                    new SyncGetAssest().execute();
+//                }
+            }
+//            progressDialog.dismiss();
+
+        }
+    }
+
+    private class SyncGetItemUnitsU extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            progressDialog = new ProgressDialog(context,R.style.MyTheme);
+//            progressDialog.setCancelable(false);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progressDialog.setProgress(0);
+//            progressDialog.show();
+
+            pd.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+            pd.setTitleText(context.getResources().getString(R.string.importstor));
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+//
+//                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+//                String ip="";
+//                if(mainSettings.size()!=0) {
+//                    ip=mainSettings.get(0).getIP();
+//                }
+                String link = "http://"+ip + "/GetItemUnit";
+
+                //
+                String data = "CONO=" + URLEncoder.encode(CompanyNo, "UTF-8") ;//+ "&" +
+                //  "compyear=" + URLEncoder.encode("2019", "UTF-8") ;
+////
+                URL url = new URL(link);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "TAG_GetStor -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+            if (JsonResponse != null && JsonResponse.contains("ITEMU")) {
+                Log.e("TAG_GetStor", "****Success");
+
+                pd.getProgressHelper().setBarColor(Color.parseColor("#1F6381"));
+                pd.setTitleText(context.getResources().getString(R.string.unitSave));
+                try {
+
+                    JSONArray parentArray = new JSONArray(JsonResponse);
+
+
+                    List<UnitName> ITEM=new ArrayList<>();
+
+                    for (int i = 0; i < parentArray.length(); i++) {
+                        JSONObject finalObject = parentArray.getJSONObject(i);
+
+                        UnitName obj = new UnitName();
+
+                        obj.setItemUnitN(finalObject.getString("ITEMU"));
+
+
+
+                        ITEM.add(obj);
+
+                    }
+
+//
+                    dbHandler.deleteAllItem("ITEM_UNIT");
+                    for (int i = 0; i < ITEM.size(); i++) {
+                        dbHandler.addItemU(ITEM.get(i));
+                    }
+
+                    Log.e("TAG_GetStor", "****SaveSuccess");
+                    pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                    pd.setTitleText(context.getResources().getString(R.string.storeSave));
+
+
+                    if(!isAssetsIn.equals("1")) {
+                        if(pd!=null) {
+                            pd.dismiss();
+
+                            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
+                                    .setContentText(context.getResources().getString(R.string.importSuc))
+                                    .show();
+                        }
 
                     }else{
                         pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                        pd.setTitleText(context.getResources().getString(R.string.storeSave));
+                        pd.setTitleText(context.getResources().getString(R.string.unitSave));
                         new SyncGetAssest().execute();
                     }
 
@@ -1292,18 +1465,18 @@ public class importJson {
             } else {
                 Log.e("TAG_GetStor", "****Failed to export data");
                 if(!isAssetsIn.equals("1")) {
-                if (pd != null) {
+                    if (pd != null) {
+                        pd.dismiss();
+                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText(context.getResources().getString(R.string.ops))
+                                .setContentText(context.getResources().getString(R.string.faildunite))
+                                .show();
+                    }
+                }else{
                     pd.dismiss();
                     new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText(context.getResources().getString(R.string.ops))
-                            .setContentText(context.getResources().getString(R.string.faildstore))
-                            .show();
-                }
-            }else{
-                    pd.dismiss();
-                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText(context.getResources().getString(R.string.ops))
-                            .setContentText(context.getResources().getString(R.string.faildstore))
+                            .setContentText(context.getResources().getString(R.string.faildunite))
                             .show();
                     new SyncGetAssest().execute();
                 }
@@ -1312,6 +1485,7 @@ public class importJson {
 
         }
     }
+
 
     private class SyncGetAssest extends AsyncTask<String, String, String> {
         private String JsonResponse = null;
@@ -1456,7 +1630,7 @@ public class importJson {
 
 
                 List<ItemCard> itemCard=new ArrayList<>();
-                List<ItemCard> itemCard2=dbHandler.getAllItemCard();
+              //  List<ItemCard> itemCard2=dbHandler.getAllItemCard();
 //                boolean stopBollen=true;
 //if(itemCard2.size()==0){
 //    dbHandler.deleteAllItem("ITEM_CARD");
@@ -1468,26 +1642,89 @@ public class importJson {
                     JSONObject finalObject = parentArray.getJSONObject(i);
 
                     ItemCard obj = new ItemCard();
-                    obj.setItemCode(finalObject.getString("ItemOCode"));
-                    obj.setItemName(finalObject.getString("ItemNameA"));
+                    try{
+                        obj.setItemCode(finalObject.getString("ItemOCode"));
+                    }catch (Exception e){
+                        obj.setItemCode("");
+
+                    }
+                    try {
+                        obj.setItemName(finalObject.getString("ItemNameA"));
+                    }catch (Exception e){
+                        obj.setItemName("");
+
+                    }
 //                        obj.setit(finalObject.getString("ItemNameE"));
-                    obj.setItemG(finalObject.getString("ItemG"));
+                    try {
+                        obj.setItemG(finalObject.getString("ItemG"));
+                    }catch (Exception e){
+                        obj.setItemG("");
+
+                    }
 //                        obj.set(finalObject.getString("TAXPERC"));
-                    obj.setSalePrc(finalObject.getString("SalePrice"));
+
+                    try {
+                        obj.setSalePrc(finalObject.getString("SalePrice"));
+                    }catch (Exception e){
+                        obj.setSalePrc("");
+
+                    }
 //
 
 //                        obj.set(finalObject.getString("LLCPrice"));
-                    obj.setAVLQty(finalObject.getString("AVLQTY"));
-                    obj.setFDPRC(finalObject.getString("F_D"));
+                    try {
+                        obj.setAVLQty(finalObject.getString("AVLQTY"));
+                    }catch (Exception e){
+                        obj.setAVLQty("");
 
-                    obj.setItemK(finalObject.getString("ItemK"));
-                    obj.setItemL(finalObject.getString("ItemL"));
-                    obj.setItemDiv(finalObject.getString("ITEMDIV"));
+                    }
+                    try {
+                        obj.setFDPRC(finalObject.getString("F_D"));
+                    }catch (Exception e){
+                        obj.setFDPRC("");
 
-                    obj.setItemGs(finalObject.getString("ITEMGS"));
-                    obj.setInDate(finalObject.getString("InDate"));
+                    }
 
-                    dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
+                    try {
+                        obj.setItemK(finalObject.getString("ItemK"));
+                    }catch (Exception e){
+                        obj.setItemK("");
+
+                    }
+
+                    try {
+                        obj.setItemL(finalObject.getString("ItemL"));
+                    }catch (Exception e){
+
+                        obj.setItemL("");
+
+                    }
+
+                    try {
+                        obj.setItemDiv(finalObject.getString("ITEMDIV"));
+                    }catch (Exception e){
+                        obj.setItemDiv("");
+
+                    }
+
+                    try {
+                        obj.setItemGs(finalObject.getString("ITEMGS"));
+                    }catch (Exception e){
+                        obj.setItemGs("");
+
+                    }
+
+                    try {
+                        obj.setInDate(finalObject.getString("InDate"));
+                    }catch (Exception e){
+                        obj.setInDate("");
+
+                    }
+                    try {
+                     //   dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
+                    }catch (Exception e){
+
+                    }
 //                    dbHandler.deleteItemCardSwitchByItemCode(finalObject.getString("ItemOCode"));
 //                    dbHandler.deleteItemCardUnitByItemCode(finalObject.getString("ItemOCode"));
 //                    dbHandler.deleteItemCardQRByItemCode(finalObject.getString("ItemOCode"));
@@ -1519,6 +1756,11 @@ public class importJson {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+
+                new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText(context.getResources().getString(R.string.ops))
+                        .setContentText("error 1600"+e.getMessage().toString())
+                        .show();
             }
 
             return null;

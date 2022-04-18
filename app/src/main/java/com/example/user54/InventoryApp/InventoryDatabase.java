@@ -1,6 +1,5 @@
 package com.example.user54.InventoryApp;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,13 +23,14 @@ import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.Order;
 import com.example.user54.InventoryApp.Model.SewooSetting;
 import com.example.user54.InventoryApp.Model.TransferItemsInfo;
+import com.example.user54.InventoryApp.Model.UnitName;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =26;//version Db
+    private static final int DATABASE_VERSION =28;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -209,6 +209,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String ONLINE_PRICE = "ONLINE_PRICE";
     private static final String COMPANY_NO = "COMPANY_NO";
     private static final String PRINTER_TYPE="PRINTER_TYPE";
+    private static final String CURRENCY_TYPE="CURRENCY_TYPE";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -306,7 +307,14 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
     private static final String ACTIVATE = "ACTIVATE";
 
+    //___________________________________________________________________________________
+    private static final String CURRENCY_TABLE = "CURRENCY_TABLE";
 
+    private static final String CURRENCY_NAME = "CURRENCY_NAME";
+    //___________________________________________________________________________________
+    private static final String ITEM_UNIT = "ITEM_UNIT";
+
+    private static final String UNITE_NAME = "UNITE_NAME";
 
 
     //_________________________________________________________________________________
@@ -491,7 +499,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + IS_QRJARD + " NVARCHAR   ,"
                 + ONLINE_PRICE + " NVARCHAR   ,"
                 + COMPANY_NO + " NVARCHAR   ,"
-                + PRINTER_TYPE + " NVARCHAR " + ")";
+                + PRINTER_TYPE + " NVARCHAR   ,"
+                + CURRENCY_TYPE + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -592,6 +601,18 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         String CREATE_TABLE_ACTIVATE = "CREATE TABLE " + ACTIVATE_TABLE + "("
                 + ACTIVATE + " NVARCHAR NOT NULL " + ")";
         Idb.execSQL(CREATE_TABLE_ACTIVATE);
+
+//=========================================================================================
+
+        String CREATE_TABLE_CURRENCY = "CREATE TABLE " + CURRENCY_TABLE + "("
+                + CURRENCY_NAME + " NVARCHAR NOT NULL " + ")";
+        Idb.execSQL(CREATE_TABLE_CURRENCY);
+
+//=========================================================================================
+
+        String CREATE_TABLE_UNITE = "CREATE TABLE " + ITEM_UNIT + "("
+                + UNITE_NAME + " NVARCHAR NOT NULL " + ")";
+        Idb.execSQL(CREATE_TABLE_UNITE);
 
 //=========================================================================================
 
@@ -836,6 +857,34 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             Log.e("upgrade", "MAIN_SETTING_TABLE TABLE  PRINTER_TYPE");
         }
 
+        try{
+
+            String CREATE_TABLE_CURRENCY = "CREATE TABLE " + CURRENCY_TABLE + "("
+                    + CURRENCY_NAME + " NVARCHAR NOT NULL " + ")";
+            Idb.execSQL(CREATE_TABLE_CURRENCY);
+
+        }catch (Exception e){
+            Log.e("upgrade", "CURRENCY_TABLE TABLE  create");
+        }
+
+        try{
+
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + CURRENCY_TYPE + " TEXT"+" DEFAULT 'JD'");
+        }catch (Exception e){
+
+        }
+
+
+        try{
+
+            String CREATE_TABLE_UNITE = "CREATE TABLE " + ITEM_UNIT + "("
+                    + UNITE_NAME + " NVARCHAR NOT NULL " + ")";
+            Idb.execSQL(CREATE_TABLE_UNITE);
+        }catch (Exception e){
+
+        }
+
+
     }
 
 
@@ -858,6 +907,29 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(LOT_NO4, itemInfo.getLotNo());
 
         Idb.insert(ITEMS_INFO, null, values);
+        Idb.close();
+    }
+
+
+    public void addItemU(UnitName itemInfo) {
+        Idb = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(UNITE_NAME, convertToEnglish(itemInfo.getItemUnitN()));
+
+
+        Idb.insert(ITEM_UNIT, null, values);
+        Idb.close();
+    }
+
+    public void addCurrencyTable(String currencyName) {
+        Idb = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(CURRENCY_NAME, convertToEnglish(currencyName));
+
+
+        Idb.insert(CURRENCY_TABLE, null, values);
         Idb.close();
     }
 
@@ -947,6 +1019,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(ONLINE_PRICE,  convertToEnglish(mainSetting.getOnlinePrice()));
         values.put(COMPANY_NO,  convertToEnglish(mainSetting.getCompanyNo()));
         values.put(PRINTER_TYPE,  convertToEnglish(mainSetting.getPrinterType()));
+        values.put(CURRENCY_TYPE,  convertToEnglish(mainSetting.getCurrencyType()));
+
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -1317,6 +1391,24 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return itemInfos;
+    }
+
+    public ArrayList<String> getAllCurrency() {
+        ArrayList<String> currencyList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + CURRENCY_TABLE;
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                currencyList.add(cursor.getString(0));
+
+
+            } while (cursor.moveToNext());
+        }
+        return currencyList;
     }
 
     public ArrayList<ItemInfo> getAllItemInfoBackUp() {
@@ -1760,6 +1852,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setOnlinePrice(cursor.getString(4));
                 item.setCompanyNo(cursor.getString(5));
                 item.setPrinterType(cursor.getString(6));
+                item.setCurrencyType(cursor.getString(7));
 
                 passwords.add(item);
 
@@ -1826,6 +1919,26 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return stks;
+    }
+
+    public ArrayList<UnitName> getAllUnite() {
+        ArrayList<UnitName> unitNames = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + ITEM_UNIT;
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                UnitName item = new UnitName();
+
+                item.setItemUnitN(cursor.getString(0));
+
+                unitNames.add(item);
+
+            } while (cursor.moveToNext());
+        }
+        return unitNames;
     }
 
     public String getActivate() {

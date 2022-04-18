@@ -142,6 +142,28 @@
                             android:textSize="16sp" />
                     </TableRow>
 
+<!--                    <TableRow-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginBottom="5dp">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="95dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="@string/itemUnit"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="16sp" />-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/ItemUnitEditTextTag"-->
+<!--                            android:layout_width="120dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:background="@drawable/bac_frame_no"-->
+<!--                            android:gravity="center"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="16sp" />-->
+<!--                    </TableRow>-->
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -154,14 +176,26 @@
                             android:textColor="@color/white"
                             android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/ItemUnitEditTextTag"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
+                        <Spinner
+                            android:id="@+id/uniteSpinner"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
                             android:background="@drawable/bac_frame_no"
-                            android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="16sp" />
+
+
+
+                        <CheckBox
+                            android:id="@+id/uniteCheckBoxTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:checked="true"
+                            android:text="unite"
+                            android:textColor="@color/white"
+                            android:textColorHighlight="@color/colorPrimary"
+                            android:textColorLink="@color/colorPrimary"
+                            android:textSize="10sp" />
                     </TableRow>
 
                     <TableRow

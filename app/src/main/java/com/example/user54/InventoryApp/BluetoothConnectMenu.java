@@ -103,9 +103,11 @@ public class BluetoothConnectMenu extends Activity {
     List<Item> long_listItems;
 
     List<Item> itemforPrint;
+    String Currency="JD";
 
     DecimalFormat decimalFormat;
     DecimalFormat numberFormat = new DecimalFormat("0.000");
+    //DecimalFormat numberFormat = new DecimalFormat("0.##");
 
 
     static {
@@ -492,12 +494,15 @@ public class BluetoothConnectMenu extends Activity {
 
                         if (mainSettings.size() != 0) {
                             PrintType = mainSettings.get(0).getPrinterType();
+                            Currency=mainSettings.get(0).getCurrencyType();
                         } else {
                             PrintType = "0";
+                            Currency="JD";
                         }
 
                     } catch (Exception e) {
                         PrintType = "0";
+                        Currency="JD";
                     }
                     switch (Integer.parseInt(getData)) {
 
@@ -525,11 +530,13 @@ public class BluetoothConnectMenu extends Activity {
                             if (bitmap != null) {
                                 Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc() + "   " + remoteDevices.get(0).getAddress());
                                 Log.e("PrintType","Blutoo "+PrintType);
+                               // Toast.makeText(context, "test"+PrintType, Toast.LENGTH_SHORT).show();
                                 if (PrintType.equals("0")||PrintType.equals("3")) {
                                     sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
                                 } else if (PrintType.equals("1")) {
                                     sample.imageTestEnglish(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap, PrintType);
                                 } else if (PrintType.equals("2")) {
+                                //    Toast.makeText(context, "test_123456 "+PrintType, Toast.LENGTH_SHORT).show();
                                     sample.dmStamp(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmap);
                                 }
 
@@ -672,11 +679,26 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName()+"/"+itemCard.getItemUnit());
+
+
+        if (itemCard.getIsUnite().equals("**")) {
+            itemName.setText(itemCard.getItemName() );
+
+        }else {
+            try {
+                itemName.setText(itemCard.getItemName() + "/" + itemCard.getItemUnit());
+            }catch (Exception e){
+                itemName.setText(itemCard.getItemName() );
+
+            }
+
+        }
+
         if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
         } else {
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + "JD");
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) +" "+ Currency);
+
         }
 
         if (itemCard.getDepartmentId().equals("**")) {
@@ -734,11 +756,23 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
+
+        if (itemCard.getIsUnite().equals("**")) {
+            itemName.setText(itemCard.getItemName() );
+
+        }else {
+            try {
+                itemName.setText(itemCard.getItemName() + "/" + itemCard.getItemUnit());
+            }catch (Exception e){
+                itemName.setText(itemCard.getItemName() );
+
+            }
+
+        }
         if(itemCard.getSalePrc().equals("**")){
             priceLiner.setVisibility(View.INVISIBLE);
         }else{
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+"JD");
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())))+" "+Currency);
         }
 
         if(itemCard.getDepartmentId().equals("**")){
@@ -797,12 +831,24 @@ public class BluetoothConnectMenu extends Activity {
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
 //        BarcodeText.setText(itemCard.getItemCode());
-        itemName.setText(itemCard.getItemName()+" / "+itemCard.getItemUnit());
+
+        if (itemCard.getIsUnite().equals("**")) {
+            itemName.setText(itemCard.getItemName() );
+
+        }else {
+            try {
+                itemName.setText(itemCard.getItemName() + "/" + itemCard.getItemUnit());
+            }catch (Exception e){
+                itemName.setText(itemCard.getItemName() );
+
+            }
+
+        }
         itemBar.setText("" + itemCard.getItemCode());
         if (itemCard.getSalePrc().equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
         } else {
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + "JD");
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) +" "+ Currency);
         }
 
 //        if(itemCard.getDepartmentId().equals("**")){
@@ -819,7 +865,7 @@ public class BluetoothConnectMenu extends Activity {
             e.printStackTrace();
         }
 
-
+        barcode.setVisibility(View.GONE);
         linearView = (LinearLayout) dialog_Header.findViewById(R.id.shelfTagLiner);
 
         linearView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -864,7 +910,7 @@ public class BluetoothConnectMenu extends Activity {
         if (index.equals("**")) {
             priceLiner.setVisibility(View.INVISIBLE);
         } else {
-            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+            price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) +" "+ Currency);
         }
 
 //        if(itemCard.getDepartmentId().equals("**")){

@@ -23,6 +23,8 @@ import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 
 public class CPCLSample2 {
     private CPCLPrinter cpclPrinter = new CPCLPrinter();
@@ -167,7 +169,11 @@ public class CPCLSample2 {
 //TscDll.sendfile("zpl.txt");
             TscDll.closeport(5000);
         }catch (Exception e){
-
+            SweetAlertDialog newSe= new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE);
+            newSe .setTitleText("ERROR IN 173 CPCL");
+            newSe.setContentText("exception "+e.getMessage().toString());
+            newSe.setCanceledOnTouchOutside(true);
+            newSe .show();
         }
     }
 

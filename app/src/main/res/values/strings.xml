@@ -176,7 +176,7 @@
     <string name="importitemswitch">Import Item Switch ...</string>
     <string name="fildtoimportitemswitch">Failed to Import Item Card Data</string>
     <string name="ops">Oops...</string>
-    <string name="importitemcard">Import Item Card ...</string>
+    <string name="importitemcard">Import Item Cardss ...</string>
     <string name="exportiteminfo">Export Item Info Loading...</string>
     <string name="exportriteminfosuc">Export Item Info Successfully...</string>
     <string name="exportiteminfosucess">Export  Item Info Successfully !</string>
@@ -194,6 +194,8 @@
     <string name="storeSave">Saving Store Success</string>
     <string name="Permission">No Bluetooth Permission</string>
     <string name="faildstore">Failed to import Store</string>
+    <string name="faildunite">Failed to import Unite</string>
+
     <string name="Import_Item_Card">Import Item Card</string>
     <string name="ImportItemSwitch">Import Item Switch</string>
     <string name="ImporItemStore">Import Item Store</string>
@@ -577,6 +579,9 @@
     <string name="Export_Assest">Export Assest</string>
     <string name="PrinterType">Printer Type</string>
     <string name="itemUnit">item Unit</string>
+    <string name="currencyType">currency Type</string>
+    <string name="JD">Jd</string>
+    <string name="unitSave">Unit Save</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>
