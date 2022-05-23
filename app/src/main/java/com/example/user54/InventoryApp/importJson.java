@@ -1637,7 +1637,7 @@ public class importJson {
 //    stopBollen=false;
 //}
 
-
+                String q="INSERT INTO ITEM_CARD VALUES";
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
 
@@ -1720,8 +1720,15 @@ public class importJson {
                         obj.setInDate("");
 
                     }
+
                     try {
-                     //   dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
+                        obj.setItemM(finalObject.getString("ItemM"));
+                    }catch (Exception e){
+                        obj.setItemM("");
+
+                    }
+                    try {
+                       // dbHandler.deleteItemCardByItemCode(finalObject.getString("ItemOCode"));
                     }catch (Exception e){
 
                     }
@@ -1734,12 +1741,70 @@ public class importJson {
 
 //                    }
 
-//                    dbHandler.addItemcardTable(itemCard.get(i));
+                 //   dbHandler.addItemcardTable(itemCard.get(i));
+
+                    Log.e("rrrrrrrr", "s_"+i);
+//
+
+//                        q += "('" +
+//                                itemCard.get(i).getItemCode()
+//                                + "','" + itemCard.get(i).getItemName()
+//                                + "','" + itemCard.get(i).getCostPrc()
+//                                + "','" + itemCard.get(i).getSalePrc()
+//                                + "','" + itemCard.get(i).getAVLQty()
+//                                + "','" + itemCard.get(i).getFDPRC()
+//                                + "','" + itemCard.get(i).getBranchId()
+//                                + "','" + itemCard.get(i).getBranchName()
+//                                + "','" + itemCard.get(i).getDepartmentId()
+//                                + "','" + itemCard.get(i).getDepartmentName()
+//                                + "','" + itemCard.get(i).getItemG()
+//                                + "','" + itemCard.get(i).getItemK()
+//                                + "','" + itemCard.get(i).getItemL()
+//                                + "','" + itemCard.get(i).getItemDiv()
+//                                + "','" + itemCard.get(i).getItemGs()
+//                                + "','" + itemCard.get(i).getOrgPrice()
+//                                + "','" + itemCard.get(i).getInDate()
+//                                + "','" + itemCard.get(i).getIsExport()
+//                                + "','" + itemCard.get(i).getIsNew()
+//                                + "'),";
+
+//
+
+
+//                               q += "('" +
+//                                finalObject.getString("ItemOCode")
+//                                + "','" +finalObject.getString("ItemNameA")
+//                                + "','" + ""
+//                                + "','" + finalObject.getString("SalePrice")
+//                                + "','" + finalObject.getString("AVLQTY")
+//                                + "','" + finalObject.getString("F_D")
+//                                + "','" + ""
+//                                + "','" +""
+//                                + "','" + ""
+//                                + "','" + ""
+//                                + "','" + finalObject.getString("ItemG")
+//                                + "','" + finalObject.getString("ItemK")
+//                                + "','" + finalObject.getString("ItemL")
+//                                + "','" + finalObject.getString("ITEMDIV")
+//                                + "','" + finalObject.getString("ITEMGS")
+//                                + "','" + ""
+//                                + "','" + finalObject.getString("InDate")
+//                                + "','" + ""
+//                                + "','" + ""
+//                                + "'),";
 
 
 
                 }
-                dbHandler.addItemcardTableTester(itemCard);
+                MainActivity2  contextM=(MainActivity2)context;
+                contextM.dd(itemCard);
+
+
+                Log.e("rrrrrrrr", "finish");
+//                dbHandler.addItemcardTableTester(itemCard);
+              //  Log.e("itemSave", ""+q);
+
+//                dbHandler.addItemcardTableTestAll_2(q);
 
 //
 //                dbHandler.deleteAllItem("ITEM_CARD");
@@ -1824,11 +1889,15 @@ public class importJson {
                         obj.setInDate(finalObject.getString("INDATE"));
 
                         itemCard.add(obj);
-                        dbHandler.deleteItemSwitchByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemNCode());
+                      //  dbHandler.deleteItemSwitchByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemNCode());
 
                     }
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
-                    dbHandler.addItemSwitchTester(itemCard);
+                    //dbHandler.addItemSwitchTester(itemCard);5
+
+                    MainActivity2  contextM=(MainActivity2)context;
+                    contextM.saveSwitch(itemCard);
+
 //
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
 //                    for (int i = 0; i < itemCard.size(); i++) {
@@ -2054,11 +2123,13 @@ public class importJson {
 
 
                     itemCard.add(obj);
-                    dbHandler.deleteItemUniteByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemBarcode());
+                  //  dbHandler.deleteItemUniteByItemCode(itemCard.get(i).getItemOCode(),itemCard.get(i).getItemBarcode());
 
                 }
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
-                dbHandler.addItemUniteTable(itemCard);
+                //    dbHandler.addItemUniteTable(itemCard);
+                MainActivity2  contextM=(MainActivity2)context;
+                contextM.saveUnit(itemCard);
 //
 //                    dbHandler.deleteAllItem("ITEM_SWITCH");
 //                    for (int i = 0; i < itemCard.size(); i++) {

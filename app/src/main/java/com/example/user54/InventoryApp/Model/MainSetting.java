@@ -10,6 +10,7 @@ public class MainSetting {
     private String companyNo;
     private String printerType;
     private String currencyType;
+    private int CoName;
     public MainSetting() {
     }
 
@@ -20,7 +21,7 @@ public class MainSetting {
         this.isQr = isQr;
     }
 
-    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
@@ -29,6 +30,7 @@ public class MainSetting {
         this.companyNo = companyNo;
         this.printerType = printerType;
         this.currencyType=currencyType;
+        this.CoName=CoName;
     }
 
     public String getPrinterType() {
@@ -93,5 +95,13 @@ public class MainSetting {
 
     public void setCurrencyType(String currencyType) {
         this.currencyType = currencyType;
+    }
+
+    public int getCoName() {
+        return CoName;
+    }
+
+    public void setCoName(int coName) {
+        CoName = coName;
     }
 }

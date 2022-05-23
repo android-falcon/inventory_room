@@ -75,6 +75,7 @@ public class Tools extends AppCompatActivity {
      Spinner CurrencySpinner;
     List<String> currencyList=new ArrayList<>();
     ArrayAdapter<String> currencyAdapter = null;
+    int CoName=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -410,6 +411,8 @@ public class Tools extends AppCompatActivity {
         final RadioButton zebraPrinter = MainSettingdialog.findViewById(R.id.ZePrinter);
         final RadioButton tallyPrinter = MainSettingdialog.findViewById(R.id.tallyPrinter);
         final TextView addCurrency=MainSettingdialog.findViewById(R.id.addCurrency);
+final RadioButton athouab=MainSettingdialog.findViewById(R.id.athouab);
+final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
 
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
@@ -521,6 +524,14 @@ public class Tools extends AppCompatActivity {
                 zebraPrinter.setChecked(false);
             }
 
+            if(mainSettings.get(0).getCoName()==0){
+                normal.setChecked(true);
+                athouab.setChecked(false);
+            }else{
+                normal.setChecked(false);
+                athouab.setChecked(true);
+            }
+
         }else {
             companyNo.setText("290");
         }
@@ -586,8 +597,14 @@ public class Tools extends AppCompatActivity {
                     }else if(tallyPrinter.isChecked()){
                         printerType= "3";
                     }
+                    if(normal.isChecked()){
+                        CoName=0;
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType,currency[0]));
+                    }else{
+                        CoName=1;
+                    }
+
+                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType,currency[0],CoName));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     MainSettingdialog.dismiss();
 

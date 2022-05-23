@@ -88,6 +88,8 @@ public class Item extends AppCompatActivity {
     DecimalFormat numberFormat = new DecimalFormat("0.000");
     //DecimalFormat numberFormat = new DecimalFormat("0.##");
 
+    List<MainSetting>mainSettingsList;
+    int settingCOName=0;
     public static TextView textView,textItemName;
     public static ItemCard itemCardForPrint;
     public static AssestItem itemAssesstForPrint;
@@ -302,9 +304,22 @@ TextView barCodTextTemp;
                    boolean isFound=false;
                     if(!itemCode.equals("")& openBarcode){
 
+                        if(settingCOName==1){
+                            itemCode=BarcodetextView.getText().toString();
+                            try {
+                                itemCode = itemCode.substring(0, 12);
+                            }catch (Exception e){
+                                itemCode=BarcodetextView.getText().toString();
+                            }
+                            Log.e("itemCode1_",""+itemCode);
+                        }else{
+                            itemCode=BarcodetextView.getText().toString();
+                        }
+                        Log.e("itemCode2_",""+itemCode);
+
+
                         List<String>itemUnite=findUnite(itemCode);
                         int uQty=1;
-
 
                         if(itemUnite.size()!=0){
 
@@ -678,6 +693,21 @@ TextView barCodTextTemp;
                     String itemCode=BarcodetextView.getText().toString();
                     boolean isFound=false;
                     if(!itemCode.equals("")& openAssesst){
+
+                        if(settingCOName==1){
+                            itemCode=BarcodetextView.getText().toString();
+                            try {
+                                itemCode = itemCode.substring(0, 12);
+                            }catch (Exception e){
+                                itemCode=BarcodetextView.getText().toString();
+                            }
+                            Log.e("itemCode1_",""+itemCode);
+                        }else{
+                            itemCode=BarcodetextView.getText().toString();
+                        }
+                        Log.e("itemCode2_",""+itemCode);
+
+
                         List<String>itemUnite=findUnite(itemCode);
                         int uQty=1;
 
@@ -1393,18 +1423,19 @@ TextView barCodTextTemp;
         final int[] DesignType = {0};
 
         final TextView countText,ItemNameEditTextTag,PriceEditTextTag,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,
-                pricePrint,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint3,pricePrint3;
-        final LinearLayout exit,printShelfTag,ClearButtonTag,shelfTagLiner1,shelfTagLiner,shelfTagLiner3;
+                pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3;
+        final LinearLayout exit,printShelfTag,ClearButtonTag,shelfTagLiner1,shelfTagLiner,shelfTagLiner3,shelfTagLiner4;
         Button SearchButtonTag;
         ImageButton upCount, downCount;
 
-        final ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3;
+        final ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
         final CheckBox PriceCheckBoxTag,ExpCheckBoxTag;
-        final LinearLayout priceLinerPrint,ExpLinerTag;
+        final LinearLayout priceLinerPrint,ExpLinerTag,priceLinerPrint_;
 //RadioGroup design;
 
         ExpLinerTag=(LinearLayout) dialog.findViewById(R.id.ExpLinerTag);
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
+        priceLinerPrint_=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint_);
         PriceCheckBoxTag = (CheckBox) dialog.findViewById(R.id.PriceCheckBoxTag);
         ExpCheckBoxTag = (CheckBox) dialog.findViewById(R.id.ExpCheckBoxTag);
 
@@ -1414,6 +1445,7 @@ TextView barCodTextTemp;
         ExpEditTextTag= (TextView) dialog.findViewById(R.id.ExpEditTextTag);
         itemNamePrint= (TextView) dialog.findViewById(R.id.itemNamePrint);
         pricePrint= (TextView) dialog.findViewById(R.id.pricePrint);
+        pricePrint4= (TextView) dialog.findViewById(R.id.pricePrint_);
         //ItemUnitEditTextTag=(TextView)dialog.findViewById(R.id.ItemUnitEditTextTag);
         exp= (TextView) dialog.findViewById(R.id.exp);
 
@@ -1426,8 +1458,10 @@ TextView barCodTextTemp;
         shelfTagLiner1 =dialog.findViewById(R.id.shelfTagLiner1);
         shelfTagLiner =dialog.findViewById(R.id.shelfTagLiner);
         shelfTagLiner3 =dialog.findViewById(R.id.shelfTagLiner3);
+        shelfTagLiner4 =dialog.findViewById(R.id.shelfTagLiner_iraq);
 
         itemNamePrint3= (TextView) dialog.findViewById(R.id.itemName3);//BarcodeText
+        itemNamePrint4= (TextView) dialog.findViewById(R.id.itemNamePrint_);//BarcodeText
         pricePrint3= (TextView) dialog.findViewById(R.id.price3);
 
         tempText=exp;
@@ -1441,6 +1475,8 @@ TextView barCodTextTemp;
         barcodeShelfPrint= (ImageView) dialog.findViewById(R.id.barcodeShelfPrint);
         barcodeShelfPrint2= (ImageView) dialog.findViewById(R.id.barcodeShelf);
         barcodeShelfPrint3= (ImageView) dialog.findViewById(R.id.barcodeShelf3);
+        barcodeShelfPrint4=(ImageView) dialog.findViewById(R.id.barcodeShelfPrint_);
+
         Spinner designSpinner= dialog.findViewById(R.id.spinnerDesign);
         Spinner uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
         final CheckBox uniteCheckBoxTag=dialog.findViewById(R.id.uniteCheckBoxTag);
@@ -1457,6 +1493,7 @@ TextView barCodTextTemp;
         designList.add(getResources().getString(R.string.des_1));
         designList.add(getResources().getString(R.string.des_2));
         designList.add(getResources().getString(R.string.des_3));
+        designList.add(getResources().getString(R.string.des_4));
 
         List<MainSetting> mainSettings = InventDB.getAllMainSetting();
         if (mainSettings.size() != 0) {
@@ -1490,23 +1527,35 @@ TextView barCodTextTemp;
                     case 0:
                         shelfTagLiner1.setVisibility(View.GONE);
                         shelfTagLiner3.setVisibility(View.GONE);
+                        shelfTagLiner4.setVisibility(View.GONE);
                         shelfTagLiner.setVisibility(View.VISIBLE);
                         DesignType[0] =0;
                         break;
                     case 1:
 
                         shelfTagLiner1.setVisibility(View.VISIBLE);
+                        shelfTagLiner4.setVisibility(View.GONE);
                         shelfTagLiner3.setVisibility(View.GONE);
                         shelfTagLiner.setVisibility(View.GONE);
                         DesignType[0] =1;
                         break;
 
                     case 2:
+                        shelfTagLiner4.setVisibility(View.GONE);
 
                         shelfTagLiner3.setVisibility(View.VISIBLE);
                         shelfTagLiner.setVisibility(View.GONE);
                         shelfTagLiner1.setVisibility(View.GONE);
                         DesignType[0] =2;
+                        break;
+                    case 3:
+
+                        shelfTagLiner3.setVisibility(View.GONE);
+                        shelfTagLiner.setVisibility(View.GONE);
+                        shelfTagLiner1.setVisibility(View.GONE);
+                        shelfTagLiner4.setVisibility(View.VISIBLE);
+
+                        DesignType[0] =3;
                         break;
 
                 }
@@ -1596,6 +1645,8 @@ TextView barCodTextTemp;
                 itemNamePrint3.setText("Item Name");
                 pricePrint3.setText(" 0.00 JD");
 //                barcodeShelfPrint3.setImageDrawable(getResources().getDrawable(R.drawable.barcodes));
+                itemNamePrint4.setText("Item Name");
+                pricePrint4.setText(" 0.00 JD");
             }
         });
 
@@ -1682,8 +1733,10 @@ TextView barCodTextTemp;
 
                         pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
 
+                        pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
                         itemNamePrint2.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
                         itemNamePrint3.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
+                        itemNamePrint4.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
                         exp2.setText(ExpEditTextTag.getText().toString());
                         itemText.setText(ItemCodeEditTextTag.getText().toString());
 
@@ -1692,6 +1745,7 @@ TextView barCodTextTemp;
                             barcodeShelfPrint.setImageBitmap(bitmapBa);
                             barcodeShelfPrint2.setImageBitmap(bitmapBa);
                             barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint4.setImageBitmap(bitmapBa);
                         } catch (WriterException e) {
                             e.printStackTrace();
                         }
@@ -1742,6 +1796,22 @@ TextView barCodTextTemp;
                               ItemCodeEditTextTag.setText(itemCode);
                               isPriceUnite = true;
                           } else {
+
+                              if(settingCOName==1){
+                                  itemCode=ItemCodeEditTextTag.getText().toString();
+                                  try {
+                                      itemCode = itemCode.substring(0, 12);
+                                  }catch (Exception e){
+                                      itemCode=ItemCodeEditTextTag.getText().toString();
+                                  }
+                                  Log.e("itemCode1_",""+itemCode);
+                              }else{
+                                  itemCode=ItemCodeEditTextTag.getText().toString();
+                              }
+                              Log.e("itemCode2_",""+itemCode);
+
+
+
                               List<String> itemUnite = findUnite(itemCode);
                               int uQty = 1;
 
@@ -1783,6 +1853,7 @@ TextView barCodTextTemp;
 
                                       pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
 
+                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
 
                                   } else {
                                       PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
@@ -1792,6 +1863,8 @@ TextView barCodTextTemp;
                                       pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
 
                                       pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
                                   }
 //                            ExpEditTextTag.setText(itemCardsList.get(i).g());
                                   itemNamePrint.setText(itemCard.getItemName());
@@ -1799,6 +1872,7 @@ TextView barCodTextTemp;
 
                                   itemNamePrint2.setText(itemCard.getItemName());
                                   itemNamePrint3.setText(itemCard.getItemName());
+                                  itemNamePrint4.setText(itemCard.getItemName());
                                   exp2.setText(ExpEditTextTag.getText().toString());
                                   itemText.setText(ItemCodeEditTextTag.getText().toString());
 
@@ -1807,6 +1881,7 @@ TextView barCodTextTemp;
                                       barcodeShelfPrint.setImageBitmap(bitmapBa);
                                       barcodeShelfPrint2.setImageBitmap(bitmapBa);
                                       barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                                      barcodeShelfPrint4.setImageBitmap(bitmapBa);
                                   } catch (WriterException e) {
                                       e.printStackTrace();
                                   }
@@ -2254,6 +2329,8 @@ TextView barCodTextTemp;
                 itemNamePrint3.setText("Item Name");
                 pricePrint3.setText(" 0.00 JD");
 //                barcodeShelfPrint3.setImageDrawable(getResources().getDrawable(R.drawable.barcodes));
+                itemNamePrint4.setText("Item Name");
+                pricePrint4.setText(" 0.00 JD");
             }
         });
 
@@ -2362,6 +2439,22 @@ TextView barCodTextTemp;
 
                     if (!itemCodeNew.getText().toString().equals("") && openSave) {
                         itemCardsList = InventDB.getAllItemCard();
+
+                        if(settingCOName==1){
+                            itemCode=itemCodeNew.getText().toString();
+                            try {
+                                itemCode = itemCode.substring(0, 12);
+                            }catch (Exception e){
+                                itemCode=itemCodeNew.getText().toString();
+                            }
+                            Log.e("itemCode1_",""+itemCode);
+                        }else{
+                            itemCode=itemCodeNew.getText().toString();
+                        }
+                        Log.e("itemCode2_",""+itemCode);
+
+
+
 
                         List<String>itemUnite=findUnite(itemCode);
                         int uQty=1;
@@ -3564,6 +3657,13 @@ TextView barCodTextTemp;
         Assesst.setOnClickListener(showDialogOnClick);
         ItemCost.setOnClickListener(showDialogOnClick);
         Clickable();
+        mainSettingsList=new ArrayList<>();
+        mainSettingsList= InventDB.getAllMainSetting();
+        if(mainSettingsList.size()!=0){
+            settingCOName=mainSettingsList.get(0).getCoName();
+        }else {
+            settingCOName=0;
+        }
 
     }
 

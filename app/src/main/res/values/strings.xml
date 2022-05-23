@@ -149,6 +149,8 @@
     <string name="des_2">Des.2</string>
     <string name="des_3">Des.3</string>
     <string name="des_1">Des.1</string>
+    <string name="des_4">Des.4</string>
+
     <string name="item_type">Item Type :</string>
     <string name="inventory_item">Inventory Item</string>
     <string name="old_qty">Old Qty :</string>
@@ -582,6 +584,7 @@
     <string name="currencyType">currency Type</string>
     <string name="JD">Jd</string>
     <string name="unitSave">Unit Save</string>
+    <string name="CompanyType">Company Type</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

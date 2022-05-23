@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="500dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/textColor"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,14 +15,14 @@
         android:padding="10dp">
 
         <!--<TextView-->
-            <!--android:id="@+id/textView31"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/new_item"-->
-            <!--android:textColor="@color/grayLight"-->
-            <!--android:textSize="20sp"-->
-            <!--android:textStyle="bold" />-->
+        <!--android:id="@+id/textView31"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/new_item"-->
+        <!--android:textColor="@color/grayLight"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textStyle="bold" />-->
 
 
         <LinearLayout
@@ -156,8 +156,8 @@
                         android:background="@drawable/bac_frame_no"
                         android:ems="10"
                         android:gravity="center"
-                        android:textColor="@color/white"
                         android:inputType="numberDecimal"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
 
                 </TableRow>
@@ -182,24 +182,24 @@
 
                         <!--<TextView-->
 
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_search_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_search_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView_52"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/search"
+                            android:drawableStart="@drawable/ic_search_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_search_black_24dp"
+                            android:text="@string/search"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -207,16 +207,16 @@
 
 
                     <!--<Button-->
-                        <!--android:id="@+id/searchNew"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/search"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/searchNew"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/search"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
 
                     <LinearLayout
@@ -231,40 +231,40 @@
 
                         <!--<TextView-->
 
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_save_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_save_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView52"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/save"
+                            android:drawableStart="@drawable/ic_save_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_save_black_24dp"
+                            android:text="@string/save"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <!--<Button-->
-                        <!--android:id="@+id/saveNew"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/save"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/saveNew"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/save"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
 
                     <LinearLayout
@@ -279,40 +279,40 @@
 
                         <!--<TextView-->
 
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_transform_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_transform_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView512"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/alternate"
+                            android:drawableStart="@drawable/ic_transform_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_transform_black_24dp"
+                            android:text="@string/alternate"
                             android:textColor="@color/white"
                             android:textSize="10sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <!--<Button-->
-                        <!--android:id="@+id/button9"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/alternate"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="12sp" />-->
+                    <!--android:id="@+id/button9"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/alternate"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="12sp" />-->
 
                 </LinearLayout>
 
@@ -334,40 +334,40 @@
 
                         <!--<TextView-->
 
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_delete_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_delete_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView_152"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:text="@string/delete_item"
+                            android:drawableStart="@drawable/ic_delete_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_delete_black_24dp"
+                            android:text="@string/delete_item"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <!--<Button-->
-                        <!--android:id="@+id/deleteItem"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/delete_item"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/deleteItem"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/delete_item"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
                     <LinearLayout
                         android:id="@+id/deleteAllItem"
@@ -381,40 +381,40 @@
 
                         <!--<TextView-->
 
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_delete_sweep_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_delete_sweep_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textVie152"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:text="@string/delete_all_item"
+                            android:drawableStart="@drawable/ic_delete_sweep_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_delete_sweep_black_24dp"
+                            android:text="@string/delete_all_item"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <!--<Button-->
-                        <!--android:id="@+id/deleteAllItem"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/delete_all_item"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/deleteAllItem"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/delete_all_item"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
                 </LinearLayout>
 
@@ -434,24 +434,24 @@
                         android:orientation="horizontal">
 
                         <!--<TextView-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_clear_all_black_24dp"-->
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_clear_all_black_24dp"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textView152"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:text="@string/clear"
+                            android:drawableStart="@drawable/ic_clear_all_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_clear_all_black_24dp"
+                            android:text="@string/clear"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -459,16 +459,16 @@
 
 
                     <!--<Button-->
-                        <!--android:id="@+id/clearNew"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/clear"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/clearNew"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/clear"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
 
                     <LinearLayout
@@ -482,25 +482,25 @@
                         android:orientation="horizontal">
 
                         <!--<TextView-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="38dp"-->
-                            <!--android:layout_margin="5dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="38dp"-->
+                        <!--android:layout_margin="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
 
-                            <!--android:textAllCaps="false"-->
-                            <!--android:textColor="@color/black"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/black"-->
+                        <!--android:textSize="18sp" />-->
 
                         <TextView
                             android:id="@+id/textVie_152"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:text="@string/exit"
+                            android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
+                            android:text="@string/exit"
                             android:textColor="@color/white"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -508,15 +508,15 @@
 
 
                     <!--<Button-->
-                        <!--android:id="@+id/exit"-->
-                        <!--android:layout_width="131dp"-->
-                        <!--android:layout_height="50dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/edit_button"-->
-                        <!--android:text="@string/exit"-->
-                        <!--android:textColor="@color/orFloor2"-->
-                        <!--android:textSize="15sp" />-->
+                    <!--android:id="@+id/exit"-->
+                    <!--android:layout_width="131dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/edit_button"-->
+                    <!--android:text="@string/exit"-->
+                    <!--android:textColor="@color/orFloor2"-->
+                    <!--android:textSize="15sp" />-->
 
                 </LinearLayout>
 

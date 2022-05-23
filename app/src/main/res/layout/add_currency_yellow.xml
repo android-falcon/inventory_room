@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp"
-    android:background="@color/white"
+    android:background="@color/textColor"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -59,7 +59,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/edit_bac"
+                        android:background="@drawable/bac_frame"
                         android:gravity="center"
                         android:inputType="textPersonName"
                         android:textColor="@color/white"
@@ -85,7 +85,7 @@
                     android:background="@drawable/bac_frame_no"
                     android:text="@string/save"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/NewButton"
                     android:textSize="18sp" />
 
                 <Button

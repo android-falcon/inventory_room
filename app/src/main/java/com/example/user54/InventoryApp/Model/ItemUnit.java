@@ -1,24 +1,50 @@
 package com.example.user54.InventoryApp.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity (tableName = "ITEM_UNITS")
 public class ItemUnit {
 
+    @ColumnInfo(name = "ITEM_O_CODE")
     private String itemOCode;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "ITEM_BARCODE")
     private String itemBarcode ;
+    @ColumnInfo(name = "SALE_PRICE")
     private float salePrice;
+    @ColumnInfo(name = "ITEM_U")
     private String itemU;
+    @ColumnInfo(name = "U_QTY")
     private float UQty;
-    private int uSerial;
+    @ColumnInfo(name = "U_SERIAL5")
+    public int uSerial;
+    @ColumnInfo(name="CALC_QTY")
     private float calcQty;
+    @ColumnInfo(name = "WHOLE_SALE_PRC")
     private float wholeSalePrc;
+    @ColumnInfo(name = "PURCHASE_PRICE")
     private float purchasePrc;
+    @ColumnInfo(name = "PCLASS1")
     private float pclAss1;
+    @ColumnInfo(name = "PCLASS2")
     private float pclAss2;
+    @ColumnInfo(name = "PCLASS3")
     private float pclAss3;
+    @ColumnInfo(name = "IN_DATE")
     private String inDate;
+    @ColumnInfo(name = "UNIT_NAME")
     private String unitName;
 
+    @ColumnInfo(name = "ORG_SALE_PRICE")
     private  String orgSalePrice ;
+    @ColumnInfo(name = "OLD_SALE_PRICE")
     private  String oldSalePrice;
+    @ColumnInfo(name = "UPDATE_DATE")
     private  String updateDate ;
 
 
@@ -185,4 +211,5 @@ public class ItemUnit {
     public String getUpdateDate() {
         return updateDate;
     }
+
 }

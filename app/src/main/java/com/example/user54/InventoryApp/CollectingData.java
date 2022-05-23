@@ -106,6 +106,7 @@ public class CollectingData extends AppCompatActivity {
 
     String StkNo = "";
     String QrUse = "";
+    int settingCOName=0;
     Animation animFadein;
     TableRow row;
     TableLayout noteTable;
@@ -1207,6 +1208,7 @@ public class CollectingData extends AppCompatActivity {
             StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
             StkNo = mainSettings.get(0).getStorNo();
             QrUse = mainSettings.get(0).getIsQr();
+            settingCOName=mainSettings.get(0).getCoName();
         }
         locations.setEnabled(false);
         locations.setText(LocationEdite);
@@ -1505,6 +1507,22 @@ public class CollectingData extends AppCompatActivity {
                             salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(QRList.get(0).getSalesPrice()))));
                             isSaleFromUnit = true;
                         } else {
+
+                            if(settingCOName==1){
+                                itemCode=itemCodeText.getText().toString();
+                                try {
+                                    itemCode = itemCode.substring(0, 12);
+                                }catch (Exception e){
+                                    itemCode=itemCodeText.getText().toString();
+                                }
+                                Log.e("itemCode1_",""+itemCode);
+                            }else{
+                                itemCode=itemCodeText.getText().toString();
+                            }
+                            Log.e("itemCode2_",""+itemCode);
+
+
+
                             List<String> itemUnite = findUnite(itemCode);
 
                             if (itemUnite.size() != 0) {

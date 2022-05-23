@@ -2,33 +2,92 @@ package com.example.user54.InventoryApp.Model;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
+@Entity(tableName = "ITEM_CARD")
 public class ItemCard {
 
+//    private String itemCode;
+//    private String itemName;
+//    private String costPrc;
+//    private String salePrc;
+//    private String AVLQty;
+//    private String FDPRC;
+//    private String branchId;
+//    private String branchName;
+//    private String departmentId;
+//    private String departmentName;
+//    private String itemG;
+//    private String itemK;
+//    private String itemL;
+//    private String itemDiv;
+//    private String itemGs;
+//    private String orgPrice;
+//    private String inDate;
+//    private String isExport;
+//    private String isNew;
+//    private String itemUnit;
+//    private boolean check;
+//    private String isUnite;
+//
+
+
+
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "ITEM_CODE")
     private String itemCode;
+    @ColumnInfo(name = "ITEM_NAME")
     private String itemName;
+    @ColumnInfo(name = "COST_PRC")
     private String costPrc;
+    @ColumnInfo(name = "SALE_PRC")
     private String salePrc;
+    @ColumnInfo(name = "AVL_QTY")
     private String AVLQty;
+    @ColumnInfo(name = "FD_PRC")
     private String FDPRC;
+    @ColumnInfo(name = "BRANCH_ID")
     private String branchId;
+    @ColumnInfo(name = "BRANCH_NAME")
     private String branchName;
+    @ColumnInfo(name = "DEPARTMENT_ID")
     private String departmentId;
+    @ColumnInfo(name = "DEPARTMENT_NAME")
     private String departmentName;
+    @ColumnInfo(name = "ITEM_G")
     private String itemG;
+    @ColumnInfo(name = "ITEM_K")
     private String itemK;
+    @ColumnInfo(name = "ITEM_L")
     private String itemL;
+    @ColumnInfo(name = "ITEM_DIV")
     private String itemDiv;
+    @ColumnInfo(name = "ITEM_GS")
     private String itemGs;
+    @ColumnInfo(name = "ORG_PRICE")
     private String orgPrice;
+    @ColumnInfo(name = "IN_DATE")
     private String inDate;
+    @ColumnInfo(name = "IS_EXPORT")
     private String isExport;
+    @ColumnInfo(name = "IS_NEW")
     private String isNew;
+
     private String itemUnit;
     private boolean check;
     private String isUnite;
+
+    @ColumnInfo(name = "ITEM_M")
+    private String itemM;
+
+
     public ItemCard() {
 
     }
@@ -226,6 +285,14 @@ public class ItemCard {
 
     public String getIsNew() {
         return isNew;
+    }
+
+    public String getItemM() {
+        return itemM;
+    }
+
+    public void setItemM(String itemM) {
+        this.itemM = itemM;
     }
 
     public void setIsNew(String isNew) {

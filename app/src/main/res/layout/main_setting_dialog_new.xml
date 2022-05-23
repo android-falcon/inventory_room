@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/textColor"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_weight="1" >
+                android:layout_weight="1">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -233,50 +233,51 @@
                         android:layout_margin="5dp"
                         android:background="@drawable/bac_frame_no"
                         android:padding="5dp">
-<RadioGroup
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
 
-
-                        <RadioButton
-                            android:id="@+id/SPrinter"
+                        <RadioGroup
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="Sewoo Printer"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
-
-                        <RadioButton
-                            android:id="@+id/ZePrinter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Zebra Printer"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
 
-                        <RadioButton
-                            android:id="@+id/TSCPrinter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TSC Printer"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
-    <RadioButton
-        android:id="@+id/tallyPrinter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tally Printer"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-</RadioGroup>
+                            <RadioButton
+                                android:id="@+id/SPrinter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="Sewoo Printer"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <RadioButton
+                                android:id="@+id/ZePrinter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Zebra Printer"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+
+                            <RadioButton
+                                android:id="@+id/TSCPrinter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TSC Printer"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <RadioButton
+                                android:id="@+id/tallyPrinter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tally Printer"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                        </RadioGroup>
                     </TableRow>
 
                     <TableRow
@@ -293,24 +294,77 @@
                             android:text="@string/currencyType"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
+
                         <Spinner
                             android:id="@+id/CurrencySpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
+
                         <TextView
                             android:id="@+id/addCurrency"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:drawableStart="@drawable/ic_library_add_black_24dp"
-                            android:textColor="@color/white"
                             android:drawableTint="@color/clearButton"
+                            android:textColor="@color/white"
                             android:textSize="20sp" />
 
                     </TableRow>
 
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
 
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="@string/CompanyType"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bac_frame_no"
+                        android:padding="5dp">
+
+                        <RadioGroup
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+
+                            <RadioButton
+                                android:id="@+id/normal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="Normal Company"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <RadioButton
+                                android:id="@+id/athouab"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Athouab"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+
+
+                        </RadioGroup>
+                    </TableRow>
                 </TableLayout>
             </LinearLayout>
         </ScrollView>
@@ -335,24 +389,24 @@
 
                 <!--<TextView-->
 
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="38dp"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="@drawable/ic_save_black_24dp"-->
-                    <!--android:textAllCaps="false"-->
-                    <!--android:textColor="@color/black"-->
-                    <!--android:textSize="18sp" />-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="38dp"-->
+                <!--android:layout_margin="5dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/ic_save_black_24dp"-->
+                <!--android:textAllCaps="false"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp" />-->
 
                 <TextView
                     android:id="@+id/textView1152"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:text="@string/save"
                     android:drawableStart="@drawable/ic_save_black_24dp"
-                    android:padding="10dp"
                     android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/save"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -381,27 +435,27 @@
                 android:orientation="horizontal">
 
                 <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="38dp"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="38dp"-->
+                <!--android:layout_margin="5dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
 
-                    <!--android:textAllCaps="false"-->
-                    <!--android:textColor="@color/black"-->
-                    <!--android:textSize="18sp" />-->
+                <!--android:textAllCaps="false"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="18sp" />-->
 
                 <TextView
                     android:id="@+id/textVie_152"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
+                    android:gravity="center"
+                    android:padding="10dp"
                     android:text="@string/exit"
                     android:textColor="@color/white"
                     android:textSize="12sp"
-                    android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
-                    android:padding="10dp"
-                    android:gravity="center"
                     android:textStyle="bold" />
             </LinearLayout>
 

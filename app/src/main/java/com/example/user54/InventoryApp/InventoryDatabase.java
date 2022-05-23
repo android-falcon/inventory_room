@@ -3,8 +3,10 @@ package com.example.user54.InventoryApp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =28;//version Db
+    private static final int DATABASE_VERSION =30;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -57,6 +59,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String IN_DATE = "IN_DATE";
     private static final String IS_EXPORT = "IS_EXPORT";
     private static final String IS_NEW = "IS_NEW";
+    private static final String ITEM_M = "ITEM_M";
 
     //________________________________________________________________________________
 
@@ -210,6 +213,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String COMPANY_NO = "COMPANY_NO";
     private static final String PRINTER_TYPE="PRINTER_TYPE";
     private static final String CURRENCY_TYPE="CURRENCY_TYPE";
+    private static final String CO_NAME="CO_NAME";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -347,7 +351,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + ORG_PRICE + " NVARCHAR,"
                 + IN_DATE + " NVARCHAR,"
                 + IS_EXPORT + " NVARCHAR,"
-                + IS_NEW + " NVARCHAR" + ")";
+                + IS_NEW + " NVARCHAR,"
+                + ITEM_M + " NVARCHAR" + ")";
         Idb.execSQL(CREATE_TABLE_ITEM_CARD);
 
 //=========================================================================================
@@ -500,7 +505,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + ONLINE_PRICE + " NVARCHAR   ,"
                 + COMPANY_NO + " NVARCHAR   ,"
                 + PRINTER_TYPE + " NVARCHAR   ,"
-                + CURRENCY_TYPE + " NVARCHAR " + ")";
+                + CURRENCY_TYPE + " NVARCHAR   ,"
+                + CO_NAME + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -884,6 +890,19 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
         }
 
+        try{
+
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + CO_NAME + " TEXT"+" DEFAULT '0'");
+        }catch (Exception e){
+
+                }
+        try {
+            Idb.execSQL("ALTER TABLE ITEM_CARD ADD " + ITEM_M + " TEXT"+" DEFAULT ''");
+
+        }catch (Exception e){
+            Log.e("upgrade", "ASSEST_TABLE ASSESST_BARCODE");
+        }
+
 
     }
 
@@ -1020,6 +1039,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(COMPANY_NO,  convertToEnglish(mainSetting.getCompanyNo()));
         values.put(PRINTER_TYPE,  convertToEnglish(mainSetting.getPrinterType()));
         values.put(CURRENCY_TYPE,  convertToEnglish(mainSetting.getCurrencyType()));
+        values.put(CO_NAME,  convertToEnglish(""+mainSetting.getCoName()));
 
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
@@ -1029,6 +1049,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
     public void addItemcardTable(ItemCard itemInfo) {
         SQLiteDatabase Idb = this.getReadableDatabase();
+        Idb.beginTransaction();
         ContentValues values = new ContentValues();
 
         values.put(ITEM_CODE, itemInfo.getItemCode());
@@ -1050,8 +1071,12 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(IN_DATE,  itemInfo.getInDate());
         values.put(IS_EXPORT,  itemInfo.getIsExport());
         values.put(IS_NEW,  itemInfo.getIsNew());
+        values.put(ITEM_M,  itemInfo.getItemM());
 
-        Idb.insert(ITEM_CARD, null, values);
+        Idb.insertWithOnConflict(ITEM_CARD, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        Idb.setTransactionSuccessful();
+        Idb.endTransaction();
+
         Idb.close();
     }
 //    public void addItemcardTableTest(List<ItemCard> itemInfo) {
@@ -1072,7 +1097,62 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 //        Idb.close();
 //    }
 
-    public void addItemcardTableTester(List<ItemCard> itemInfo) {
+    public void addItemcardTableTestAll(List<ItemCard> itemInfo) {//test_1
+        SQLiteDatabase Idb = this.getReadableDatabase();
+        Idb.beginTransaction();
+        ContentValues  values []= new ContentValues[itemInfo.size()];
+
+        String q="INSERT INTO ITEM_CARD VALUES";
+        for(int i=0;i<itemInfo.size();i++) {
+            q+="("+
+                    itemInfo.get(i).getItemCode()
+                    +","+ itemInfo.get(i).getItemName()
+                    +","+itemInfo.get(i).getCostPrc()
+                   +","+itemInfo.get(i).getSalePrc()
+                    +","+itemInfo.get(i).getAVLQty()
+                    +","+itemInfo.get(i).getFDPRC()
+                    +","+itemInfo.get(i).getBranchId()
+                    +","+itemInfo.get(i).getBranchName()
+                    +","+itemInfo.get(i).getDepartmentId()
+                    +","+itemInfo.get(i).getDepartmentName()
+                    +","+itemInfo.get(i).getItemG()
+                    +","+itemInfo.get(i).getItemK()
+                    +","+itemInfo.get(i).getItemL()
+                    +","+itemInfo.get(i).getItemDiv()
+                    +","+itemInfo.get(i).getItemGs()
+                    +","+itemInfo.get(i).getOrgPrice()
+                    +","+itemInfo.get(i).getInDate()
+                    +","+itemInfo.get(i).getIsExport()
+                    +","+itemInfo.get(i).getIsNew()
+                    +"),";
+
+        }
+
+
+        q=q.substring(0,q.lastIndexOf(","))+";";
+        Idb.execSQL(q);
+
+        Idb.close();
+    }
+
+    public void addItemcardTableTestAll_2(String itemInfo) {//test_1
+        SQLiteDatabase Idb = this.getReadableDatabase();
+        Idb.beginTransaction();
+//        ContentValues  values []= new ContentValues[itemInfo.size()];
+
+        itemInfo=itemInfo.substring(0,itemInfo.lastIndexOf(","))+";";
+        Log.e("rrrrrrrrrrr=",""+itemInfo);
+
+
+
+        Idb.execSQL(itemInfo);
+        Idb.setTransactionSuccessful();
+        Idb.endTransaction();
+        Idb.close();
+        Log.e("rrrrrrrrrrr2=","done");
+
+    }
+        public void addItemcardTableTester(List<ItemCard> itemInfo) {
 
         SQLiteDatabase Idb = this.getReadableDatabase();
         Idb.beginTransaction();
@@ -1097,6 +1177,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             values.put(IN_DATE,  itemInfo.get(i).getInDate());
             values.put(IS_EXPORT, itemInfo.get(i).getIsExport());
             values.put(IS_NEW,  itemInfo.get(i).getIsNew());
+            values.put(ITEM_M,  itemInfo.get(i).getItemM());
+
             Idb.insertWithOnConflict(ITEM_CARD, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
         }
@@ -1105,6 +1187,64 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         Idb.endTransaction();
 //        Idb.close();
     }
+
+
+//    public  void addTable(List<ItemCard> itemInfo) {
+//
+//        final long startTime = System.currentTimeMillis();
+//
+//        try {
+//            Idb.execSQL("PRAGMA synchronous=OFF");
+//            Idb.setLockingEnabled(false);
+//            Idb.beginTransaction();
+//            DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(Idb, "ITEM_CARD");
+//            for (int i = 0; i < itemInfo.size(); i++) {
+//                ih.prepareForInsert();
+//
+//                ih.bind(nameColumn, itemInfo.get(i));
+//                ih.bind(1, itemInfo.get(i).getItemName());
+//                ih.bind(ITEM_CODE, itemInfo.get(i).getItemCode());
+//                ih.bind(COST_PRC, itemInfo.get(i).getCostPrc());
+//                ih.bind(SALE_PRC, convertToEnglish( itemInfo.get(i).getSalePrc()));
+//                ih.bind(AVL_QTY,  convertToEnglish(itemInfo.get(i).getAVLQty()));
+//                ih.bind(FD_PRC,  convertToEnglish(itemInfo.get(i).getFDPRC()));
+//                values.put(BRANCH_ID,  convertToEnglish(itemInfo.get(i).getBranchId()));
+//                values.put(BRANCH_NAME, itemInfo.get(i).getBranchName());
+//                values.put(DEPARTMENT_ID, itemInfo.get(i).getDepartmentId());
+//                values.put(DEPARTMENT_NAME, itemInfo.get(i).getDepartmentName());
+//                values.put(ITEM_G, itemInfo.get(i).getItemG());
+//                values.put(ITEM_K, itemInfo.get(i).getItemK());
+//                values.put(ITEM_L, itemInfo.get(i).getItemL());
+//                values.put(ITEM_DIV, itemInfo.get(i).getItemDiv());
+//                values.put(ITEM_GS, itemInfo.get(i).getItemGs());
+//                values.put(ORG_PRICE,  convertToEnglish(itemInfo.get(i).getOrgPrice()));
+//                values.put(IN_DATE,  itemInfo.get(i).getInDate());
+//                values.put(IS_EXPORT, itemInfo.get(i).getIsExport());
+//                values.put(IS_NEW,  itemInfo.get(i).getIsNew());
+//
+//
+//
+//
+//
+//
+//                ih.execute();
+//            }
+//            Idb.setTransactionSuccessful();
+//        } finally {
+//            Idb.endTransaction();
+//            Idb.setLockingEnabled(true);
+//            Idb.execSQL("PRAGMA synchronous=NORMAL");
+//            ih.close();
+////            if (Globals.ENABLE_LOGGING) {
+//                final long endtime = System.currentTimeMillis();
+//                Log.i("Time to insert: ", String.valueOf(endtime - startTime));
+////            }
+//        }
+//
+//    }
+
+
+
 
 
     public void addItemUniteTable(List<ItemUnit> itemUnits) {
@@ -1497,6 +1637,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setInDate(cursor.getString(16));
                 item.setIsExport(cursor.getString(17));
                 item.setIsNew(cursor.getString(18));
+                item.setItemM(cursor.getString(19));
+
                 itemCards.add(item);
             } while (cursor.moveToNext());
         }
@@ -1534,6 +1676,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setInDate(cursor.getString(16));
                 item.setIsExport(cursor.getString(17));
                 item.setIsNew(cursor.getString(18));
+                item.setItemM(cursor.getString(19));
+
                 itemCards.add(item);
             } while (cursor.moveToNext());
         }
@@ -1568,6 +1712,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 itemCards.setOrgPrice(cursor.getString(15));
                 itemCards.setIsExport(cursor.getString(17));
                 itemCards.setIsNew(cursor.getString(18));
+                itemCards.setItemM(cursor.getString(19));
 
 
             } while (cursor.moveToNext());
@@ -1853,6 +1998,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setCompanyNo(cursor.getString(5));
                 item.setPrinterType(cursor.getString(6));
                 item.setCurrencyType(cursor.getString(7));
+                item.setCoName(cursor.getInt(8));
 
                 passwords.add(item);
 
@@ -2152,6 +2298,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setInDate(cursor.getString(16));
                 item.setIsExport(cursor.getString(17));
                 item.setIsNew(cursor.getString(18));
+                item.setItemM(cursor.getString(19));
 
 
                 itemCards.add(item);

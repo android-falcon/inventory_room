@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/textColor"
     android:orientation="vertical">
 
     <LinearLayout
@@ -170,7 +170,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/edit_bac_log4"
+                        android:background="@drawable/bac_frame_no"
                         android:padding="5dp">
 
 
@@ -453,25 +453,25 @@
                     android:orientation="horizontal">
 
                     <!--<TextView-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="38dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/ic_exit_to_app_black_24dp"-->
 
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/black"-->
-                        <!--android:textSize="18sp" />-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
 
                     <TextView
                         android:id="@+id/textVie_152"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/exit"
-                        android:padding="10dp"
-                        android:gravity="center"
                         android:drawableStart="@drawable/ic_exit_to_app_black_24dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="@string/exit"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -489,24 +489,24 @@
 
                     <!--<TextView-->
 
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="38dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/ic_save_black_24dp"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/black"-->
-                        <!--android:textSize="18sp" />-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/ic_save_black_24dp"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
 
                     <TextView
                         android:id="@+id/textView52"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/save"
-                        android:padding="10dp"
-                        android:gravity="center"
                         android:drawableStart="@drawable/ic_save_black_24dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="@string/save"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -523,24 +523,24 @@
                     android:orientation="horizontal">
 
                     <!--<TextView-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="38dp"-->
-                        <!--android:layout_margin="5dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/ic_clear_all_black_24dp"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/black"-->
-                        <!--android:textSize="18sp" />-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="38dp"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/ic_clear_all_black_24dp"-->
+                    <!--android:textAllCaps="false"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
 
                     <TextView
                         android:id="@+id/textView152"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/clear"
-                        android:padding="10dp"
-                        android:gravity="center"
                         android:drawableStart="@drawable/ic_clear_all_black_24dp"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="@string/clear"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
