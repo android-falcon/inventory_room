@@ -107,7 +107,9 @@ public class BluetoothConnectMenu extends Activity {
     int companyNo=0;
 
     DecimalFormat decimalFormat;
+
     DecimalFormat numberFormat = new DecimalFormat("0.00");
+//    DecimalFormat numberFormat = new DecimalFormat("#,###,###");
     //DecimalFormat numberFormat = new DecimalFormat("0.##");
 
 
@@ -538,6 +540,7 @@ public class BluetoothConnectMenu extends Activity {
                             }else {
                                 bitmap = convertLayoutToImage_shelfTag_Iraq(Item.itemCardForPrint);
                                 Log.e("Count = ", "" + Item.itemCardForPrint.getFDPRC());
+
                             }
                             if (bitmap != null) {
                                 Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc() + "   " + remoteDevices.get(0).getAddress());
@@ -805,7 +808,7 @@ public class BluetoothConnectMenu extends Activity {
 
 
         try {
-            Bitmap bitmaps = encodeAsBitmap(itemCard.getItemCode(), BarcodeFormat.CODE_128, 300, 90);
+            Bitmap bitmaps = encodeAsBitmap(itemCard.getItemCode(), BarcodeFormat.CODE_128, 300, 70);
             barcode.setImageBitmap(bitmaps);
         } catch (WriterException e) {
             e.printStackTrace();
@@ -822,6 +825,7 @@ public class BluetoothConnectMenu extends Activity {
         // dialog_Header.show();
         linearView.setDrawingCacheEnabled(true);
         linearView.buildDrawingCache();
+        linearView.setRotation(180f);
         Bitmap bit = linearView.getDrawingCache();
 
         return bit;// creates bitmap and returns the same

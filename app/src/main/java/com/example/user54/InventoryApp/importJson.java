@@ -1464,23 +1464,44 @@ public class importJson {
 
             } else {
                 Log.e("TAG_GetStor", "****Failed to export data");
-                if(!isAssetsIn.equals("1")) {
-                    if (pd != null) {
+                if (!JsonResponse.contains("<title>Title of the document</title>")) {
+                    if (!isAssetsIn.equals("1")) {
+                        if (pd != null) {
+                            pd.dismiss();
+                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText(context.getResources().getString(R.string.ops))
+                                    .setContentText(context.getResources().getString(R.string.faildUn))
+                                    .show();
+                        }
+                    } else {
                         pd.dismiss();
                         new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText(context.getResources().getString(R.string.ops))
-                                .setContentText(context.getResources().getString(R.string.faildunite))
+                                .setContentText(context.getResources().getString(R.string.faildUn))
                                 .show();
+                        new SyncGetAssest().execute();
                     }
                 }else{
-                    pd.dismiss();
-                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText(context.getResources().getString(R.string.ops))
-                            .setContentText(context.getResources().getString(R.string.faildunite))
-                            .show();
-                    new SyncGetAssest().execute();
+                    Toast.makeText(context, "no Parameter", Toast.LENGTH_SHORT).show();
+                    if (!isAssetsIn.equals("1")) {
+                        if (pd != null) {
+                            pd.dismiss();
+                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText(context.getResources().getString(R.string.ops))
+                                    .setContentText(context.getResources().getString(R.string.faildU))
+                                    .show();
+                        }
+                    } else {
+                        pd.dismiss();
+                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText(context.getResources().getString(R.string.ops))
+                                .setContentText(context.getResources().getString(R.string.faildU))
+                                .show();
+                        new SyncGetAssest().execute();
+                    }
                 }
-            }
+                }
+
 //            progressDialog.dismiss();
 
         }

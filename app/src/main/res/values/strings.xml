@@ -198,6 +198,10 @@
     <string name="faildstore">Failed to import Store</string>
     <string name="faildunite">Failed to import Unite</string>
 
+
+    <string name="faildUn">Failed to import units Name Table</string>
+
+    <string name="faildU">Falcons Jard Web Server Application \n (GetItemUnit)</string>
     <string name="Import_Item_Card">Import Item Card</string>
     <string name="ImportItemSwitch">Import Item Switch</string>
     <string name="ImporItemStore">Import Item Store</string>
