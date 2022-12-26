@@ -5,68 +5,69 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/shelfTagLiner"
-        android:layout_width="270dp"
-        android:layout_height="70dp"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="5dp"
         android:orientation="vertical">
-
+        <TextView
+            android:id="@+id/itemNames"
+            android:layout_width="130dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:text="item Name"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:layout_weight="0"
+            android:visibility="invisible"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/itemName"
-            android:layout_width="250dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="item Name"
+            android:layout_marginTop="5dp"
             android:gravity="center"
+            android:layout_weight="0"
             android:textColor="@color/black"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
-<!--        <TextView-->
-<!--            android:id="@+id/itemUnit"-->
-<!--            android:layout_width="320dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:text="item Name"-->
-<!--            android:gravity="center"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="14sp"-->
-<!--            />-->
 
         <ImageView
             android:id="@+id/barcodeShelf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1" />
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/BarcodeText"
-            android:layout_width="250dp"
+            android:layout_width="130dp"
             android:layout_height="10dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="03155454545"
             android:textColor="@color/black"
-            android:textSize="8sp"
+            android:textSize="5sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
+            android:visibility="gone"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/priceLiner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:orientation="horizontal">
 
                 <TextView
@@ -75,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Price :"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -86,35 +88,7 @@
                     android:layout_weight="1"
                     android:text="545.0 JD"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ExpLiner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="bottom"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView421"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="EXP:"
-                    android:textColor="@color/black"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/exp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="20/20/2020"
-                    android:textColor="@color/black"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -32,7 +32,9 @@ public class Tools2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tools_menu);
 
-        InventDB = new InventoryDatabase(Tools2.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(Tools2.this));
+        InventDB = new InventoryDatabase(Tools2.this,data);
         passImport = new ArrayList<>();
         initialization();
 

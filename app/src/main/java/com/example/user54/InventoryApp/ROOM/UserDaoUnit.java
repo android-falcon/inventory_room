@@ -13,6 +13,7 @@ import java.util.List;
 
 @Dao
 public interface UserDaoUnit {
+
     @Query("SELECT * FROM ITEM_UNITS")
     List<ItemUnit> getAll();
 

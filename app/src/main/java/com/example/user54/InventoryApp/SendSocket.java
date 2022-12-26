@@ -51,7 +51,9 @@ public class SendSocket {
 //        this.obj1 = obj;
         this.context = context;
 //        this.orderTransactions = orderTransactions;
-        db = new InventoryDatabase(context);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(context));
+        db = new InventoryDatabase(context,data);
 
 
     }

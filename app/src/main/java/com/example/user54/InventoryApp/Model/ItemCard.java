@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -81,13 +82,15 @@ public class ItemCard {
     private String isNew;
 
     private String itemUnit;
+    @Ignore
     private boolean check;
     private String isUnite;
 
     @ColumnInfo(name = "ITEM_M")
     private String itemM;
 
-
+    public String isStartDay;
+    public String isName;
     public ItemCard() {
 
     }
@@ -297,6 +300,26 @@ public class ItemCard {
 
     public void setIsNew(String isNew) {
         this.isNew = isNew;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public String getIsStartDay() {
+        return isStartDay;
+    }
+
+    public void setIsStartDay(String isStartDay) {
+        this.isStartDay = isStartDay;
+    }
+
+    public String getIsName() {
+        return isName;
+    }
+
+    public void setIsName(String isName) {
+        this.isName = isName;
     }
 
     public JSONObject getJSONObject2() { // for server

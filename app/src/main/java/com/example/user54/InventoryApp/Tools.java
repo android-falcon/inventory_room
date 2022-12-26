@@ -1,8 +1,12 @@
 package com.example.user54.InventoryApp;
 
+import static com.example.user54.InventoryApp.controll.RoomVersion;
+import static com.example.user54.InventoryApp.controll.dataBaseNo;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -47,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,18 +69,20 @@ public class Tools extends AppCompatActivity {
     LinearLayout sendServer, mainSetting, ExportDb, importDb;
 
     Dialog dialog;
-
+     int W = 200, H = 200;
+    EditText printerw,printerH;
     InventoryDatabase InventDB;
     ArrayList<Password> passImport;
     TextView home;
     Animation animFadein;
     SweetAlertDialog dialogSwite;
-    boolean isPermition=false;
-    int flagINoUT=1;
-     Spinner CurrencySpinner;
-    List<String> currencyList=new ArrayList<>();
+    boolean isPermition = false;
+    int flagINoUT = 1;
+    Spinner CurrencySpinner;
+    List<String> currencyList = new ArrayList<>();
     ArrayAdapter<String> currencyAdapter = null;
-    int CoName=0;
+    int CoName = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +92,9 @@ public class Tools extends AppCompatActivity {
 //            setContentView(R.layout.tools_menu2);
 //        }
 
-
-        InventDB = new InventoryDatabase(Tools.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(Tools.this));
+        InventDB = new InventoryDatabase(Tools.this,data);
         passImport = new ArrayList<>();
         initialization();
 
@@ -107,7 +115,6 @@ public class Tools extends AppCompatActivity {
                 finish();
             }
         });
-
 
 
     }
@@ -138,7 +145,7 @@ public class Tools extends AppCompatActivity {
 
                         List<ItemInfo> itemInfoBackup = InventDB.getAllItemInfoBackUp();
 
-                        sendToServer(itemInfos, itemTransInfos, itemTransAssets, mainSetting.get(0).getIsAssest(),itemTransItemCard,itemInfoBackup);
+                        sendToServer(itemInfos, itemTransInfos, itemTransAssets, mainSetting.get(0).getIsAssest(), itemTransItemCard, itemInfoBackup);
 
                     } else {
 
@@ -164,18 +171,18 @@ public class Tools extends AppCompatActivity {
                     break;
 
                 case R.id.ExportDb:
-                    flagINoUT=1;
-                    isPermition= isStoragePermissionGranted();
-                    if(isPermition) {
+                    flagINoUT = 1;
+                    isPermition = isStoragePermissionGranted();
+                    if (isPermition) {
                         ExportDbToExternal();
                     }
                     break;
 
                 case R.id.importDb:
-                    flagINoUT=2;
-                    isPermition= isStoragePermissionGranted();
-                    if(isPermition) {
-                    ImportDbToMyApp();
+                    flagINoUT = 2;
+                    isPermition = isStoragePermissionGranted();
+                    if (isPermition) {
+                        ImportDbToMyApp();
                     }
                     break;
 
@@ -185,7 +192,7 @@ public class Tools extends AppCompatActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    void ExportDbToExternal(){
+    void ExportDbToExternal() {
         dialogSwite = new SweetAlertDialog(Tools.this, SweetAlertDialog.PROGRESS_TYPE);
         dialogSwite.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         dialogSwite.setTitleText("Export Db To External");
@@ -193,12 +200,12 @@ public class Tools extends AppCompatActivity {
         dialogSwite.show();
         File Db = new File("/data/data/com.example.user54.InventoryApp/databases/InventoryDBase");
 
-        String dstPath =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder"  ;
+        String dstPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder";
         File dst = new File(dstPath);
-        Log.e("myAppDataBasedstPath"," "+dstPath);
-        Log.e("myAppDataBaseDb"," "+Db);
+        Log.e("myAppDataBasedstPath", " " + dstPath);
+        Log.e("myAppDataBaseDb", " " + Db);
         try {
-           exportFile(Db, dst);
+            exportFile(Db, dst);
 //            copyFiles(Db,dst);
         } catch (IOException e) {
             e.printStackTrace();
@@ -206,7 +213,7 @@ public class Tools extends AppCompatActivity {
         }
     }
 
-    void ImportDbToMyApp(){
+    void ImportDbToMyApp() {
 
         dialogSwite = new SweetAlertDialog(Tools.this, SweetAlertDialog.PROGRESS_TYPE);
         dialogSwite.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -216,12 +223,12 @@ public class Tools extends AppCompatActivity {
 
         File Dba = new File("/data/data/com.example.user54.InventoryApp/databases");
 
-        String dstPathw =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder" + File.separator;
-        File dsts = new File(dstPathw+"InventoryDBase");
-        Log.e("myAppDataBasedstPath"," "+dstPathw);
-        Log.e("myAppDataBaseDb"," "+Dba);
+        String dstPathw = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder" + File.separator;
+        File dsts = new File(dstPathw + "InventoryDBase");
+        Log.e("myAppDataBasedstPath", " " + dstPathw);
+        Log.e("myAppDataBaseDb", " " + Dba);
         try {
-            exportFile( dsts,Dba);
+            exportFile(dsts, Dba);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -392,7 +399,7 @@ public class Tools extends AppCompatActivity {
 
 
     void showReceiveFromServerDialog() {
-        final Dialog MainSettingdialog = new Dialog(Tools.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        final Dialog MainSettingdialog = new Dialog(Tools.this, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         MainSettingdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         MainSettingdialog.setCancelable(false);
         MainSettingdialog.setContentView(R.layout.main_setting_dialog_new);
@@ -400,8 +407,9 @@ public class Tools extends AppCompatActivity {
 
         LinearLayout exit, save;
 
-        final EditText companyNo=MainSettingdialog.findViewById(R.id.companyNo);
-        final CheckBox onlinePrice =MainSettingdialog.findViewById(R.id.onlineCheckBox);
+        TextView addNo=MainSettingdialog.findViewById(R.id.addNo);
+        final EditText companyNo = MainSettingdialog.findViewById(R.id.companyNo);
+        final CheckBox onlinePrice = MainSettingdialog.findViewById(R.id.onlineCheckBox);
         final TextView StoreName = MainSettingdialog.findViewById(R.id.StoreName);
         final EditText ipSetting = MainSettingdialog.findViewById(R.id.ipSetting);
         final CheckBox AssestCheckBox = MainSettingdialog.findViewById(R.id.AssestCheckBox);
@@ -410,9 +418,23 @@ public class Tools extends AppCompatActivity {
         final RadioButton TscPrinter = MainSettingdialog.findViewById(R.id.TSCPrinter);
         final RadioButton zebraPrinter = MainSettingdialog.findViewById(R.id.ZePrinter);
         final RadioButton tallyPrinter = MainSettingdialog.findViewById(R.id.tallyPrinter);
-        final TextView addCurrency=MainSettingdialog.findViewById(R.id.addCurrency);
-final RadioButton athouab=MainSettingdialog.findViewById(R.id.athouab);
-final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
+        final TextView addCurrency = MainSettingdialog.findViewById(R.id.addCurrency);
+        final RadioButton athouab = MainSettingdialog.findViewById(R.id.athouab);
+        final RadioButton qas = MainSettingdialog.findViewById(R.id.qas);
+
+        final RadioButton normal = MainSettingdialog.findViewById(R.id.normal);
+        final RadioButton withCom_3 = MainSettingdialog.findViewById(R.id.withCom_3);
+        final RadioButton withCom_2 = MainSettingdialog.findViewById(R.id.withCom_2);
+        final RadioButton withOutCom = MainSettingdialog.findViewById(R.id.withOutCom);
+        final CheckBox rotate = MainSettingdialog.findViewById(R.id.rotate);
+        final TextView dataBase = MainSettingdialog.findViewById(R.id.dataBase);
+        TextView room = MainSettingdialog.findViewById(R.id.room);
+        final CheckBox resizeCheckBox = MainSettingdialog.findViewById(R.id.resizeCheckBox);
+          printerw = MainSettingdialog.findViewById(R.id.printerw);
+          printerH = MainSettingdialog.findViewById(R.id.printerH);
+
+
+        final LinearLayout resize = MainSettingdialog.findViewById(R.id.resize);
 
         exit = MainSettingdialog.findViewById(R.id.exit);
         save = MainSettingdialog.findViewById(R.id.saveSetting);
@@ -423,10 +445,24 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
         ArrayAdapter<String> StkAdapter = null;
 
 
-
         final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
         final List<Stk> STKList = InventDB.getAllStk();
-        currencyList=InventDB.getAllCurrency();
+        currencyList = InventDB.getAllCurrency();
+
+        resizeCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (resizeCheckBox.isChecked()) {
+                    resize.setVisibility(View.VISIBLE);
+                } else {
+                    resize.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+
+
         final List<String> StokNo = new ArrayList<>();
         if (STKList.size() != 0) {
             StokNo.clear();
@@ -447,7 +483,19 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
 
         }
 
+        addNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int data=Integer.parseInt(dataBase.getText().toString())+1;
 
+                if(RoomVersion==data){
+                    dataBase.setText(""+data);
+                }else{
+                   // dataBase.setText(""+data);
+                    Toast.makeText(Tools.this, "Data Base Is Same", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         stkSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -465,7 +513,7 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
         CurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currency[0] =(currencyList.get(position));
+                currency[0] = (currencyList.get(position));
             }
 
             @Override
@@ -478,11 +526,32 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
             ipSetting.setText(mainSettings.get(0).getIP());
             StoreName.setText(InventDB.getStkName(mainSettings.get(0).getStorNo()));
 
+            dataBase.setText(""+mainSettings.get(0).getDataBaseNo());//mainSettings.get(0).getDataBaseNo()
+            room.setText("" + mainSettings.get(0).getDataBaseNoRoom());
+
+            printerw.setText("" + mainSettings.get(0).getWidth());
+            printerH.setText("" + mainSettings.get(0).getHeight());
+            W = mainSettings.get(0).getWidth();
+            H = mainSettings.get(0).getHeight();
+
+           // dataBaseNo = mainSettings.get(0).getDataBaseNo();
+           // RoomVersion = mainSettings.get(0).getDataBaseNoRoom();
+
+
+
             companyNo.setText(mainSettings.get(0).getCompanyNo());
             if (mainSettings.get(0).getOnlinePrice().equals("1")) {
                 onlinePrice.setChecked(true);
             } else {
                 onlinePrice.setChecked(false);
+            }
+
+            if (mainSettings.get(0).getReSize() == 1) {
+                resizeCheckBox.setChecked(true);
+                resize.setVisibility(View.VISIBLE);
+            } else {
+                resizeCheckBox.setChecked(false);
+                resize.setVisibility(View.GONE);
             }
 
             if (mainSettings.get(0).getIsAssest().equals("1")) {
@@ -507,33 +576,62 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
                 zebraPrinter.setChecked(false);
                 tallyPrinter.setChecked(false);
                 TscPrinter.setChecked(false);
-            } else  if (mainSettings.get(0).getPrinterType().equals("1")) {
+            } else if (mainSettings.get(0).getPrinterType().equals("1")) {
                 zebraPrinter.setChecked(true);
                 sewPrinter.setChecked(false);
                 tallyPrinter.setChecked(false);
                 TscPrinter.setChecked(false);
-            }else  if (mainSettings.get(0).getPrinterType().equals("2")) {
+            } else if (mainSettings.get(0).getPrinterType().equals("2")) {
                 TscPrinter.setChecked(true);
                 sewPrinter.setChecked(false);
                 tallyPrinter.setChecked(false);
                 zebraPrinter.setChecked(false);
-            }else if(mainSettings.get(0).getPrinterType().equals("3")){
+            } else if (mainSettings.get(0).getPrinterType().equals("3")) {
                 TscPrinter.setChecked(false);
                 sewPrinter.setChecked(false);
                 tallyPrinter.setChecked(true);
                 zebraPrinter.setChecked(false);
             }
 
-            if(mainSettings.get(0).getCoName()==0){
+            if (mainSettings.get(0).getCoName() == 0) {
                 normal.setChecked(true);
                 athouab.setChecked(false);
-            }else{
+                qas.setChecked(false);
+            } else  if (mainSettings.get(0).getCoName() == 1){
                 normal.setChecked(false);
                 athouab.setChecked(true);
+                qas.setChecked(false);
+            }else  if (mainSettings.get(0).getCoName() == 2){
+                normal.setChecked(false);
+                athouab.setChecked(false);
+                qas.setChecked(true);
             }
 
-        }else {
+            if (mainSettings.get(0).getNumberType().equals("0")) {
+                withCom_3.setChecked(true);
+                withCom_2.setChecked(false);
+                withOutCom.setChecked(false);
+            } else if (mainSettings.get(0).getNumberType().equals("1")) {
+                withCom_3.setChecked(false);
+                withCom_2.setChecked(true);
+                withOutCom.setChecked(false);
+            } else if (mainSettings.get(0).getNumberType().equals("2")) {
+                withCom_3.setChecked(false);
+                withCom_2.setChecked(false);
+                withOutCom.setChecked(true);
+            }
+
+            if (mainSettings.get(0).getRotate().equals("1")) {
+                rotate.setChecked(true);
+            } else {
+                rotate.setChecked(false);
+            }
+
+        } else {
             companyNo.setText("290");
+            dataBase.setText(""+dataBaseNo);
+            W=200;
+            H=200;
         }
 
 
@@ -542,7 +640,6 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
             public void onClick(View v) {
 
                 addCurrency();
-
 
 
             }
@@ -562,9 +659,12 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
                     InventDB.deleteAllItem("MAIN_SETTING_TABLE");
                     String Store = "0";
                     String isAssest = "0";//0->not 1-->assest
-                    String isQr="0";//0->not 1-->QR
-                    String isOnline="0";//0->not 1-->online
-                    String printerType="0";
+                    String isQr = "0";//0->not 1-->QR
+                    String isOnline = "0";//0->not 1-->online
+                    String printerType = "0";
+                    String numberType = "0";
+                    String rot = "0";
+                    String resz = "0";
                     if (StokNo.size() != 0) {
                         Store = stkSpinner.getSelectedItem().toString();
                     } else {
@@ -592,20 +692,49 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
                         printerType = "0";
                     } else if (zebraPrinter.isChecked()) {
                         printerType = "1";
-                    }else if (TscPrinter.isChecked()) {
+                    } else if (TscPrinter.isChecked()) {
                         printerType = "2";
-                    }else if(tallyPrinter.isChecked()){
-                        printerType= "3";
+                    } else if (tallyPrinter.isChecked()) {
+                        printerType = "3";
                     }
-                    if(normal.isChecked()){
-                        CoName=0;
+                    if (normal.isChecked()) {
+                        CoName = 0;
 
-                    }else{
-                        CoName=1;
+                    } else  if (athouab.isChecked()) {
+                        CoName = 1;
+                    }else  if (qas.isChecked()) {
+                        CoName=2;
                     }
 
-                    InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest,isQr,isOnline,companyNo.getText().toString(),printerType,currency[0],CoName));
+                    if (withOutCom.isChecked()) {
+                        numberType = "2";
+                    } else if (withCom_3.isChecked()) {
+                        numberType = "0";
+                    } else if (withCom_2.isChecked()) {
+                        numberType = "1";
+                    }
+
+                    if (rotate.isChecked()) {
+                        rot = "1";
+                    } else {
+                        rot = "0";
+                    }
+                    if (resizeCheckBox.isChecked()) {
+                        resz = "1";
+                    } else {
+                        resz = "0";
+                    }
+
+                    if (resizeCheckBox.isChecked()) {
+                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString())));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
+                    } else {
+                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ));
+
+                    }
+                    //writeToFile(dataBase.getText().toString(),Tools.this);
+
+
                     MainSettingdialog.dismiss();
 
                     new SweetAlertDialog(Tools.this, SweetAlertDialog.SUCCESS_TYPE)
@@ -621,28 +750,28 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
         MainSettingdialog.show();
     }
 
-    void addCurrency (){
+    void addCurrency() {
 
-        final Dialog currencyDialog = new Dialog(Tools.this,R.style.Theme_Dialog);
+        final Dialog currencyDialog = new Dialog(Tools.this, R.style.Theme_Dialog);
         currencyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         currencyDialog.setCancelable(false);
         currencyDialog.setContentView(R.layout.add_currency_yellow);
         currencyDialog.setCanceledOnTouchOutside(false);
 
-        final EditText currencyEdit=currencyDialog.findViewById(R.id.addCurrencyE);
+        final EditText currencyEdit = currencyDialog.findViewById(R.id.addCurrencyE);
 
-        Button SaveCurrency,exitCurrency;
-        SaveCurrency=currencyDialog.findViewById(R.id.save);
-        exitCurrency=currencyDialog.findViewById(R.id.exit);
+        Button SaveCurrency, exitCurrency;
+        SaveCurrency = currencyDialog.findViewById(R.id.save);
+        exitCurrency = currencyDialog.findViewById(R.id.exit);
         SaveCurrency.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!currencyEdit.getText().toString().equals("")){
+                if (!currencyEdit.getText().toString().equals("")) {
 
                     InventDB.addCurrencyTable(currencyEdit.getText().toString());
                     Toast.makeText(Tools.this, "Save Successful", Toast.LENGTH_SHORT).show();
-                   currencyList.clear();
-                    currencyList=InventDB.getAllCurrency();
+                    currencyList.clear();
+                    currencyList = InventDB.getAllCurrency();
                     if (currencyList.size() != 0) {
 
                         currencyAdapter = new ArrayAdapter<String>(Tools.this, R.layout.spinner_style, currencyList);
@@ -651,7 +780,7 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
                     }
                     currencyDialog.dismiss();
 
-                }else{
+                } else {
                     currencyEdit.setError("Required!");
                 }
             }
@@ -706,9 +835,9 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
 
     }
 
-    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem> AssestItem, String isAssest, List<ItemCard>itemCard ,List<ItemInfo> itemInfosBackup) {
+    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem> AssestItem, String isAssest, List<ItemCard> itemCard, List<ItemInfo> itemInfosBackup) {
         if (itemInfo.size() != 0 || transferItemsInfos.size() != 0 || AssestItem.size() != 0 || itemInfosBackup.size() != 0) {
-            boolean isExported = false, isExportedTranse = false,isExportItemCard=false,isExportedBackup = false;
+            boolean isExported = false, isExportedTranse = false, isExportItemCard = false, isExportedBackup = false;
             try {
 
                 JSONArray obj2 = new JSONArray();
@@ -763,7 +892,7 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
                     exportJeson.startSending("ExportDataBackup");
                 } else {
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.allExport), Toast.LENGTH_SHORT).show();
-                    TostMesage(getResources().getString(R.string.allExport)+"Backup");
+                    TostMesage(getResources().getString(R.string.allExport) + "Backup");
 
                 }
 
@@ -865,8 +994,8 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
 //        changePassword = (LinearLayout) findViewById(R.id.password);
         sendServer = (LinearLayout) findViewById(R.id.sendSer);
         mainSetting = (LinearLayout) findViewById(R.id.mainSetting);
-        ExportDb= (LinearLayout) findViewById(R.id.ExportDb);
-        importDb= (LinearLayout) findViewById(R.id.importDb);
+        ExportDb = (LinearLayout) findViewById(R.id.ExportDb);
+        importDb = (LinearLayout) findViewById(R.id.importDb);
 //        receiveServer = (LinearLayout) findViewById(R.id.reciveSer);
 
 
@@ -885,7 +1014,7 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public  void copyFiles(File src,  File dst) throws IOException{
+    public void copyFiles(File src, File dst) throws IOException {
 //        Path src = Paths.get(from);
 //        Path dest = Paths.get(to);
 
@@ -922,7 +1051,7 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
         }
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File expFile = new File(dst.getPath() + File.separator + "InventoryDBase" );
+        File expFile = new File(dst.getPath() + File.separator + "InventoryDBase");
 
         FileChannel inChannel = null;
         FileChannel outChannel = null;
@@ -936,23 +1065,22 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
 
         try {
             inChannel.transferTo(0, inChannel.size(), outChannel);
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            if(flagINoUT==1){
+            if (flagINoUT == 1) {
                 new SweetAlertDialog(Tools.this, SweetAlertDialog.ERROR_TYPE)//Tools.this.getResources().getString(R.string.save_SUCCESS)
                         .setTitleText("Exception ")
-                        .setContentText("Exception Error in read File"+e.toString() +" DataBaseFile ")
+                        .setContentText("Exception Error in read File" + e.toString() + " DataBaseFile ")
                         .show();
-            }else if(flagINoUT==1){
+            } else if (flagINoUT == 1) {
                 new SweetAlertDialog(Tools.this, SweetAlertDialog.ERROR_TYPE)//Tools.this.getResources().getString(R.string.save_SUCCESS)
                         .setTitleText("Exception ")
-                        .setContentText("Exception Error in read File"+e.toString() +"External File")
+                        .setContentText("Exception Error in read File" + e.toString() + "External File")
                         .show();
             }
 
 
-        }
-         finally {
+        } finally {
             if (inChannel != null)
                 inChannel.close();
             if (outChannel != null)
@@ -964,21 +1092,20 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
     }
 
 
-    public  boolean isStoragePermissionGranted() {
+    public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.e("gg1","Permission is granted");
+                Log.e("gg1", "Permission is granted");
                 return true;
             } else {
 
-                Log.e("gg2","Permission is revoked");
+                Log.e("gg2", "Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return false;
             }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.e("gg3","Permission is granted");
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.e("gg3", "Permission is granted");
             return true;
         }
     }
@@ -987,18 +1114,27 @@ final RadioButton normal=MainSettingdialog.findViewById(R.id.normal);
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            Log.e("jj4","Permission: "+permissions[0]+ "was "+grantResults[0]);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.e("jj4", "Permission: " + permissions[0] + "was " + grantResults[0]);
             //resume tasks needing this permission
-         if(flagINoUT==1){
-             ExportDbToExternal();
-         }else if (flagINoUT==2){
-             ImportDbToMyApp();
-         }
+            if (flagINoUT == 1) {
+                ExportDbToExternal();
+            } else if (flagINoUT == 2) {
+                ImportDbToMyApp();
+            }
 
 
         }
     }
-
+    private void writeToFile(String data, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("databaseNo.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
 
 }

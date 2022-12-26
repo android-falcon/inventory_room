@@ -3,6 +3,7 @@ package com.example.user54.InventoryApp;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -37,11 +38,15 @@ import com.example.user54.InventoryApp.ROOM.UserDaoCard;
 import com.example.user54.InventoryApp.ROOM.UserDaoSwitch;
 import com.example.user54.InventoryApp.ROOM.UserDaoUnit;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,7 +68,9 @@ public class MainActivity2 extends AppCompatActivity {
     String today,fromDateString="",ToDateString="";
     Date currentTimeAndDate;
     SimpleDateFormat df;
+    AppDatabase db;
     private Calendar myCalendar;
+    TextView logText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +81,19 @@ public class MainActivity2 extends AppCompatActivity {
         }else{
             setContentView(R.layout.activity_main3);
         }
+        controll co=new controll();
+        int dataNo= Integer.parseInt(co.readFromFile(MainActivity2.this));
 
-        InventoryDb=new InventoryDatabase(MainActivity2.this);
+        InventoryDb=new InventoryDatabase(MainActivity2.this,dataNo);
         myCalendar = Calendar.getInstance();
-         currentTimeAndDate = Calendar.getInstance().getTime();
+        db=AppDatabase.getInstanceDatabase(MainActivity2.this);
+
+        currentTimeAndDate = Calendar.getInstance().getTime();
          df = new SimpleDateFormat("dd/MM/yyyy");
         today = df.format(currentTimeAndDate);
+
+
+
 
 //        new SweetAlertDialog(MainActivity2.this)
 //                .setTitleText("Here's a message!")
@@ -174,7 +188,70 @@ public class MainActivity2 extends AppCompatActivity {
                                         sweetAlertDialog.dismissWithAnimation();
 
                                     }else{
-                                        textView.setText(getResources().getString(R.string.NotCorrectPassword));
+
+                                        extractLogToFileAndWeb();
+                                        Log.e("ERROOOOO","rrrRAWAN");
+//                                        if ( isExternalStorageWritable() ) {
+//                                           // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder"  ;
+////                                            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyPersonalAppFolder" );
+//                                            File appDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator  + "MyPersonalAppFolder" );
+//
+//                                            File logDirectory = new File( appDirectory + "/logs" );
+//                                            File logFile = new File( logDirectory, "logcat_" + ".txt" );
+//
+//                                            // create app folder
+//                                            if ( !appDirectory.exists() ) {
+//                                                appDirectory.mkdir();
+//                                            }
+//
+//                                            // create log folder
+//                                            if ( !logDirectory.exists() ) {
+//                                                logDirectory.mkdir();
+//                                            }
+//
+//                                            // clear the previous logcat and then write the new one to the file
+//                                            try {
+//                                                Process process = Runtime.getRuntime().exec("logcat -E");
+//                                                process = Runtime.getRuntime().exec("logcat -f " + logFile.getAbsolutePath());
+//                                                Log.e("jjj","ggg");
+//                                                saveLogInSDCard(MainActivity2.this);
+//                                            } catch ( IOException e ) {
+//                                                e.printStackTrace();
+//                                            }
+//
+//                                        } else if ( isExternalStorageReadable() ) {
+//                                            // only readable
+//                                        } else {
+//                                            // not accessible
+//                                        }
+
+
+
+
+//                                        try {
+//                                            Process process = Runtime.getRuntime().exec("logcat -e");
+//                                            BufferedReader bufferedReader = new BufferedReader(
+//                                                    new InputStreamReader(process.getInputStream()));
+//
+//                                            StringBuilder log=new StringBuilder();
+//                                            String line = "";
+//                                            while ((line = bufferedReader.readLine()) != null) {
+//                                                log.append(line);
+//                                            }
+//                                           // TextView tv = (TextView)findViewById(R.id.textView1);
+//                                            Log.e("","rrr"+log.length());
+//
+//                                            textView.setText(log.toString());
+//
+//                                        } catch (IOException e) {
+//                                            Log.e("error1234",""+e.getMessage().toString());
+//
+//                                            // Handle Exception
+//                                            textView.setText("error"+e.getMessage().toString());
+//
+//                                            Log.e("error1234",""+e.getMessage().toString());
+//                                        }
+                                       // textView.setText(getResources().getString(R.string.NotCorrectPassword));
                                     }
 
                                 }
@@ -185,6 +262,8 @@ public class MainActivity2 extends AppCompatActivity {
 
                 dialog.setCustomView(linearLayout);
                 dialog.show();
+
+
 
 
                 return false;
@@ -200,6 +279,105 @@ public class MainActivity2 extends AppCompatActivity {
 //        report.startAnimation(animFadein);
 //        send.startAnimation(animFadein);
         callAnimation();
+    }
+
+    public File extractLogToFileAndWeb(){
+        //set a file
+        Date datum = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        String fullName = df.format(datum)+"appLog.log";
+        File file = new File (Environment.getExternalStorageDirectory(), fullName);
+
+        //clears a file
+        if(file.exists()){
+            file.delete();
+        }
+
+
+        //write log to file
+        int pid = android.os.Process.myPid();
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -E");
+            //Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String currentLine = null;
+
+            while ((currentLine = reader.readLine()) != null) {
+                if (currentLine != null && currentLine.contains(String.valueOf(pid))) {
+                    result.append(currentLine);
+                    result.append("\n");
+                }
+            }
+
+            FileWriter out = new FileWriter(file);
+            out.write(result.toString());
+            out.close();
+
+            //Runtime.getRuntime().exec("logcat -d -v time -f "+file.getAbsolutePath());
+        } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+
+        //clear the log
+//        try {
+//            Runtime.getRuntime().exec("logcat -c");
+//        } catch (IOException e) {
+//            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+//        }
+
+        return file;
+    }
+
+
+
+    public static void saveLogInSDCard(Context context){
+        String filename = Environment.getExternalStorageDirectory() + File.separator + "project_app.log";
+        String command = "logcat -E *:V";
+
+        try{
+            Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            try{
+                File file = new File(filename);
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                while((line = in.readLine()) != null){
+                    writer.write(line + "\n");
+                }
+                writer.flush();
+                writer.close();
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
+            return true;
+        }
+        return false;
     }
 
     public void callAnimation(){
@@ -228,6 +406,9 @@ public class MainActivity2 extends AppCompatActivity {
         report.startAnimation(scale);
 
     }
+
+
+
 
 
     View.OnClickListener mainMenu = new View.OnClickListener() {
@@ -300,6 +481,8 @@ public class MainActivity2 extends AppCompatActivity {
         final Button itemUnite = new Button(this);
         final Button itemAssets = new Button(this);
         final Button itemQr = new Button(this);
+        final Button itemDelete = new Button(this);
+
         List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
         if (mainSettings.size() != 0) {
 //            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
@@ -313,6 +496,7 @@ public class MainActivity2 extends AppCompatActivity {
         itemUnite.setText("Import Item Unite");
         itemAssets.setText("Import Item Assets");
         itemQr.setText("Import Item QR");
+        itemDelete.setText("Delete All Table");
         if (SweetAlertDialog.DARK_STYLE) {
             itemCard.setTextColor(Color.WHITE);
             itemSwitch.setTextColor(Color.WHITE);
@@ -333,6 +517,7 @@ public class MainActivity2 extends AppCompatActivity {
         linearLayout.addView(itemUnite);
         linearLayout.addView(itemStore);
         linearLayout.addView(itemAssets);
+        linearLayout.addView(itemDelete);
 
 
         final SweetAlertDialog dialog = new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
@@ -342,6 +527,25 @@ public class MainActivity2 extends AppCompatActivity {
         dialog.setCustomView(linearLayout);
         dialog.show();
 
+        itemDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final SweetAlertDialog dialog2 = new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                        .setTitleText("Delete All Table")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        deleteAll();
+                                        sweetAlertDialog.dismissWithAnimation();
+                                    }
+                                });
+
+
+
+                dialog2.show();
+            }
+        });
 
         itemCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -801,22 +1005,24 @@ public class MainActivity2 extends AppCompatActivity {
 
 
     public void dd(List<ItemCard>list){
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         UserDaoCard userDao = db.itemCard();
 
        // userDao.deleteAll();
-        userDao.insertAll(list);
-
+//        try {
+            userDao.insertAll(list);
+//        }catch (Exception e){}
+//
         // List<UserModel> users = userDao.getAll();
 
 
     }
 
     public void saveSwitch(List<ItemSwitch>list){
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         UserDaoSwitch userDao = db.itemSwitch();
 
@@ -828,8 +1034,8 @@ public class MainActivity2 extends AppCompatActivity {
 
     }
     public void saveUnit(List<ItemUnit>list){
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
 
         UserDaoUnit userDao = db.itemUnit();
 
@@ -839,6 +1045,52 @@ public class MainActivity2 extends AppCompatActivity {
         // List<UserModel> users = userDao.getAll();
 
 
+    }
+
+    public void deleteAll(){
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
+        UserDaoCard usercard = db.itemCard();
+        UserDaoSwitch userswitch = db.itemSwitch();
+        UserDaoUnit userDao = db.itemUnit();
+          usercard.deleteAll();
+        userswitch.deleteAll();
+        userDao.deleteAll();
+        Toast.makeText(this, "Successful Delete", Toast.LENGTH_SHORT).show();
+        // List<UserModel> users = userDao.getAll();
+
+
+    }
+
+    private String readFromFile(Context context) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput("databaseNo.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
     }
 
 }

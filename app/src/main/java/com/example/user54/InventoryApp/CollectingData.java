@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -50,6 +51,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.example.user54.InventoryApp.InventoryDatabase;
 import com.example.user54.InventoryApp.Model.AssestItem;
@@ -63,6 +65,8 @@ import com.example.user54.InventoryApp.Model.Stk;
 import com.example.user54.InventoryApp.Model.TransferItemsInfo;
 import com.example.user54.InventoryApp.Model.TransferVhfSerial;
 import com.example.user54.InventoryApp.R;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoCard;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
@@ -73,10 +77,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -85,16 +95,18 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class CollectingData extends AppCompatActivity {
     Button item, report, collecting, exitAll2, setting;
     LinearLayout collectData, collectByORG, transferData, collectingByExpiry,
-            collectByReceipt, UpdateQty, itemAssest,TransferPhar;
+            collectByReceipt, UpdateQty, itemAssest,TransferPhar,addAssest;
     TextView barCodTextTemp;
     TextView home;
     public static TextView textViewUpdate, textItemNameUpdate;
     Dialog dialog;
-    boolean open = false, collDOpen = false, collExOpen = false, collReceipt = false, collTransfer = false, collUpdate = false, collAssetsOpen = false, collTranseOpen = false;
+    boolean open = false, collDOpen = false, collExOpen = false, openAssesst=false,collReceipt = false, collTransfer = false, collUpdate = false, collAssetsOpen = false, collAddAssetsOpen = false,collTranseOpen = false;
     String today;
+    List<AssestItem>itemAssetsCa;
     InventoryDatabase InventDB;
     List<AssestItem> assestItemsList;
     EditText editText;
+    AppDatabase db;
     List<String> managList, areaList, depList, secList;
     ArrayList<ItemInfo> itemUpdate = new ArrayList<>();
     ArrayList<ItemInfoExp> itemUpdateExp = new ArrayList<>();
@@ -102,7 +114,7 @@ public class CollectingData extends AppCompatActivity {
     ArrayList<TransferItemsInfo> itemUpdateTransfer = new ArrayList<>();
     boolean updateOpen = false, openSearch = false, openSave = false, openBarCode = false, openColUp = false;
     int textId = 0;
-    ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
+    List<ItemCard> itemCardsList = new ArrayList<ItemCard>();
 
     String StkNo = "";
     String QrUse = "";
@@ -110,11 +122,12 @@ public class CollectingData extends AppCompatActivity {
     Animation animFadein;
     TableRow row;
     TableLayout noteTable;
-    ArrayList<ItemCard> itemCodeCard;
+    List<ItemCard> itemCodeCard;
     DecimalFormat numberFormat = new DecimalFormat("0.000");
 
     String LocationEdite = "";
     int serial=0;
+    int companyNo=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +140,10 @@ public class CollectingData extends AppCompatActivity {
             setContentView(R.layout.menue3_yellow);
         }
 
-
-        InventDB = new InventoryDatabase(CollectingData.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(CollectingData.this));
+        InventDB = new InventoryDatabase(CollectingData.this,data);
+        db=AppDatabase.getInstanceDatabase(CollectingData.this);
 
         initialization();
 //        transferData.setEnabled(false);
@@ -137,6 +152,7 @@ public class CollectingData extends AppCompatActivity {
         transferData.startAnimation(animFadein);
         UpdateQty.startAnimation(animFadein);
         itemAssest.startAnimation(animFadein);
+        addAssest.startAnimation(animFadein);
         TransferPhar.startAnimation(animFadein);
 
         Date currentTimeAndDate = Calendar.getInstance().getTime();
@@ -149,6 +165,11 @@ public class CollectingData extends AppCompatActivity {
                 finish();
             }
         });
+
+        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+        if (mainSetting.size() != 0) {
+            companyNo=mainSetting.get(0).getCoName();
+        }
 
     }
 
@@ -196,9 +217,9 @@ public class CollectingData extends AppCompatActivity {
                     break;
 
                 case R.id.UpdateQty:
-                    UpdateQty.setClickable(false);
-                    openColUp = true;
-                    showItemUpdateQtyDialog();
+
+
+                    password();
                     break;
                 case R.id.itemAssest:
                     itemAssest.setClickable(false);
@@ -210,11 +231,127 @@ public class CollectingData extends AppCompatActivity {
                     collTranseOpen = true;
                     showTransferDataDialog();
                     break;
+                case R.id.addAssest:
+                    addAssest.setClickable(false);
+                    collAddAssetsOpen = true;
+                    showAddAssetsDataDialog();
+                    break;
 
             }
         }
     };
 
+
+    void password (){
+
+        final EditText editText = new EditText(CollectingData.this);
+        final TextView textView = new TextView(CollectingData.this);
+        editText.setHint("Enter Password");
+        editText.setTextColor(Color.BLACK);
+        textView.setTextColor(Color.RED);
+        if (SweetAlertDialog.DARK_STYLE) {
+            editText.setTextColor(Color.BLACK);
+        }
+        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(editText);
+        linearLayout.addView(textView);
+
+        SweetAlertDialog dialog = new SweetAlertDialog(CollectingData.this, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText("Password")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        String password=editText.getText().toString();
+                        textView.setText("");
+                        if(!password.equals("")){
+
+                            if(password.equals("jrd12345uQ")){
+
+                                textView.setText("");
+
+                                UpdateQty.setClickable(false);
+                                openColUp = true;
+                                showItemUpdateQtyDialog();
+                                sweetAlertDialog.dismissWithAnimation();
+
+                            }else{
+
+                                textView.setText("Password Is not correct");
+//                                        if ( isExternalStorageWritable() ) {
+//                                           // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "InventoryDBFolder"  ;
+////                                            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyPersonalAppFolder" );
+//                                            File appDirectory = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator  + "MyPersonalAppFolder" );
+//
+//                                            File logDirectory = new File( appDirectory + "/logs" );
+//                                            File logFile = new File( logDirectory, "logcat_" + ".txt" );
+//
+//                                            // create app folder
+//                                            if ( !appDirectory.exists() ) {
+//                                                appDirectory.mkdir();
+//                                            }
+//
+//                                            // create log folder
+//                                            if ( !logDirectory.exists() ) {
+//                                                logDirectory.mkdir();
+//                                            }
+//
+//                                            // clear the previous logcat and then write the new one to the file
+//                                            try {
+//                                                Process process = Runtime.getRuntime().exec("logcat -E");
+//                                                process = Runtime.getRuntime().exec("logcat -f " + logFile.getAbsolutePath());
+//                                                Log.e("jjj","ggg");
+//                                                saveLogInSDCard(MainActivity2.this);
+//                                            } catch ( IOException e ) {
+//                                                e.printStackTrace();
+//                                            }
+//
+//                                        } else if ( isExternalStorageReadable() ) {
+//                                            // only readable
+//                                        } else {
+//                                            // not accessible
+//                                        }
+
+
+
+
+//                                        try {
+//                                            Process process = Runtime.getRuntime().exec("logcat -e");
+//                                            BufferedReader bufferedReader = new BufferedReader(
+//                                                    new InputStreamReader(process.getInputStream()));
+//
+//                                            StringBuilder log=new StringBuilder();
+//                                            String line = "";
+//                                            while ((line = bufferedReader.readLine()) != null) {
+//                                                log.append(line);
+//                                            }
+//                                           // TextView tv = (TextView)findViewById(R.id.textView1);
+//                                            Log.e("","rrr"+log.length());
+//
+//                                            textView.setText(log.toString());
+//
+//                                        } catch (IOException e) {
+//                                            Log.e("error1234",""+e.getMessage().toString());
+//
+//                                            // Handle Exception
+//                                            textView.setText("error"+e.getMessage().toString());
+//
+//                                            Log.e("error1234",""+e.getMessage().toString());
+//                                        }
+                                // textView.setText(getResources().getString(R.string.NotCorrectPassword));
+                            }
+
+                        }
+
+                    }
+                });
+//                        .hideConfirmButton();
+
+        dialog.setCustomView(linearLayout);
+        dialog.show();
+
+
+    }
     void showItemUpdateQtyDialog() {
         final Dialog dialogBarCode = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -224,16 +361,6 @@ public class CollectingData extends AppCompatActivity {
         } else {
             dialogBarCode.setContentView(R.layout.update_qty_yellow);
         }
-//
-
-//
-//        GifImageButton gib = new GifImageButton(this);
-//        gib.setImageResource(R.drawable.barcode_scanner);
-//        final MediaController mc = new MediaController(this);
-//        mc.setMediaPlayer((GifDrawable) gib.getDrawable());
-//        mc.setAnchorView(gib);
-//        mc.show();
-
 
         final Boolean[] isFound = {false};
         final boolean[] isEnter = {true};
@@ -265,11 +392,12 @@ public class CollectingData extends AppCompatActivity {
         update = dialogBarCode.findViewById(R.id.update);
         itemName = dialogBarCode.findViewById(R.id.itemName);
         itemCode = (EditText) dialogBarCode.findViewById(R.id.itemCode);
+        int companyNo=0;
         final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
         if (mainSetting.size() != 0) {
             StorNo.setText("" + mainSetting.get(0).getStorNo());
             StorName.setText(InventDB.getStkName(mainSetting.get(0).getStorNo()));
-
+            companyNo=mainSetting.get(0).getCoName();
         }
 
         itemName.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -791,7 +919,7 @@ public class CollectingData extends AppCompatActivity {
                     String itemSwitch;
 
                     if (!itemCodeNew.getText().toString().equals("") && openSave) {
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList = getItemCard();
 
                         if (itemCode.length() > 17) {
                             itemCode.substring(0, 16);
@@ -862,13 +990,30 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 if (!itemNameNew.getText().toString().equals("")) {
                     ItemCard itemCard = new ItemCard();
-
                     itemCard.setItemCode(itemCodeNew.getText().toString());
                     itemCard.setItemName(itemNameNew.getText().toString());
                     itemCard.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(itemPrice.getText().toString()))));
                     itemCard.setIsNew("1");
                     itemCard.setIsExport("0");
-
+                    itemCard.setAVLQty("0");
+                    itemCard.setItemG("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setCostPrc("0");
+                    itemCard.setSalePrc("0");
+                    itemCard.setAVLQty("0");
+                    itemCard.setBranchId("0");
+                    itemCard.setBranchName("0");
+                    itemCard.setDepartmentId("0");
+                    itemCard.setDepartmentName("0");
+                    itemCard.setItemK("0");
+                    itemCard.setItemL("0");
+                    itemCard.setItemDiv("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setOrgPrice("0");
+                    itemCard.setInDate("0");
+                    itemCard.setIsExport("0");
+                    itemCard.setIsNew("1");
+                    itemCard.setItemM("0");
                     InventDB.addItemcardTable(itemCard);
                     prograseSave();
                     itemCodeNew.setText("");
@@ -957,26 +1102,26 @@ public class CollectingData extends AppCompatActivity {
                         collDOpen = true;
                         editText.requestFocus();
                         editText.setText("");
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList =  getItemCard();
                         break;
                     case 2:
                         collExOpen = true;
                         editText.requestFocus();
                         editText.setText("");
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList =  getItemCard();
                         break;
                     case 3:
                         collReceipt = true;
                         editText.requestFocus();
                         editText.setText("");
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList = getItemCard();
                         break;
 
                     case 4:
                         collTransfer = true;
                         editText.requestFocus();
                         editText.setText("");
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList = getItemCard();
                         break;
                 }
 
@@ -1158,13 +1303,14 @@ public class CollectingData extends AppCompatActivity {
         final CheckBox upDateCheck = (CheckBox) dialog.findViewById(R.id.updateQ);
         final RadioButton min, NotMin;
         final CheckBox ExpDateCheckBox = (CheckBox) dialog.findViewById(R.id.ExpDateCheckBox);
-        final TextView itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, _qty, locations;
+        final TextView oldQtys,itemName, itemLocation, itemNameBefore, itemCodeBefore, itemLQtyBefore, itemAQtyBefore, itemDate, _qty, locations;
         final LinearLayout exit, save, clear, update, newButton, search;
         final Button barcode;
         final EditText itemCodeText, itemQty, lotNo, qrCode, salePrice;
         final int[] uQty = {1};
         TableRow rawQr,rawQrLot;
 
+        oldQtys=dialog.findViewById(R.id.oldQty);
         rawQr= dialog.findViewById(R.id.rawQr);
         rawQrLot=dialog.findViewById(R.id.rawQrLot);
         _qty = dialog.findViewById(R.id._qty);
@@ -1212,6 +1358,27 @@ public class CollectingData extends AppCompatActivity {
         }
         locations.setEnabled(false);
         locations.setText(LocationEdite);
+
+
+        itemCodeText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+//                    editText.setSelection(editText.getText().length());
+                    if(itemCodeText.getText().toString().equals("")){
+                        itemCodeText.setFocusable(true);
+                      //  itemCodeText.requestFocus();
+                        new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemCodeText.requestFocus();
+                                }
+                            });
+                    }
+                    }
+
+                }
+        });
 
 //
 //        itemQty.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -1341,6 +1508,7 @@ public class CollectingData extends AppCompatActivity {
         itemQty.setText("1");
         itemName.setText("");
         itemLocation.setText(StkName);
+        itemLocation.setEnabled(false);
         salePrice.setText("");
 
         final int[] serialInfo = {InventDB.getAllItemInfo().size()};
@@ -1375,7 +1543,7 @@ public class CollectingData extends AppCompatActivity {
 
 //        ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
 
-        itemCardsList = InventDB.getAllItemCard();
+        itemCardsList = getItemCard();
 //        itemCodeText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
 //            public void onFocusChange(View v, boolean hasFocus) {
@@ -1549,6 +1717,12 @@ public class CollectingData extends AppCompatActivity {
 
                         }
 
+                        try {
+                            String OldQty = InventDB.getTotal(itemCode, "ITEMS_INFO");
+                            oldQtys.setText(""+OldQty);
+                        }catch (Exception e){
+                            oldQtys.setText("---");
+                        }
 
                         for (int i = 0; i < itemCardsList.size(); i++) {
                             String itemCodeList = itemCardsList.get(i).getItemCode();
@@ -1734,6 +1908,7 @@ public class CollectingData extends AppCompatActivity {
                                 itemQty.setEnabled(true);
                                 itemCodeText.setEnabled(true);
 
+                                    oldQtys.setText("0");
                                 save.setClickable(true);
                                 itemCodeText.setText("");
                                 itemQty.setText("1");
@@ -1787,6 +1962,7 @@ public class CollectingData extends AppCompatActivity {
                             _qty.setText("1");
                             qrCode.setText("0");
                             lotNo.setText("0");
+                            itemCodeText.requestFocus();
 
 
 //                        showAlertDialog("This item not found please add this item before ");
@@ -1966,6 +2142,20 @@ public class CollectingData extends AppCompatActivity {
 //                    itemCode=itemSwitch;
 //                }
 
+                if(settingCOName==1){
+                    itemCode=itemCodeText.getText().toString();
+                    try {
+                        itemCode = itemCode.substring(0, 12);
+                    }catch (Exception e){
+                        itemCode=itemCodeText.getText().toString();
+                    }
+                    Log.e("itemCode1_",""+itemCode);
+                }else{
+                    itemCode=itemCodeText.getText().toString();
+                }
+                Log.e("itemCode2_",""+itemCode);
+
+
                 List<String> itemUnite = findUnite(itemCode);
                 int uQty = 1;
 
@@ -2046,7 +2236,13 @@ public class CollectingData extends AppCompatActivity {
                     progressDialog();
                     ////////CLEAR ///
 
-                    itemCodeText.requestFocus();
+                 //   itemCodeText.requestFocus();
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                itemCodeText.requestFocus();
+                            }
+                        });
                     itemQty.setEnabled(true);
                     itemCodeText.setEnabled(true);
 
@@ -2143,7 +2339,7 @@ public class CollectingData extends AppCompatActivity {
 
         final boolean[] isEnter = {true};
 
-        final TextView itemName;
+        final TextView itemName,search_1;
         final LinearLayout exit, save, clear;
         final Button barcode;
         final EditText itemCodeText, itemQty;
@@ -2153,6 +2349,7 @@ public class CollectingData extends AppCompatActivity {
         depart = dialog.findViewById(R.id.depSpin);
         section = dialog.findViewById(R.id.secSpin);
         area = dialog.findViewById(R.id.AreaSpin);
+        search_1=dialog.findViewById(R.id.search_1);
 
         itemCodeText = (EditText) dialog.findViewById(R.id.itemCode);
         itemQty = (EditText) dialog.findViewById(R.id.item_qty);
@@ -2195,6 +2392,16 @@ public class CollectingData extends AppCompatActivity {
                 openBarCode = true;
                 collAssetsOpen = false;
                 readBarCode(itemCodeText, 8);
+
+            }
+        });
+
+        search_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSearch = true;
+                collExOpen = false;
+                SearchDialogForAssets(itemCodeText, 5);
 
             }
         });
@@ -2377,6 +2584,285 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 itemAssest.setClickable(true);
                 collAssetsOpen = false;
+                noEnterData[0] = false;
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    void showAddAssetsDataDialog() {
+        dialog = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+
+        if (controll.isYellow) {
+            dialog.setContentView(R.layout.activity_add_assets_data_yellow);
+//            getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        } else {
+            dialog.setContentView(R.layout.activity_assets_data_yellow);
+//        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        }
+
+//
+
+        dialog.setCanceledOnTouchOutside(false);
+
+        final boolean[] noEnterData = {true};
+
+        final boolean[] isEnter = {true};
+
+        final EditText itemName;
+        final LinearLayout exit, save, clear;
+        final Button barcode;
+        final EditText itemCodeText;//, itemQty;
+        final Spinner mangment, depart, section, area;
+
+        mangment = dialog.findViewById(R.id.manSpin);
+        depart = dialog.findViewById(R.id.depSpin);
+        section = dialog.findViewById(R.id.secSpin);
+        area = dialog.findViewById(R.id.AreaSpin);
+
+        itemCodeText = (EditText) dialog.findViewById(R.id.itemCode);
+      //  itemQty = (EditText) dialog.findViewById(R.id.item_qty);
+        itemName =  dialog.findViewById(R.id.item_name);
+
+
+        exit = dialog.findViewById(R.id.exit);
+        save = dialog.findViewById(R.id.save);
+        clear = dialog.findViewById(R.id.cler);
+
+        barcode = dialog.findViewById(R.id.barcode);
+
+        managList = new ArrayList<>();
+        areaList = new ArrayList<>();
+        depList = new ArrayList<>();
+        secList = new ArrayList<>();
+
+
+        managList = InventDB.getAllAssesstMang();
+        depList = InventDB.getAllAssesstDepart();
+        secList = InventDB.getAllAssesstSec();
+        areaList = InventDB.getAllAssesstArea();
+        assestItemsList = new ArrayList<>();
+
+//        managList.add("test");
+//        depList .add("test");
+//        secList .add("test");
+//        areaList.add("test");
+
+
+        ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, managList);
+        mangment.setAdapter(MangAdapter);
+
+        ArrayAdapter DepAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, depList);
+        depart.setAdapter(DepAdapter);
+
+        ArrayAdapter SecAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, secList);
+        section.setAdapter(SecAdapter);
+
+        ArrayAdapter AreaAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, areaList);
+        area.setAdapter(AreaAdapter);
+
+        barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openBarCode = true;
+                collAddAssetsOpen = false;
+                readBarCode(itemCodeText, 9);
+
+            }
+        });
+
+        itemCodeText.requestFocus();
+       // itemQty.setEnabled(true);
+        itemCodeText.setEnabled(true);
+
+        save.setClickable(true);
+        itemCodeText.setText("");
+        //itemQty.setText("1");
+        itemName.setText("");
+
+
+        clear.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                itemCodeText.requestFocus();
+          //      itemQty.setEnabled(true);
+                itemCodeText.setEnabled(true);
+
+                save.setClickable(true);
+                itemCodeText.setText("");
+            //    itemQty.setText("1");
+                itemName.setText("");
+            }
+        });
+
+
+        itemCodeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_NULL) {
+//                    if (isEnter[0]) {
+//                        if (!isFound[0]) {
+//                            showAlertDialog("This item not found please add this item before ");
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    itemCodeText.requestFocus();
+//                                }
+//                            });
+//
+//                            itemQty.setEnabled(true);
+//                            itemCodeText.setEnabled(true);
+//
+//                            save.setClickable(true);
+//                            itemCodeText.setText("");
+//                            itemQty.setText("1");
+//                            itemName.setText("");
+//                            salePrice.setText("");
+//                            itemLocation.setText("");
+//                            isEnter[0] = false;
+//                        }
+//
+//                    }
+
+
+                    String itemCode = itemCodeText.getText().toString();
+
+                    if (!itemCode.equals("") && collAddAssetsOpen && noEnterData[0]) {
+                        isEnter[0] = true;
+
+                        assestItemsList = findAssest(itemCode);
+                        if (assestItemsList.size() != 0) {
+
+
+                            showAlertDialog(getResources().getString(R.string.itemFoundAlert));
+                         //   itemName.setText("" + assestItemsList.get(0).getAssesstName());
+                            //itemQty.setSelectAllOnFocus(true);
+                            //itemQty.requestFocus();
+
+                        } else {
+
+
+
+
+//                            Toast.makeText(CollectingData.this, "Not Found", Toast.LENGTH_SHORT).show();
+                           // showAlertDialog(getResources().getString(R.string.thisitemnotfound));
+//                            itemCodeText.setSelectAllOnFocus(true);
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    itemCodeText.requestFocus();
+//                                }
+//                            });
+
+
+
+                        }
+
+                    }
+                }
+                return false;
+            }
+        });
+
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (assestItemsList.size() == 0) {
+                    if (!itemCodeText.getText().toString().equals("") && !itemName.getText().toString().equals("")) {
+                        AssestItem assestItem = new AssestItem();
+                        String manageString = "", depString = "", secString = "", areaString = "";
+                        if (managList.size() != 0) {
+                            manageString = managList.get(mangment.getSelectedItemPosition());
+
+                        } else {
+                            manageString = "";
+                        }
+
+                        if (depList.size() != 0) {
+                            depString = depList.get(depart.getSelectedItemPosition());
+
+                        } else {
+                            depString = "";
+                        }
+
+
+                        if (secList.size() != 0) {
+                            secString = secList.get(section.getSelectedItemPosition());
+
+                        } else {
+                            secString = "";
+                        }
+
+
+                        if (areaList.size() != 0) {
+                            areaString = areaList.get(area.getSelectedItemPosition());
+
+                        } else {
+                            areaString = "";
+                        }
+
+
+                       // serial=InventDB.getMaxSerialAss();
+                        assestItem.setAssesstMangment(manageString);
+                        assestItem.setAssesstDEPARTMENT(depString);
+                        assestItem.setAssesstSECTION(secString);
+                        assestItem.setAssesstAREANAME(areaString);
+
+                        assestItem.setAssesstBarcode(itemCodeText.getText().toString());
+                        assestItem.setAssesstName(itemName.getText().toString());
+                        assestItem.setAssesstType("");
+                        assestItem.setAssesstNo(itemCodeText.getText().toString());
+
+                        //assestItem.setAssesstQty(itemQty.getText().toString());
+                        assestItem.setAssesstDate(convertToEnglish(today));
+                        assestItem.setAssesstCode(itemCodeText.getText().toString());
+                        assestItem.setIsExport("0");
+                       // assestItem.setSerial(""+(serial+1));
+
+                        InventDB.addAssetsItem(assestItem);
+                        progressDialog();
+
+                        itemCodeText.requestFocus();
+
+                        //itemQty.setEnabled(true);
+                        itemCodeText.setEnabled(true);
+
+                        save.setClickable(true);
+                        itemCodeText.setText("");
+                       // itemQty.setText("1");
+                        itemName.setText("");
+                        isEnter[0] = false;
+
+                        assestItemsList.clear();
+                    } else {
+                        TostMesage(CollectingData.this.getResources().getString(R.string.insertData));
+                        itemCodeText.setSelectAllOnFocus(true);
+                        itemCodeText.requestFocus();
+                    }
+                } else {
+                    TostMesage(CollectingData.this.getResources().getString(R.string.insertData));
+                    itemCodeText.setSelectAllOnFocus(true);
+                    itemCodeText.requestFocus();
+                }
+
+            }
+        });
+
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addAssest.setClickable(true);
+                collAddAssetsOpen = false;
                 noEnterData[0] = false;
                 dialog.dismiss();
             }
@@ -2761,7 +3247,7 @@ public class CollectingData extends AppCompatActivity {
         itemLastScan = InventDB.getAllItemInfoExp();
         final int[] serialExp = {itemLastScan.size()};
 
-        itemCardsList = InventDB.getAllItemCard();
+        itemCardsList =  getItemCard();
 
 
         itemCodeText1.setEnabled(true);
@@ -3269,7 +3755,7 @@ public class CollectingData extends AppCompatActivity {
 
 
         final ArrayList<ItemInfoExp> itemPreviousScan = new ArrayList<>();
-        itemCardsList = InventDB.getAllItemCard();
+        itemCardsList = getItemCard();
 
 //        final ArrayList<ItemCard> itemCardsList = itemCardsList;
 
@@ -3459,7 +3945,7 @@ public class CollectingData extends AppCompatActivity {
         dialogTransfer.setCanceledOnTouchOutside(false);
 
 
-        itemCardsList = InventDB.getAllItemCard();
+        itemCardsList = getItemCard();
         String VHF = InventDB.getVhf();
         int VHF_no = 0;
         if (!VHF.equals("")) {
@@ -3553,7 +4039,7 @@ public class CollectingData extends AppCompatActivity {
         }
 
 
-        itemCardsList = InventDB.getAllItemCard();
+        itemCardsList =  getItemCard();
         final String[] fromStore = new String[1];
         final String[] ToStore = new String[1];
 
@@ -4487,13 +4973,25 @@ public class CollectingData extends AppCompatActivity {
 
         dialogSearch.setCanceledOnTouchOutside(false);
 
+
         LinearLayout exit = dialogSearch.findViewById(R.id.exitsearch);
         final EditText itemCodeSearch = (EditText) dialogSearch.findViewById(R.id.itemCodeSearch);
         final ListView tabeSearch = (ListView) dialogSearch.findViewById(R.id.tableSearch);
 
+        TextView sizeM,colorM;
+        sizeM=dialogSearch.findViewById(R.id.sizeM);
+        colorM=dialogSearch.findViewById(R.id.colorM);
+
+        if(companyNo==1){
+            sizeM.setVisibility(View.VISIBLE);
+            colorM.setVisibility(View.VISIBLE);
+        }else{
+            sizeM.setVisibility(View.GONE);
+            colorM.setVisibility(View.GONE);
+        }
 
         itemCodeCard = new ArrayList<>();
-        itemCodeCard = InventDB.getAllItemCard();
+        itemCodeCard = getItemCard();
 
 
         Button barcode;
@@ -4507,7 +5005,7 @@ public class CollectingData extends AppCompatActivity {
             }
         });
 
-        final ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, itemCodeCard);
+        final ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, itemCodeCard,companyNo);
         tabeSearch.setAdapter(listAdapterSearch);
 
         final ArrayList<ItemCard> ItemCodeCardSearch = new ArrayList<>();
@@ -4532,18 +5030,18 @@ public class CollectingData extends AppCompatActivity {
                     if (openSearch) {
 
                         for (int i = 0; i < itemCodeCard.size(); i++) {
-                            if (itemCodeCard.get(i).getItemCode().toUpperCase().contains(itemCodeReader.toUpperCase()) || itemCodeCard.get(i).getItemName().toUpperCase().contains(itemCodeReader.toUpperCase())) {
+                            if (itemCodeCard.get(i).getItemCode().toUpperCase().contains(itemCodeReader.toUpperCase()) || itemCodeCard.get(i).getItemName().toUpperCase().contains(itemCodeReader.toUpperCase())||itemCodeCard.get(i).getItemL().toUpperCase().contains(itemCodeReader.toUpperCase())) {
 //                            insertRowSearch(finalItemCodeCard.get(i).getItemName(), finalItemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
                                 ItemCard itemCard = itemCodeCard.get(i);
                                 ItemCodeCardSearch.add(itemCard);
                             }
-                            ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, ItemCodeCardSearch);
+                            ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, ItemCodeCardSearch,companyNo);
                             tabeSearch.setAdapter(listAdapterSearch);
                         }
                     }
                 } else {
 
-                    ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, itemCodeCard);
+                    ListAdapterSearch listAdapterSearch = new ListAdapterSearch(CollectingData.this, itemCodeCard,companyNo);
                     tabeSearch.setAdapter(listAdapterSearch);
 
                 }
@@ -4584,7 +5082,12 @@ public class CollectingData extends AppCompatActivity {
 
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
 
-                itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
+                try {
+                    itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
+                }catch (Exception e)
+                {
+                    Toast.makeText(CollectingData.this, "size error ", Toast.LENGTH_SHORT).show();
+                }
                 textId = 0;
                 dialogSearch.dismiss();
 
@@ -4635,6 +5138,173 @@ public class CollectingData extends AppCompatActivity {
         dialogSearch.show();
 
     }
+
+
+
+    void SearchDialogForAssets(final EditText itemCodeText, final int swSearch) {
+        final Dialog dialogSearch = new Dialog(CollectingData.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
+        dialogSearch.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogSearch.setCancelable(false);
+        if(controll.isYellow){
+            dialogSearch.setContentView(R.layout.search_dialog_yellow);
+        }else{
+            dialogSearch.setContentView(R.layout.search_dialog);
+        }
+
+
+        dialogSearch.setCanceledOnTouchOutside(false);
+
+
+        TextView sizeM,colorM;
+        sizeM=dialogSearch.findViewById(R.id.sizeM);
+        colorM=dialogSearch.findViewById(R.id.colorM);
+
+        if(companyNo==1){
+            sizeM.setVisibility(View.VISIBLE);
+            colorM.setVisibility(View.VISIBLE);
+        }else{
+            sizeM.setVisibility(View.GONE);
+            colorM.setVisibility(View.GONE);
+        }
+
+        LinearLayout exit =  dialogSearch.findViewById(R.id.exitsearch);
+        final EditText itemCodeSearch = (EditText) dialogSearch.findViewById(R.id.itemCodeSearch);
+        final ListView tabeSearch = (ListView) dialogSearch.findViewById(R.id.tableSearch);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                itemCodeSearch.requestFocus();
+            }
+        });
+
+        itemAssetsCa = new ArrayList<>();
+
+        itemAssetsCa = InventDB.getAllAssesstItem();
+
+        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(CollectingData.this,itemAssetsCa,companyNo);
+        tabeSearch.setAdapter(listAdapterSearch);
+        final ArrayList<AssestItem> ItemCodeCardSearch=new ArrayList<>();
+        for (int i = 0; i < itemAssetsCa.size(); i++) {
+//            insertRowSearch(itemCodeCard.get(i).getItemName(), itemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
+            AssestItem itemCard= itemAssetsCa.get(i);
+            ItemCodeCardSearch.add(itemCard);
+
+        }
+
+
+        Button barcode;
+        barcode = dialogSearch.findViewById(R.id.barcode);
+        barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openBarCode = true;
+                openSearch = false;
+                readBarCode(itemCodeSearch, 4);
+
+
+            }
+        });
+
+
+        itemCodeSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String itemCodeReader = itemCodeSearch.getText().toString();
+                ItemCodeCardSearch.clear();
+                if (!itemCodeReader.equals("")) {
+                    if (openSearch) {
+                        for (int i = 0; i < itemAssetsCa.size(); i++) {
+                            if (itemAssetsCa.get(i).getAssesstCode().contains(itemCodeReader) || itemAssetsCa.get(i).getAssesstName().contains(itemCodeReader)) {
+//                            insertRowSearch(finalItemCodeCard.get(i).getItemName(), finalItemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
+                                AssestItem itemCard= itemAssetsCa.get(i);
+                                ItemCodeCardSearch.add(itemCard);
+                            }
+                        }
+                        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(CollectingData.this,ItemCodeCardSearch,companyNo);
+                        tabeSearch.setAdapter(listAdapterSearch);
+                    }
+                }else{
+                    ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(CollectingData.this,ItemCodeCardSearch,companyNo);
+                    tabeSearch.setAdapter(listAdapterSearch);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        tabeSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                openSearch = false;
+                switch (swSearch) {
+
+                    case 5:
+                        openAssesst = true;
+                        break;
+
+                }
+
+//                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
+
+                itemCodeText.setText(ItemCodeCardSearch.get(position).getAssesstCode());
+
+
+                switch (swSearch) {
+
+                }
+                textId = 0;
+                dialogSearch.dismiss();
+
+            }
+        });
+
+        tabeSearch.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+//                Log.v(TAG, "CHILD TOUCH");
+
+                // Disallow the touch request for parent scroll on touch of  child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogSearch.dismiss();
+                openSearch = false;
+                switch (swSearch) {
+                    case 5:
+                    openAssesst=true;
+                    break;
+
+                }
+                itemCodeText.requestFocus();
+                itemCodeText.setText("");
+                textId = 0;
+            }
+        });
+
+
+        dialogSearch.show();
+
+    }
+
 
     void insertRowSearch(String itemName, String itemCode, TableLayout recipeTable, final Dialog dialogFinsh, final EditText itemCodeText, final int swSearch) {
 
@@ -5117,6 +5787,9 @@ public class CollectingData extends AppCompatActivity {
                 collAssetsOpen = true;
                 break;
 
+            case 9:
+                collAddAssetsOpen = true;
+                break;
         }
 
 
@@ -5149,6 +5822,7 @@ public class CollectingData extends AppCompatActivity {
         final boolean[] onClicke = {true};
 
         final EditText editText = new EditText(CollectingData.this);
+        Spinner spinnerLocation=new Spinner(CollectingData.this);
 //        final TextView textView = new TextView(CollectingData.this);
         editText.setHint(CollectingData.this.getResources().getString(R.string.enter_location));
         editText.setTextColor(Color.BLACK);
@@ -5157,9 +5831,29 @@ public class CollectingData extends AppCompatActivity {
             editText.setTextColor(Color.BLACK);
         }
         LinearLayout linearLayout = new LinearLayout(getApplicationContext());
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.addView(editText);
+        linearLayout.addView(spinnerLocation);
 //        linearLayout.addView(textView);
+
+        final List<String>locationList=InventDB.getAllLocation();
+        //locationList.add(0,"All");
+        ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, locationList);
+        spinnerLocation.setAdapter(MangAdapter);
+
+        spinnerLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                editText.setText(""+locationList.get(i).toString());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                editText.setText("");
+            }
+        });
 
         final SweetAlertDialog dialog = new SweetAlertDialog(CollectingData.this, SweetAlertDialog.NORMAL_TYPE);
         dialog.setTitleText(CollectingData.this.getResources().getString(R.string.location));
@@ -5275,6 +5969,7 @@ public class CollectingData extends AppCompatActivity {
         home = (TextView) findViewById(R.id.home);
         itemAssest = findViewById(R.id.itemAssest);
         TransferPhar=findViewById(R.id.TransferPhar);
+        addAssest = findViewById(R.id.addAssest);
 
         collectByORG.setVisibility(View.GONE);
         collectingByExpiry.setVisibility(View.GONE);
@@ -5283,6 +5978,7 @@ public class CollectingData extends AppCompatActivity {
         collectData.setOnClickListener(showDialogOnClick);
         UpdateQty.setOnClickListener(showDialogOnClick);
         itemAssest.setOnClickListener(showDialogOnClick);
+        addAssest.setOnClickListener(showDialogOnClick);
 //        collectByORG.setOnClickListener(showDialogOnClick);
         transferData.setOnClickListener(showDialogOnClick);
         TransferPhar.setOnClickListener(showDialogOnClick);
@@ -5380,6 +6076,56 @@ public class CollectingData extends AppCompatActivity {
         }
         return objArray.put(obj);
     }
+//    public void dd(ItemCard list){
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+//
+//        UserDaoCard userDao = db.itemCard();
+//
+//        userDao.insertAll(Collections.singletonList(list));
+//
+//
+//
+//    }
 
+
+    public List<ItemCard> getItemCard(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemCard().getAll();
+
+
+    }
+
+    private String readFromFile(Context context) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput("databaseNo.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
 
 }

@@ -140,6 +140,17 @@
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/nameCheckBoxTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:checked="false"
+                            android:text="@string/item_name"
+                            android:textColor="@color/white"
+                            android:textColorHighlight="@color/colorPrimary"
+                            android:textColorLink="@color/colorPrimary"
+                            android:textSize="10sp" />
                     </TableRow>
 
                     <!--                    <TableRow-->
@@ -190,7 +201,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:checked="true"
-                            android:text="unite"
+                            android:text="@string/unite"
                             android:textColor="@color/white"
                             android:textColorHighlight="@color/colorPrimary"
                             android:textColorLink="@color/colorPrimary"
@@ -222,7 +233,7 @@
                             android:id="@+id/PriceCheckBoxTag"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:checked="true"
+                            android:checked="false"
                             android:text="@string/price"
                             android:textColor="@color/white"
                             android:textColorHighlight="@color/colorPrimary"
@@ -258,10 +269,98 @@
                             android:id="@+id/ExpCheckBoxTag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
+                            android:checked="false"
                             android:text="@string/with_exp"
                             android:textColor="@color/white"
                             android:textSize="10sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center|start">
+
+                        <TextView
+                            android:layout_width="95dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Production_Date"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/startEditTextTag"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="10"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/startCheckBoxTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="@string/ProData"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone"
+                        android:gravity="center|start">
+
+                        <TextView
+                            android:layout_width="95dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/PrinterSize"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/prinS"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="10"
+                            android:text="200"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone"
+                        android:gravity="center|start">
+
+                        <TextView
+                            android:layout_width="95dp"
+                            android:layout_height="wrap_content"
+                            android:text="PrintH"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/prinSa"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="10"
+                            android:text="200"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+
                     </TableRow>
 
                 </LinearLayout>
@@ -386,12 +485,25 @@
                         <Spinner
                             android:id="@+id/spinnerDesign"
                             android:layout_width="match_parent"
+                            android:background="@color/white"
                             android:layout_height="wrap_content">
 
                         </Spinner>
 
                     </LinearLayout>
 
+                    <ImageView
+                        android:id="@+id/shelfTagLinerTest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shelf_tag"
+                        android:gravity="center"
+                        android:layoutDirection="ltr"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+
+                    </ImageView>
                     <LinearLayout
                         android:id="@+id/shelfTagLiner1"
                         android:layout_width="match_parent"

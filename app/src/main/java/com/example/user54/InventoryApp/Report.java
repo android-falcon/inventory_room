@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -16,11 +17,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -45,7 +49,7 @@ public class Report extends AppCompatActivity {
     LinearLayout exportText, ExportTransfer, exportExpDate, ExportAlternative,ExportNewItemList,showAssast;
     public static boolean preparAc=false;
     Dialog dialog;
-    TextView home;
+    TextView home,sumText;
     String today;
     InventoryDatabase InventDB;
     
@@ -58,7 +62,8 @@ public class Report extends AppCompatActivity {
 
     List<AssestItem> assestItemList;
     List<AssestItem> assestItemListBackUp;
-
+List<String>locationList;
+String location="1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,9 @@ public class Report extends AppCompatActivity {
 
 
         initialization();
-        InventDB=new InventoryDatabase(Report.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(Report.this));
+        InventDB=new InventoryDatabase(Report.this,data);
         itemInfos=new ArrayList<>();
         itemInfosAcu=new ArrayList<>();
         assestItemList=new ArrayList<>();
@@ -206,6 +213,10 @@ public class Report extends AppCompatActivity {
 
         dialog.setCanceledOnTouchOutside(false);
 
+       final Spinner locationSpinner=dialog.findViewById(R.id.locationSpinner);
+       LinearLayout delByLoc=dialog.findViewById(R.id.delByLoc);
+       final TextView sum=dialog.findViewById(R.id.sum);
+        sumText=dialog.findViewById(R.id.sum);
         final CheckBox AccumCheckBox =(CheckBox)dialog.findViewById(R.id.AccumCheckBox);;
         Button exit,export;
         LinearLayout PrepareButton,del;
@@ -218,6 +229,127 @@ public class Report extends AppCompatActivity {
 
         del =  dialog.findViewById(R.id.del);
 
+
+        locationList=new ArrayList<>();
+        locationList=InventDB.getAllLocation();
+        locationList.add(0,"All");
+        ArrayAdapter MangAdapter = new ArrayAdapter<String>(Report.this, R.layout.spinner_style, locationList);
+        locationSpinner.setAdapter(MangAdapter);
+
+        delByLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                new SweetAlertDialog(Report.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(getResources().getString(R.string.deleteAllItemByLoc))
+                        .setContentText(getResources().getString(R.string.allItemDelete))
+                        .setConfirmText(getResources().getString(R.string.ok))
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+//                                InventDB.deleteAllItem("ITEMS_INFO");
+//                                InventDB.updateIsDeleteItemInfoBackup();
+
+
+                                InventDB.deleteItemFromItemInfoByLocation(location);
+                                if(AccumCheckBox.isChecked()) {
+                                    for (int i = 0; i < itemInfosAcu.size(); i++) {
+                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfosAcu.get(i).getItemCode(), "" + itemInfosAcu.get(i).getSerialNo());
+                                    }
+                                }else {
+                                    for (int i = 0; i < itemInfos.size(); i++) {
+                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(i).getItemCode(), "" + itemInfos.get(i).getSerialNo());
+                                    }
+                                }
+
+                                itemInfosAcu.clear();
+                                itemInfos.clear();
+
+                                tableReport.removeAllViews();
+                                if(AccumCheckBox.isChecked()){
+                                    fillTableRows(tableReport,itemInfosAcu);
+                                    try {
+                                        sum.setText("0");
+                                    }catch (Exception e){
+
+                                    }
+
+                                }else{
+                                    fillTableRows(tableReport,itemInfos);
+                                    try {
+                                        sum.setText("0");
+                                    }catch (Exception e){
+
+                                    }
+                                }
+
+                                locationList=InventDB.getAllLocation();
+                                locationList.add(0,"All");
+                                ArrayAdapter MangAdapter = new ArrayAdapter<String>(Report.this, R.layout.spinner_style, locationList);
+                                locationSpinner.setAdapter(MangAdapter);
+
+                                sDialog.setTitleText(getResources().getString(R.string.delete))
+                                        .setContentText(getResources().getString(R.string.delete_all_item))
+                                        .setConfirmText(getResources().getString(R.string.ok))
+                                        .showCancelButton(false)
+                                        .setCancelClickListener(null)
+                                        .setConfirmClickListener(null)
+                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+
+
+                            }
+                        })
+                        .setCancelButton(getResources().getString(R.string.cancel), new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+
+
+            }
+        });
+
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                tableReport.removeAllViews();
+                location=locationList.get(i);
+                itemInfosAcu=InventDB.getAllItemInfoSum(location);
+
+                itemInfos=InventDB.getAllItemInfo_Report(location);
+
+
+
+                if(AccumCheckBox.isChecked()){
+                    fillTableRows(tableReport,itemInfosAcu);
+
+                    try{
+
+                        sum.setText(""+itemInfosAcu.get(itemInfosAcu.size()-1).getSummation());
+
+                    }catch (Exception e){
+
+                    }
+                }else{
+                    fillTableRows(tableReport,itemInfos);
+                    try{
+
+                        sum.setText(""+itemInfos.get(itemInfos.size()-1).getSummation());
+
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         tableReport.setOnTouchListener(new View.OnTouchListener() {
 
@@ -307,8 +439,19 @@ public class Report extends AppCompatActivity {
                                 tableReport.removeAllViews();
                                 if(AccumCheckBox.isChecked()){
                                     fillTableRows(tableReport,itemInfosAcu);
+                                    try {
+                                        sum.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
+                                    }catch (Exception e){
+
+                                    }
+
                                 }else{
                                     fillTableRows(tableReport,itemInfos);
+                                    try {
+                                        sum.setText("" + itemInfos.get(itemInfos.size() - 1).getSummation());
+                                    }catch (Exception e){
+
+                                    }
                                 }
 
 
@@ -385,15 +528,27 @@ public class Report extends AppCompatActivity {
         });
 
         tableReport.removeAllViews();
-        itemInfosAcu=InventDB.getAllItemInfoSum();
+        itemInfosAcu=InventDB.getAllItemInfoSum(location);
 
-        itemInfos=InventDB.getAllItemInfo();
+        itemInfos=InventDB.getAllItemInfo_Report(location);
+
 
 
         if(AccumCheckBox.isChecked()){
            fillTableRows(tableReport,itemInfosAcu);
+           try {
+               sum.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
+           }catch (Exception e){
+
+           }
         }else{
             fillTableRows(tableReport,itemInfos);
+            try {
+                sum.setText("" + itemInfos.get(itemInfos.size() - 1).getSummation());
+            }catch (Exception e){
+
+            }
+
         }
 
 
@@ -999,11 +1154,15 @@ public class Report extends AppCompatActivity {
                                                 InventDB.deleteItemFromItemInfo(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
 
                                                 InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
-                                                        itemInfosAcu=InventDB.getAllItemInfoSum();
+                                                        itemInfosAcu=InventDB.getAllItemInfoSum(location);
                                                         tableLayout.removeAllViews();
                                                         itemInfos.remove(index);
                                                         fillTableRows(tableLayout,itemInfos);
+                                                        try {
+                                                            sumText.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
+                                                        }catch (Exception e){
 
+                                                        }
                                                 sDialog.setTitleText(getResources().getString(R.string.delete))
                                                         .setContentText(getResources().getString(R.string.rowdelete))
                                                         .setConfirmText(getResources().getString(R.string.ok))
@@ -1687,7 +1846,14 @@ public class Report extends AppCompatActivity {
                         tableLayout.removeAllViews();
                         fillTableRows(tableLayout, itemInfos);
                         itemInfosAcu.clear();
-                        itemInfosAcu = InventDB.getAllItemInfoSum();
+                        itemInfosAcu = InventDB.getAllItemInfoSum(location);
+                        try{
+
+                            sumText.setText(""+itemInfosAcu.get(itemInfosAcu.size()-1).getSummation());
+
+                        }catch (Exception e){
+
+                        }
                         updateDialog.dismiss();
                     }else{
 //                        Toast.makeText(Report.this, getResources().getString(R.string.qty_0), Toast.LENGTH_SHORT).show();

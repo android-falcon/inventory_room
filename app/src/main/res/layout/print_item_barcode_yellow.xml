@@ -99,6 +99,7 @@
                         android:background="@drawable/bac_frame_no"
                         android:ems="10"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:inputType="textPersonName"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
@@ -292,11 +293,22 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:checked="true"
+                            android:checked="false"
                             android:text="@string/price"
                             android:textColor="@color/white"
                             android:textSize="15sp"
                             android:textStyle="bold" />
+                        <CheckBox
+                            android:id="@+id/nameCheckBoxTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:checked="false"
+                            android:text="@string/item_name"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:textColorHighlight="@color/colorPrimary"
+                            android:textColorLink="@color/colorPrimary"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 

@@ -1,13 +1,18 @@
 package com.example.user54.InventoryApp;
 
+import static com.example.user54.InventoryApp.controll.dataBaseNo;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemInfo;
@@ -32,7 +37,7 @@ import java.util.List;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =30;//version Db
+    private static int DATABASE_VERSION =dataBaseNo;//version Db
     private static final String DATABASE_Name = "InventoryDBase";//name Db
 
     static SQLiteDatabase Idb;
@@ -214,7 +219,13 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String PRINTER_TYPE="PRINTER_TYPE";
     private static final String CURRENCY_TYPE="CURRENCY_TYPE";
     private static final String CO_NAME="CO_NAME";
-
+    private static final String NUMBER_TYPE="NUMBER_TYPE";
+    private static final String ROTATE="ROTATE";
+    private static final String DATABASE_NO="DATABASE_NO";
+    private static final String ROOM_DATABASE_NO="ROOM_DATABASE_NO";
+    private static final String RESIZE="RESIZE";
+    private static final String SHELF_TAG_WIDTH="SHELF_TAG_WIDTH";
+    private static final String SHELF_TAG_HEIGHT="SHELF_TAG_HEIGHT";
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
 
@@ -323,8 +334,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
     //_________________________________________________________________________________
 
-    public InventoryDatabase(Context context) {
-        super(context, DATABASE_Name, null, DATABASE_VERSION);
+    public InventoryDatabase(Context context,int data) {
+        super(context, DATABASE_Name, null, data);
     }
     //__________________________________________________________________________________
 
@@ -506,7 +517,14 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + COMPANY_NO + " NVARCHAR   ,"
                 + PRINTER_TYPE + " NVARCHAR   ,"
                 + CURRENCY_TYPE + " NVARCHAR   ,"
-                + CO_NAME + " NVARCHAR " + ")";
+                + CO_NAME + " NVARCHAR   ,"
+                + NUMBER_TYPE + " NVARCHAR   ,"
+                + ROTATE + " NVARCHAR   ,"
+                + DATABASE_NO + " NVARCHAR   ,"
+                + ROOM_DATABASE_NO + " NVARCHAR   ,"
+                + RESIZE + " NVARCHAR   ,"
+                + SHELF_TAG_WIDTH + " NVARCHAR   ,"
+                + SHELF_TAG_HEIGHT + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -902,6 +920,55 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             Log.e("upgrade", "ASSEST_TABLE ASSESST_BARCODE");
         }
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + NUMBER_TYPE + " TEXT"+" DEFAULT '0'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE NUMBER_TYPE");
+        }
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + ROTATE + " TEXT"+" DEFAULT '0'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE ROTATE");
+        }
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + DATABASE_NO + " TEXT"+" DEFAULT '51'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE DATABASE_NO");
+        }
+
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + ROOM_DATABASE_NO + " TEXT"+" DEFAULT '51'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE ROOM_DATABASE_NO");
+        }
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + RESIZE + " TEXT"+" DEFAULT '0'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE RESIZE");
+        }
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + SHELF_TAG_WIDTH + " TEXT"+" DEFAULT '200'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE SHELF_TAG_WIDTH");
+        }
+
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + SHELF_TAG_HEIGHT + " TEXT"+" DEFAULT '200'");
+
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE SHELF_TAG_HEIGHT");
+        }
 
 
     }
@@ -1040,15 +1107,22 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(PRINTER_TYPE,  convertToEnglish(mainSetting.getPrinterType()));
         values.put(CURRENCY_TYPE,  convertToEnglish(mainSetting.getCurrencyType()));
         values.put(CO_NAME,  convertToEnglish(""+mainSetting.getCoName()));
+        values.put(DATABASE_NO,  (""+mainSetting.getDataBaseNo()));
 
+        values.put(NUMBER_TYPE,  convertToEnglish(""+mainSetting.getNumberType()));
+        values.put(ROTATE,  convertToEnglish(""+mainSetting.getRotate()));
+        values.put(RESIZE,  convertToEnglish(""+mainSetting.getReSize()));
+        values.put(SHELF_TAG_WIDTH,  convertToEnglish(""+mainSetting.getWidth()));
+        values.put(SHELF_TAG_HEIGHT,  convertToEnglish(""+mainSetting.getHeight()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public void addItemcardTable(ItemCard itemInfo) {
-        SQLiteDatabase Idb = this.getReadableDatabase();
+         Idb = this.getReadableDatabase();
         Idb.beginTransaction();
         ContentValues values = new ContentValues();
 
@@ -1077,7 +1151,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         Idb.setTransactionSuccessful();
         Idb.endTransaction();
 
-        Idb.close();
+       // Idb.close();
     }
 //    public void addItemcardTableTest(List<ItemCard> itemInfo) {
 //        SQLiteDatabase Idb = this.getReadableDatabase();
@@ -1423,6 +1497,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(ASSESST_DEPARTMENT, assestItem.getAssesstDEPARTMENT());
         values.put(ASSESST_SECTION, assestItem.getAssesstSECTION());
         values.put(ASSESST_AREANAME, assestItem.getAssesstAREANAME());
+        values.put(ASSESST_BARCODE, assestItem.getAssesstBarcode());
 
         Idb.insert(ASSEST_TABLE, null, values);
         Idb.close();
@@ -1501,6 +1576,44 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
     }
 
+    public ArrayList<ItemInfo> getAllItemInfo_Report(String loc) {
+        ArrayList<ItemInfo> itemInfos = new ArrayList<>();
+        String selectQuery="";
+        if(loc.equals("All")) {
+            selectQuery = "SELECT  * FROM " + ITEMS_INFO ;
+        }else {
+            selectQuery = "SELECT  * FROM " + ITEMS_INFO + " where ITEM_LOCATION='" + loc+"'";
+
+        }
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        double sum=0;
+        if (cursor.moveToFirst()) {
+            do {
+                ItemInfo item = new ItemInfo();
+
+                item.setItemCode(cursor.getString(0));
+                item.setItemName(cursor.getString(1));
+                item.setItemQty(cursor.getFloat(2));
+                item.setRowIndex(cursor.getFloat(3));
+                item.setItemLocation(cursor.getString(4));
+                item.setSerialNo(cursor.getInt(5));
+                item.setExpDate(cursor.getString(6));
+                item.setSalePrice(cursor.getFloat(7));
+                item.setTrnDate(cursor.getString(8));
+                item.setIsExport(cursor.getString(9));
+                item.setLocation(cursor.getString(10));
+                item.setQRCode(cursor.getString(11));
+                item.setLotNo(cursor.getString(12));
+sum+=cursor.getFloat(2);
+                item.setSummation(sum);
+                itemInfos.add(item);
+            } while (cursor.moveToNext());
+        }
+        return itemInfos;
+    }
+
 
     public ArrayList<ItemInfo> getAllItemInfo() {
         ArrayList<ItemInfo> itemInfos = new ArrayList<>();
@@ -1551,6 +1664,26 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return currencyList;
     }
 
+    public ArrayList<String> getAllLocation() {
+        ArrayList<String> currencyList = new ArrayList<>();
+
+        String selectQuery = "SELECT  ITEM_LOCATION FROM " + ITEMS_INFO +" Group by ITEM_LOCATION ";
+
+
+        Idb = this.getWritableDatabase();
+        Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                currencyList.add(cursor.getString(0));
+
+
+            } while (cursor.moveToNext());
+        }
+        return currencyList;
+    }
+
     public ArrayList<ItemInfo> getAllItemInfoBackUp() {
         ArrayList<ItemInfo> itemInfos = new ArrayList<>();
 
@@ -1583,12 +1716,20 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return itemInfos;
     }
 
-    public ArrayList<ItemInfo> getAllItemInfoSum() {
+    public ArrayList<ItemInfo> getAllItemInfoSum(String loc) {
         ArrayList<ItemInfo> itemInfos = new ArrayList<>();
+        String selectQuery="";
+        if(loc.equals("All")){
+             selectQuery = "SELECT ITEM_CODE, ITEM_NAME , SALES_PRICE , SUM(ITEM_QTY) ITEM_QTY FROM  ITEMS_INFO  GROUP BY   ITEM_CODE ";
 
-        String selectQuery = "SELECT ITEM_CODE, ITEM_NAME , SALES_PRICE , SUM(ITEM_QTY) ITEM_QTY FROM  ITEMS_INFO GROUP BY   ITEM_CODE ";
+        }else {
+             selectQuery = "SELECT ITEM_CODE, ITEM_NAME , SALES_PRICE , SUM(ITEM_QTY) ITEM_QTY FROM  ITEMS_INFO where ITEM_LOCATION= '"+loc+"' GROUP BY   ITEM_CODE ";
+
+        }
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
+
+        double sum=0;
 
         if (cursor.moveToFirst()) {
             do {
@@ -1598,11 +1739,14 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setItemName(cursor.getString(1));
                 item.setSalePrice(cursor.getInt(2));
                 item.setItemQty(cursor.getFloat(3));
+                sum+=item.getItemQty();
 
+                item.setSummation(sum);
 
                 itemInfos.add(item);
             } while (cursor.moveToNext());
         }
+
         return itemInfos;
     }
 
@@ -1875,7 +2019,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public List<AssestItem> getItemAssets(String ASSESST_BARCODE) {
 
         ArrayList<AssestItem> assestItems = new ArrayList<>();
-        String selectQuery = "SELECT *  FROM " + ASSEST_TABLE +" where ASSESST_BARCODE = '"+ASSESST_BARCODE+"'";
+        String selectQuery = "SELECT *  FROM " + ASSEST_TABLE +" where ASSESST_CODE = '"+ASSESST_BARCODE+"'";
         Idb = this.getWritableDatabase();
         Cursor cursor = Idb.rawQuery(selectQuery, null);
 
@@ -2000,6 +2144,14 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 item.setCurrencyType(cursor.getString(7));
                 item.setCoName(cursor.getInt(8));
 
+                item.setNumberType(cursor.getString(9));
+                item.setRotate(cursor.getString(10));
+                try {
+                    item.setDataBaseNo(cursor.getInt(11));
+                }catch (Exception e){}
+                item.setReSize(cursor.getInt(13));
+                item.setWidth(cursor.getInt(14));
+                item.setHeight(cursor.getInt(15));
                 passwords.add(item);
 
             } while (cursor.moveToNext());
@@ -2799,6 +2951,10 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         Idb.execSQL("DELETE FROM "+ITEMS_INFO+" where ITEM_CODE = '"+ItemCode +"' and SERIAL_NO = '"+SERIALNo+"'"); //delete all rows in a table
     }
 
+    public void deleteItemFromItemInfoByLocation(String loc) {
+        Idb.execSQL("DELETE FROM "+ITEMS_INFO+" where  ITEM_LOCATION= '"+loc+"'"); //delete all rows in a table by location the same
+    }
+
     public void deleteItemFromItemInfoAssest(String ItemCode,String SERIALNo) {
         Idb.execSQL("DELETE FROM "+ASSEST_TABLE_INFO+" where ASSESST_CODE = '"+ItemCode +"' and ASSESST_SERIAL_INFO = '"+SERIALNo+"'"); //delete all rows in a table
     }
@@ -2806,4 +2962,7 @@ String filter=SERIAL_NO4 + " = '" + serialNo + "' and " + ITEM_CODE4 + " = '" + 
         String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫","."));
         return newValue;
     }
+
+
+
 }

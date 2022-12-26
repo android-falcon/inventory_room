@@ -17,10 +17,12 @@ public class ListAdapterSearch extends BaseAdapter {
     CheckBox checkPriceed;
     private Context context;
     List<ItemCard> itemsList;
+    int companyNo;
 
-    public ListAdapterSearch(Context context, List<ItemCard> itemsList) {
+    public ListAdapterSearch(Context context, List<ItemCard> itemsList,int companyNo) {
         this.context = context;
         this.itemsList = itemsList;
+        this.companyNo=companyNo;
     }
 
     public ListAdapterSearch() {
@@ -47,7 +49,7 @@ public class ListAdapterSearch extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView itemCode, itemName;//, price
+        TextView itemCode, itemName,size,color;//, price
     }
 
     @Override
@@ -64,6 +66,19 @@ public class ListAdapterSearch extends BaseAdapter {
         holder.itemName.setText("" + itemsList.get(i).getItemName());
 //        holder.price.setText("" + itemsList.get(i).getSalePrc());
 
+        holder.size=view.findViewById(R.id.size);
+        holder.color=view.findViewById(R.id.color);
+
+         if(companyNo==1){
+            holder.size.setVisibility(View.VISIBLE);
+            holder.color.setVisibility(View.VISIBLE);
+            holder.size.setText(""+itemsList.get(1).getItemM());
+            holder.color.setText(""+itemsList.get(1).getItemK());
+
+        }else {
+            holder.size.setVisibility(View.GONE);
+            holder.color.setVisibility(View.GONE);
+        }
 
         return view;
     }

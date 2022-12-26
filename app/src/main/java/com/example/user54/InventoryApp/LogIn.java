@@ -1,9 +1,16 @@
 package com.example.user54.InventoryApp;
 
+import static com.example.user54.InventoryApp.controll.RoomVersion;
+import static com.example.user54.InventoryApp.controll.dataBaseNo;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.controls.Control;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -12,16 +19,28 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.R;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogIn extends AppCompatActivity {
 
     EditText userName, password;
-    Button logIn;
+    Button logIn,dataB;
     TextView messageLogIn, passStar, userStar,onIntent;
     importJson json1;
     CheckBox design;
     public static TextView intentControl;
+
+  //  InventoryDatabase database;
+
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -31,8 +50,33 @@ public class LogIn extends AppCompatActivity {
         }else{
             setContentView(R.layout.log_activaty);
         }
+       // database=new InventoryDatabase(LogIn.this);
+     //   List<MainSetting> main=new ArrayList<>();
+//        try {
+//            main = database.getAllMainSetting();
+//
+//            if (main.size() != 0) {
+//                dataBaseNo = main.get(0).getDataBaseNo();
+//            }
+//        }catch (Exception e){
+//
+//        }
 
+        dataB=findViewById(R.id.data);
+        dataB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controll co=new controll();
+                co.WriteBtn(LogIn.this,RoomVersion+"");
+            }
+        });
+        String data=readFromFile(LogIn.this);
 
+        if(!TextUtils.isEmpty(data)){
+            dataBaseNo = Integer.parseInt(data.replace("\n",""));
+        }else {
+            dataBaseNo=79;
+        }
 
         design=(CheckBox)findViewById(R.id.design);
         design.setVisibility(View.GONE);
@@ -159,7 +203,35 @@ public class LogIn extends AppCompatActivity {
 
         return Authentication;
     }
+    private String readFromFile(Context context) {
 
+        String ret = "";
+
+        try {
+            InputStream inputStream = context.openFileInput("databaseNo.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
 
 
 }

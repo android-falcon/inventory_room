@@ -10,8 +10,8 @@
 
     <LinearLayout
         android:id="@+id/shelfTagLiner"
-        android:layout_width="250dp"
-        android:layout_height="110dp"
+        android:layout_width="210dp"
+        android:layout_height="100dp"
         android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal">
@@ -40,26 +40,26 @@
                 android:gravity="center"
                 android:text="03155454545"
                 android:textColor="@color/black"
-                android:textSize="8sp"
+                android:textSize="5sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/itemName"
-                android:layout_width="150dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="item Name"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="6sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/textView61"
             android:layout_width="2dp"
-            android:layout_height="110dp"
+            android:layout_height="100dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/black"
@@ -89,7 +89,7 @@
                     android:gravity="center"
                     android:text="545.0 JD"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="EXP:"
                     android:textColor="@color/black"
-                    android:textSize="10sp"
+                    android:textSize="5sp"
 
                     android:textStyle="bold" />
 
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:text="20/20/2020"
                     android:textColor="@color/black"
-                    android:textSize="10sp"
+                    android:textSize="5sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

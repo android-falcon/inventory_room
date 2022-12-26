@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Inventory App </string>
-    <string name="inventory_system">Inventory App</string>
+    <string name="inventory_system">Inventory App V1.6</string>
     <string name="item_code">Item Code </string>
     <string name="item_name">Item Name </string>
     <string name="item_qty">Item QTY </string>
@@ -121,6 +121,7 @@
     <string name="enterPassAndUser"><![CDATA[Please enter User Name & Password]]></string>
     <string name="ok">Ok</string>
     <string name="deleteAllItemInfo">Delete All Item Info !!!</string>
+    <string name="deleteAllItemByLoc">Delete All Item In This Location !!!</string>
     <string name="choess">Click Operation</string>
     <string name="deletethisitem">you are sour you want to Delete This Item</string>
     <string name="acumalateitem">Item In Table Is Accumlate Item</string>
@@ -150,6 +151,7 @@
     <string name="des_3">Des.3</string>
     <string name="des_1">Des.1</string>
     <string name="des_4">Des.4</string>
+    <string name="des_5">Des.5</string>
 
     <string name="item_type">Item Type :</string>
     <string name="inventory_item">Inventory Item</string>
@@ -214,6 +216,7 @@
     <string name="minus">-</string>
     <string name="qty_kind">Qty Kind</string>
     <string name="assets">Assets</string>
+    <string name="assetsColl">Collecting Assets</string>
     <string name="management">Management</string>
     <string name="department">Department</string>
     <string name="section">Section</string>
@@ -589,6 +592,15 @@
     <string name="JD">Jd</string>
     <string name="unitSave">Unit Save</string>
     <string name="CompanyType">Company Type</string>
+    <string name="DecimalFormat">Decimal Format (number)</string>
+    <string name="PrinterSize">Printer Size (Shelf Tag) W</string>
+    <string name="PrinterSizeH">Printer Size H</string>
+    <string name="Production_Date">Production Date</string>
+    <string name="ProData">P.Date</string>
+    <string name="unite">unite</string>
+    <string name="AddAssest">Add Assest</string>
+    <string name="size">Size</string>
+    <string name="color">Color</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

@@ -21,6 +21,7 @@ public class ItemInfo  {
     private String QRCode;
     private String LotNo;
     private String IsDelete;
+    private double Summation;
 
     public ItemInfo() {
 
@@ -42,6 +43,7 @@ public class ItemInfo  {
         this.LotNo = lotNo;
     }
 
+
     public void setSerialNo(int serialNo) {
         this.serialNo = serialNo;
     }
@@ -56,6 +58,14 @@ public class ItemInfo  {
 
     public void setItemQty(float itemQty) {
         this.itemQty = itemQty;
+    }
+
+    public double getSummation() {
+        return Summation;
+    }
+
+    public void setSummation(double summation) {
+        Summation = summation;
     }
 
     public void setRowIndex(float rowIndex) {

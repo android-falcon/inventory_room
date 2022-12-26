@@ -10,5 +10,5 @@
     android:paddingHorizontal="10dp"
     android:singleLine="true"
     android:textAlignment="inherit"
-    android:textColor="@color/black"
+    android:textColor="@color/orFloor"
     android:textSize="14sp" />

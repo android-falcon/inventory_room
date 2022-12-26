@@ -10,10 +10,25 @@
       <map>
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/alternate_buttons.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_.xml" value="0.126" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_2.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_ce.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_frame.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_frame_no.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/bac_notwhite.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_log2.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_log3.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_log4.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_log4_new.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_log_y.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_table.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_bac_y.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/edit_button_log.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/end_buttons.xml" value="0.126" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/focused_table.xml" value="0.1835" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/drawable/new_buttons.xml" value="0.2203125" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_add_assets_data_yellow.xml" value="0.17962962962962964" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_assets_data_yellow.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_collecting_data.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/activity_collecting_data_yellow.xml" value="0.20416666666666666" />
@@ -30,10 +45,14 @@
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/add_currency_yellow.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/alert_dialog_not_found.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/app.xml" value="0.1" />
-        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog.xml" value="0.25" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog2.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_athouab.xml" value="0.67" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_athouab.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_dimono_red.xml" value="0.1935185185185185" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_max.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_pink.xml" value="0.17962962962962964" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_qastas.xml" value="0.2" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/barcode_print_dialog_qastas_assest.xml" value="0.2" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/bluetooth_menu_esc.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/boom.xml" value="0.1" />
@@ -58,13 +77,13 @@
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu2_new.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_menu2_yellow.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_row.xml" value="0.1" />
-        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_row_search.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/item_row_search.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/location_yellow.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log_activaty.xml" value="0.1" />
-        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log_activaty_yellow.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/log_activaty_yellow.xml" value="0.2" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/mac_adreass_activity_yellow.xml" value="0.1" />
-        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/main_setting_dialog_new.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/main_setting_dialog_new.xml" value="0.2" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/menue.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/menue3.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/menue3_new.xml" value="0.1" />
@@ -87,10 +106,17 @@
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/search_dialog_yellow.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog2.xml" value="0.1685185185185185" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_1.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design2.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design2_bitaltmoin.xml" value="0.19537037037037036" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design2_max.xml" value="0.1935185185185185" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design3.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design3_.xml" value="0.1" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design3_max.xml" value="0.1935185185185185" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_design_qusion.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_max.xml" value="0.1935185185185185" />
+        <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/shlf_tag_dialog_rotat.xml" value="0.2" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/spinner_style.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/title_for_print.xml" value="0.1" />
         <entry key="..\:/Users/mr gamer/AndroidStudioProjects/InventoryApp/app/src/main/res/layout/tools_menu.xml" value="0.1" />

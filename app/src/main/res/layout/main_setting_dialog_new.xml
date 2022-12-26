@@ -49,7 +49,8 @@
                     android:layout_weight="1"
                     android:padding="5dp">
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp">
@@ -58,7 +59,7 @@
                             android:id="@+id/textView54"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
                             android:text="@string/ip"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
@@ -75,9 +76,10 @@
                             android:textColor="@color/white"
                             android:textSize="16sp" />
 
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp">
@@ -86,7 +88,7 @@
                             android:id="@+id/textVi1ew54"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
                             android:text="@string/store_no"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
@@ -99,9 +101,10 @@
                             android:layout_weight="1" />
 
 
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp">
@@ -110,7 +113,7 @@
                             android:id="@+id/textVi1ew154"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
                             android:text="@string/store_name"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
@@ -128,9 +131,10 @@
                             android:textSize="16sp" />
 
 
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp">
@@ -138,7 +142,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
                             android:text="@string/companyNo"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
@@ -156,9 +160,91 @@
                             android:textSize="16sp" />
 
 
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Data Base No"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/dataBase"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="8"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/addNo"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:drawableStart="@drawable/ic_library_add_black_24dp"
+                            android:drawableTint="@color/clearButton"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Room Data Base No"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/room"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="8"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/addRoomNo"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:drawableStart="@drawable/ic_library_add_black_24dp"
+                            android:drawableTint="@color/clearButton"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -174,9 +260,10 @@
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -192,9 +279,10 @@
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -210,9 +298,119 @@
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </TableRow>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bac_frame_no"
+                        android:padding="5dp">
 
-                    <TableRow
+
+                        <CheckBox
+                            android:id="@+id/rotate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rotate Image"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bac_frame_no"
+                        android:padding="5dp">
+
+
+                        <CheckBox
+                            android:id="@+id/resizeCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ReSize Shelf Tag"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/resize"
+                            android:visibility="gone"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/PrinterSize"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/printerw"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bac_frame_no"
+                                    android:ems="8"
+                                    android:gravity="center"
+                                    android:text="200"
+                                    android:padding="5dp"
+                                    android:inputType="number"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp" />
+
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/PrinterSizeH"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/printerH"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bac_frame_no"
+                                    android:ems="8"
+                                    android:inputType="number"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:text="200"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -226,9 +424,11 @@
                             android:text="@string/PrinterType"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -279,9 +479,10 @@
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
                         </RadioGroup>
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -291,7 +492,68 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="1"
+                            android:text="@string/DecimalFormat"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/bac_frame_no"
+                        android:padding="5dp">
+
+                        <RadioGroup
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+
+                            <RadioButton
+                                android:id="@+id/withCom_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="ex (123.456)"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                            <RadioButton
+                                android:id="@+id/withCom_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ex (123.45)"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                            <RadioButton
+                                android:id="@+id/withOutCom"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ex (1,000,000)"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                        </RadioGroup>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="@string/currencyType"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
@@ -305,17 +567,18 @@
 
                         <TextView
                             android:id="@+id/addCurrency"
-                            android:layout_width="match_parent"
+                            android:layout_width="50dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
+                            android:layout_weight="0"
                             android:drawableStart="@drawable/ic_library_add_black_24dp"
                             android:drawableTint="@color/clearButton"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -329,9 +592,10 @@
                             android:text="@string/CompanyType"
                             android:textColor="@color/white"
                             android:textSize="20sp" />
-                    </TableRow>
+                    </LinearLayout>
 
-                    <TableRow
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -363,10 +627,91 @@
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
 
+                            <RadioButton
+                                android:id="@+id/qas"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Qasioun"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
 
 
                         </RadioGroup>
-                    </TableRow>
+                    </LinearLayout>
+
+<!--                    <LinearLayout-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="5dp"-->
+
+<!--                        android:padding="5dp">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight="0.5"-->
+<!--                            android:text="@string/PrinterSize"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="20sp" />-->
+<!--                    </LinearLayout>-->
+
+
+<!--                    <LinearLayout-->
+<!--                        android:orientation="horizontal"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="5dp"-->
+<!--                        android:background="@drawable/bac_frame_no"-->
+<!--                        android:padding="5dp">-->
+
+<!--                        <RadioGroup-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="vertical">-->
+
+
+<!--                            <RadioButton-->
+<!--                                android:id="@+id/Printer200"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:checked="true"-->
+<!--                                android:text="200"-->
+<!--                                android:textAlignment="center"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textStyle="bold" />-->
+
+<!--                            <RadioButton-->
+<!--                                android:id="@+id/Printer250"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="250 Printer"-->
+<!--                                android:textAlignment="center"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textStyle="bold" />-->
+
+
+<!--                            <RadioButton-->
+<!--                                android:id="@+id/TSCPrinter"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="TSC Printer"-->
+<!--                                android:textAlignment="center"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textStyle="bold" />-->
+
+<!--                            <RadioButton-->
+<!--                                android:id="@+id/tallyPrinter"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="Tally Printer"-->
+<!--                                android:textAlignment="center"-->
+<!--                                android:textColor="@color/white"-->
+<!--                                android:textStyle="bold" />-->
+<!--                        </RadioGroup>-->
+<!--                    </LinearLayout>-->
+
                 </TableLayout>
             </LinearLayout>
         </ScrollView>

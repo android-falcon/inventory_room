@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.service.controls.Control;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,7 +39,11 @@ public class ExportJeson {
     public ExportJeson(Context context,JSONObject object) {//, JSONObject obj
         this.obj = object;
         this.context = context;
-        dbHandler = new InventoryDatabase(context);
+
+
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(context));
+        dbHandler = new InventoryDatabase(context,data);
 //        progressDialog = new ProgressDialog(context,R.style.MyTheme);
 //        progressDialog.setCancelable(false);
 //        progressDialog.setMessage("Loading...");

@@ -26,8 +26,17 @@ public class MacAdressAuth extends AppCompatActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        controll co=new controll();
+        int data=86;
+        try {
+             data = Integer.parseInt(co.readFromFile(MacAdressAuth.this));
 
-        inventoryDatabase = new InventoryDatabase(MacAdressAuth.this);
+        }catch (Exception e){
+            data=86;
+            co.WriteBtn(MacAdressAuth.this,data+"");
+
+        }
+        inventoryDatabase = new InventoryDatabase(MacAdressAuth.this,data);
 //        String ac=inventoryDatabase.getActivate();
 //        if(!ac.equals("")){
 //            if(ac.equals("11A")){

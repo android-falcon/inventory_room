@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Inventory App </string>
-    <string name="inventory_system">الجرد</string>
+    <string name="inventory_system">الجرد V1.6</string>
     <string name="item_code">رقم الماده</string>
     <string name="item_name">اسم الماده</string>
     <string name="item_qty">كمية الماده</string>
@@ -121,6 +121,8 @@
     <string name="enterPassAndUser">الرجاء ادخال كلمة السر واسم المستخدم </string>
     <string name="ok">نعم</string>
     <string name="deleteAllItemInfo">حذف الجميع </string>
+    <string name="deleteAllItemByLoc">حذف جميع المواد التي تخص هذا الموقع ؟؟</string>
+
     <string name="choess">الرجاء الاختيار </string>
     <string name="deletethisitem">هل تريد حذف هذه الماده ...</string>
     <string name="acumalateitem">المواد في الجدول غير مجمعه</string>
@@ -151,6 +153,7 @@
     <string name="des_3">تصميم3</string>
     <string name="des_1">تصميم1</string>
     <string name="des_4">تصميم4</string>
+    <string name="des_5">تصميم5</string>
 
     <string name="item_type">نوع المواد :</string>
     <string name="inventory_item">مواد الجرد</string>
@@ -214,6 +217,7 @@
     <string name="minus">-</string>
     <string name="qty_kind">نوع الكميه</string>
     <string name="assets">الاصول</string>
+    <string name="assetsColl">جرد الاصول</string>
     <string name="management">الاداره </string>
     <string name="department">دائره </string>
     <string name="section">القسم </string>
@@ -586,11 +590,20 @@
     <string name="itemCost">فحص التكلفة</string>
     <string name="Export_Assest">Export Assest</string>
     <string name="PrinterType">نوع الطابعة</string>
-    <string name="itemUnit">item Unit</string>
+    <string name="itemUnit">الوحدة</string>
     <string name="currencyType">currency Type</string>
     <string name="JD">Jd</string>
     <string name="unitSave">Unit Save</string>
     <string name="CompanyType">Company Type</string>
+    <string name="DecimalFormat">Decimal Format (number)</string>
+    <string name="PrinterSize">Printer Size (Shelf Tag)</string>
+    <string name="PrinterSizeH">Printer Size H</string>
+    <string name="Production_Date">تاريخ الانتاج</string>
+    <string name="ProData">تاريخ الانتاج</string>
+    <string name="unite">الوحدة</string>
+    <string name="AddAssest">اضافة اصول</string>
+    <string name="size">حجم</string>
+    <string name="color">لون</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

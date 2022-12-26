@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -42,12 +43,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.UnitName;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoCard;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -60,6 +64,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
@@ -75,20 +80,30 @@ import static android.graphics.Color.TRANSPARENT;
 public class Item extends AppCompatActivity {
 
     private static final int READ_REQUEST_CODE = 42;
-
+     EditText BarcodetextView;
+     TextView itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode;
+     ImageView barcodeShelfPrintParcode;
+    ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
+     TextView ItemNameEditTextTag,PriceEditTextTag,countText,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,startEditTextTag,
+             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3;;
+    ListView list;
+     ListAdapter adapter;
+    ListView listAssest;
+    ListAdapterAssesst adapterAssest;
     boolean updateOpen = false, openSearch = false, openSave = false, openShelfTag =false,openBarcode = false,openPrice=false,openAssesst=false,openUpdateQty=false,openCost=false;
     int textId = 0;
     String today;
     InventoryDatabase InventDB;
-    ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
+    List<ItemCard> itemCardsList = new ArrayList<ItemCard>();
     Dialog dialog;
     Animation animFadein;
     String uniteNames="";
     TextView Home;
     DecimalFormat numberFormat = new DecimalFormat("0.000");
     //DecimalFormat numberFormat = new DecimalFormat("0.##");
-
+    AppDatabase db ;
     List<MainSetting>mainSettingsList;
+    public static ImageView shelfTagLinerTests;
     int settingCOName=0;
     public static TextView textView,textItemName;
     public static ItemCard itemCardForPrint;
@@ -100,9 +115,10 @@ public class Item extends AppCompatActivity {
     LinearLayout newItem, importText, pBarcode, pShelfTag ,ItemPrice,ItemCost,Assesst;
     public static List<ItemCard> itemList;
     public static List<AssestItem> itemListAssest;
-    ArrayList<ItemCard> itemCodeCard ;
+    List<ItemCard> itemCodeCard ;
     ArrayList<AssestItem> itemAssetsCa ;
-    public static EditText ItemCodeEditTextTag;
+    public static EditText ItemCodeEditTextTag,prinS,prinSa;
+    int companyNo=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,8 +129,10 @@ public class Item extends AppCompatActivity {
             setContentView(R.layout.item_menu2);
         }
 
-
-        InventDB = new InventoryDatabase(Item.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(Item.this));
+        InventDB = new InventoryDatabase(Item.this,data);
+        db=AppDatabase.getInstanceDatabase(Item.this);
 
         initialization();
 
@@ -134,6 +152,11 @@ public class Item extends AppCompatActivity {
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         today = df.format(currentTimeAndDate);
+
+        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+        if (mainSetting.size() != 0) {
+            companyNo=mainSetting.get(0).getCoName();
+        }
 
         Home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +215,7 @@ TextView barCodTextTemp;
                     showPrintAssesstDialog();
                     break;
 //
+
             }
         }
     };
@@ -252,18 +276,18 @@ TextView barCodTextTemp;
         Button searchButton;
 
         ImageButton upBarcode,downBarcode;
-        final CheckBox PrintAllcheckBox,PriceCheckBox;
-        final TextView countTBarcode,itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode;
+        final CheckBox PrintAllcheckBox,PriceCheckBox,nameCheckBoxTag;
+        final TextView countTBarcode;
 //        final TableLayout listOfItemPrint;
-        final EditText BarcodetextView;
-        final ImageView barcodeShelfPrintParcode;
+
         final LinearLayout priceLinerPrint;
-        final ListView list=dialogBarCode.findViewById(R.id.list);
+         list=dialogBarCode.findViewById(R.id.list);
 
         priceLinerPrint=(LinearLayout) dialogBarCode.findViewById(R.id.priceLinerPrint);
         searchButton= (Button) dialogBarCode.findViewById(R.id.searchButton);
         PrintButton=  dialogBarCode.findViewById(R.id.PrintButton);
         exit =  dialogBarCode.findViewById(R.id.exit);
+        nameCheckBoxTag=dialogBarCode.findViewById(R.id.nameCheckBoxTag);
 
         upBarcode= (ImageButton) dialogBarCode.findViewById(R.id.upBarcode);
         downBarcode= (ImageButton) dialogBarCode.findViewById(R.id.downBarcode);
@@ -283,7 +307,7 @@ TextView barCodTextTemp;
 
 
         itemList=new ArrayList<>();
-        itemList=InventDB.getAllItemCard();
+         itemList=getItemCard();
         for(int i=0;i<itemList.size();i++){
 //            fillTableRows(listOfItemPrint,itemList.get(i).getItemCode(),itemList.get(i).getItemName(),itemList.get(i).getOrgPrice(),i);
             itemList.get(i).setCheck(false);
@@ -291,7 +315,7 @@ TextView barCodTextTemp;
 //            barcodeListForPrint.add(itemCard);
         }
 
-        final ListAdapter adapter = new ListAdapter(Item.this, itemList);
+        adapter = new ListAdapter(Item.this, itemList);
         list.setAdapter(adapter);
         BarcodetextView.requestFocus();
         BarcodetextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -299,92 +323,96 @@ TextView barCodTextTemp;
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
-                    String itemSwitch="";
-                   String itemCode=BarcodetextView.getText().toString();
-                   boolean isFound=false;
-                    if(!itemCode.equals("")& openBarcode){
-
-                        if(settingCOName==1){
-                            itemCode=BarcodetextView.getText().toString();
-                            try {
-                                itemCode = itemCode.substring(0, 12);
-                            }catch (Exception e){
-                                itemCode=BarcodetextView.getText().toString();
-                            }
-                            Log.e("itemCode1_",""+itemCode);
-                        }else{
-                            itemCode=BarcodetextView.getText().toString();
-                        }
-                        Log.e("itemCode2_",""+itemCode);
 
 
-                        List<String>itemUnite=findUnite(itemCode);
-                        int uQty=1;
+                    searchEventBarcode();
 
-                        if(itemUnite.size()!=0){
-
-                            itemCode=itemUnite.get(0);
-                            uQty=Integer.parseInt(itemUnite.get(2));
-
-                        }else{
-                            itemSwitch=findSwitch(itemCode);
-                            if(!itemSwitch.equals("")){
-                                itemCode=itemSwitch;
-                            }
-                            uQty=1;
-
-                        }
-
-                        for(int i = 0; i< itemList.size(); i++){
-                            if(itemCode.equals(itemList.get(i).getItemCode())){
-                                itemNamePrintBarcode.setText(itemList.get(i).getItemName());
-                                barcodeTextBarcode .setText(itemList.get(i).getItemCode());
-                                pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
-//                            ItemCard itemCard=finalItemList.get(i);
-//                            barcodeListForPrint.add(itemCard);
-
-                                isFound=true;
-                                itemList.get(i).setCheck(true);
-                                adapter.notifyDataSetChanged();
-                                list.setSelection(i);
-
-                                Bitmap bitmap= null;
-                                try {
-                                    bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
-                                    barcodeShelfPrintParcode.setImageBitmap(bitmap);
-                                } catch (WriterException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                                break;
-                            }else{
-
-                                itemNamePrintBarcode.setText("");
-                                barcodeTextBarcode .setText("");
-                                pricePrintBarcode.setText("");
-                            }
-                        }
-
-
-                        if(isFound){
-                            //noThing
-                        }else{
-                            showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                            BarcodetextView .setText("");
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BarcodetextView.requestFocus();
-                                }
-                            });
-
-
-                        }
-
-
-
-                    }
+//                    String itemSwitch="";
+//                   String itemCode=BarcodetextView.getText().toString();
+//                   boolean isFound=false;
+//                    if(!itemCode.equals("")& openBarcode){
+//
+//                        if(settingCOName==1){
+//                            itemCode=BarcodetextView.getText().toString();
+//                            try {
+//                                itemCode = itemCode.substring(0, 12);
+//                            }catch (Exception e){
+//                                itemCode=BarcodetextView.getText().toString();
+//                            }
+//                            Log.e("itemCode1_",""+itemCode);
+//                        }else{
+//                            itemCode=BarcodetextView.getText().toString();
+//                        }
+//                        Log.e("itemCode2_",""+itemCode);
+//
+//
+//                        List<String>itemUnite=findUnite(itemCode);
+//                        int uQty=1;
+//
+//                        if(itemUnite.size()!=0){
+//
+//                            itemCode=itemUnite.get(0);
+//                            uQty=Integer.parseInt(itemUnite.get(2));
+//
+//                        }else{
+//                            itemSwitch=findSwitch(itemCode);
+//                            if(!itemSwitch.equals("")){
+//                                itemCode=itemSwitch;
+//                            }
+//                            uQty=1;
+//
+//                        }
+//
+//                        for(int i = 0; i< itemList.size(); i++){
+//                            if(itemCode.equals(itemList.get(i).getItemCode())){
+//                                itemNamePrintBarcode.setText(itemList.get(i).getItemName());
+//                                barcodeTextBarcode .setText(itemList.get(i).getItemCode());
+//                                pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
+////                            ItemCard itemCard=finalItemList.get(i);
+////                            barcodeListForPrint.add(itemCard);
+//
+//                                isFound=true;
+//                                itemList.get(i).setCheck(true);
+//                                adapter.notifyDataSetChanged();
+//                                list.setSelection(i);
+//
+//                                Bitmap bitmap= null;
+//                                try {
+//                                    bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
+//                                    barcodeShelfPrintParcode.setImageBitmap(bitmap);
+//                                } catch (WriterException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//
+//                                break;
+//                            }else{
+//
+//                                itemNamePrintBarcode.setText("");
+//                                barcodeTextBarcode .setText("");
+//                                pricePrintBarcode.setText("");
+//                            }
+//                        }
+//
+//
+//                        if(isFound){
+//                            //noThing
+//                        }else{
+//                            showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+//                            BarcodetextView .setText("");
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    BarcodetextView.requestFocus();
+//                                }
+//                            });
+//
+//
+//                        }
+//
+//
+//
+//                    }
 
 
                 }
@@ -498,6 +526,17 @@ TextView barCodTextTemp;
             }
         });
 
+        nameCheckBoxTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(nameCheckBoxTag.isChecked()){
+                    itemNamePrintBarcode.setVisibility(View.VISIBLE);
+                }else{
+                    itemNamePrintBarcode.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -582,6 +621,12 @@ TextView barCodTextTemp;
                     itemCardForPrint.setOrgPrice("**");
                 }
 
+                    if (nameCheckBoxTag.isChecked()) {
+                        itemCardForPrint.setIsName("");
+                    } else {
+                        itemCardForPrint.setIsName("**");
+                    }
+
                 barcodeListForPrint.clear();
                 for (int i = 0; i < itemList.size(); i++) {
 
@@ -618,6 +663,95 @@ TextView barCodTextTemp;
         dialogBarCode.show();
     }
 
+    void searchEventBarcode(){
+        String itemSwitch="";
+        String itemCode=BarcodetextView.getText().toString();
+        boolean isFound=false;
+        if(!itemCode.equals("")& openBarcode){
+
+            if(settingCOName==1){
+                itemCode=BarcodetextView.getText().toString();
+                try {
+                    itemCode = itemCode.substring(0, 12);
+                }catch (Exception e){
+                    itemCode=BarcodetextView.getText().toString();
+                }
+                Log.e("itemCode1_",""+itemCode);
+            }else{
+                itemCode=BarcodetextView.getText().toString();
+            }
+            Log.e("itemCode2_",""+itemCode);
+
+
+            List<String>itemUnite=findUnite(itemCode);
+            int uQty=1;
+
+            if(itemUnite.size()!=0){
+
+                itemCode=itemUnite.get(0);
+                uQty=Integer.parseInt(itemUnite.get(2));
+
+            }else{
+                itemSwitch=findSwitch(itemCode);
+                if(!itemSwitch.equals("")){
+                    itemCode=itemSwitch;
+                }
+                uQty=1;
+
+            }
+
+            for(int i = 0; i< itemList.size(); i++){
+                if(itemCode.equals(itemList.get(i).getItemCode())){
+                    itemNamePrintBarcode.setText(itemList.get(i).getItemName());
+                    barcodeTextBarcode .setText(itemList.get(i).getItemCode());
+                    pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
+//                            ItemCard itemCard=finalItemList.get(i);
+//                            barcodeListForPrint.add(itemCard);
+
+                    isFound=true;
+                    itemList.get(i).setCheck(true);
+                    adapter.notifyDataSetChanged();
+                    list.setSelection(i);
+
+                    Bitmap bitmap= null;
+                    try {
+                        bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
+                        barcodeShelfPrintParcode.setImageBitmap(bitmap);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+                }else{
+
+                    itemNamePrintBarcode.setText("");
+                    barcodeTextBarcode .setText("");
+                    pricePrintBarcode.setText("");
+                }
+            }
+
+
+            if(isFound){
+                //noThing
+            }else{
+                showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                BarcodetextView .setText("");
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BarcodetextView.requestFocus();
+                    }
+                });
+
+
+            }
+
+
+
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     void showPrintAssesstDialog() {
         final Dialog dialogBarCodeAssesst = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
@@ -640,12 +774,12 @@ TextView barCodTextTemp;
 
         ImageButton upBarcode,downBarcode;
         final CheckBox PrintAllcheckBox,PriceCheckBox;
-        final TextView countTBarcode,itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode;
+        final TextView countTBarcode;
 //        final TableLayout listOfItemPrint;
-        final EditText BarcodetextView;
-        final ImageView barcodeShelfPrintParcode;
+//        final EditText BarcodetextView;
+//        final ImageView barcodeShelfPrintParcode;
         final LinearLayout priceLinerPrint;
-        final ListView list=dialogBarCodeAssesst.findViewById(R.id.list);
+      listAssest=dialogBarCodeAssesst.findViewById(R.id.list);
 
         priceLinerPrint=(LinearLayout) dialogBarCodeAssesst.findViewById(R.id.priceLinerPrint);
         searchButton= (Button) dialogBarCodeAssesst.findViewById(R.id.searchButton);
@@ -681,101 +815,104 @@ TextView barCodTextTemp;
         }
 
         pricePrintBarcode.setVisibility(View.INVISIBLE);
-        final ListAdapterAssesst adapter = new ListAdapterAssesst(Item.this, itemListAssest);
-        list.setAdapter(adapter);
+        adapterAssest = new ListAdapterAssesst(Item.this, itemListAssest);
+        listAssest.setAdapter(adapterAssest);
         BarcodetextView.requestFocus();
         BarcodetextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
-                    String itemSwitch="";
-                    String itemCode=BarcodetextView.getText().toString();
-                    boolean isFound=false;
-                    if(!itemCode.equals("")& openAssesst){
 
-                        if(settingCOName==1){
-                            itemCode=BarcodetextView.getText().toString();
-                            try {
-                                itemCode = itemCode.substring(0, 12);
-                            }catch (Exception e){
-                                itemCode=BarcodetextView.getText().toString();
-                            }
-                            Log.e("itemCode1_",""+itemCode);
-                        }else{
-                            itemCode=BarcodetextView.getText().toString();
-                        }
-                        Log.e("itemCode2_",""+itemCode);
+                    OnEditorKeyPadAssest();
 
-
-                        List<String>itemUnite=findUnite(itemCode);
-                        int uQty=1;
-
-
-                        if(itemUnite.size()!=0){
-
-                            itemCode=itemUnite.get(0);
-                            uQty=Integer.parseInt(itemUnite.get(2));
-
-                        }else{
-                            itemSwitch=findSwitch(itemCode);
-                            if(!itemSwitch.equals("")){
-                                itemCode=itemSwitch;
-                            }
-                            uQty=1;
-
-                        }
-
-                        for(int i = 0; i< itemListAssest.size(); i++){
-                            if(itemCode.equals(itemListAssest.get(i).getAssesstCode())){
-                                itemNamePrintBarcode.setText(itemListAssest.get(i).getAssesstName());
-                                barcodeTextBarcode .setText(itemListAssest.get(i).getAssesstCode());
-                                pricePrintBarcode.setText("0.0");
-//                            ItemCard itemCard=finalItemList.get(i);
-//                            barcodeListForPrint.add(itemCard);
-
-                                isFound=true;
-                                itemListAssest.get(i).setCheck(true);
-                                adapter.notifyDataSetChanged();
-                                list.setSelection(i);
-
-                                Bitmap bitmap= null;
-                                try {
-                                    bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
-                                    barcodeShelfPrintParcode.setImageBitmap(bitmap);
-                                } catch (WriterException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                                break;
-                            }else{
-
-                                itemNamePrintBarcode.setText("");
-                                barcodeTextBarcode .setText("");
-                                pricePrintBarcode.setText("");
-                            }
-                        }
-
-
-                        if(isFound){
-                            //noThing
-                        }else{
-                            showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                            BarcodetextView .setText("");
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BarcodetextView.requestFocus();
-                                }
-                            });
-
-
-                        }
-
-
-
-                    }
+//                    String itemSwitch="";
+//                    String itemCode=BarcodetextView.getText().toString();
+//                    boolean isFound=false;
+//                    if(!itemCode.equals("")& openAssesst){
+//
+//                        if(settingCOName==1){
+//                            itemCode=BarcodetextView.getText().toString();
+//                            try {
+//                                itemCode = itemCode.substring(0, 12);
+//                            }catch (Exception e){
+//                                itemCode=BarcodetextView.getText().toString();
+//                            }
+//                            Log.e("itemCode1_",""+itemCode);
+//                        }else{
+//                            itemCode=BarcodetextView.getText().toString();
+//                        }
+//                        Log.e("itemCode2_",""+itemCode);
+//
+//
+//                        List<String>itemUnite=findUnite(itemCode);
+//                        int uQty=1;
+//
+//
+//                        if(itemUnite.size()!=0){
+//
+//                            itemCode=itemUnite.get(0);
+//                            uQty=Integer.parseInt(itemUnite.get(2));
+//
+//                        }else{
+//                            itemSwitch=findSwitch(itemCode);
+//                            if(!itemSwitch.equals("")){
+//                                itemCode=itemSwitch;
+//                            }
+//                            uQty=1;
+//
+//                        }
+//
+//                        for(int i = 0; i< itemListAssest.size(); i++){
+//                            if(itemCode.equals(itemListAssest.get(i).getAssesstCode())){
+//                                itemNamePrintBarcode.setText(itemListAssest.get(i).getAssesstName());
+//                                barcodeTextBarcode .setText(itemListAssest.get(i).getAssesstCode());
+//                                pricePrintBarcode.setText("0.0");
+////                            ItemCard itemCard=finalItemList.get(i);
+////                            barcodeListForPrint.add(itemCard);
+//
+//                                isFound=true;
+//                                itemListAssest.get(i).setCheck(true);
+//                    adapterAssest.notifyDataSetChanged();
+//                                listAssest.setSelection(i);
+//
+//                                Bitmap bitmap= null;
+//                                try {
+//                                    bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
+//                                    barcodeShelfPrintParcode.setImageBitmap(bitmap);
+//                                } catch (WriterException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//
+//                                break;
+//                            }else{
+//
+//                                itemNamePrintBarcode.setText("");
+//                                barcodeTextBarcode .setText("");
+//                                pricePrintBarcode.setText("");
+//                            }
+//                        }
+//
+//
+//                        if(isFound){
+//                            //noThing
+//                        }else{
+//                            showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+//                            BarcodetextView .setText("");
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    BarcodetextView.requestFocus();
+//                                }
+//                            });
+//
+//
+//                        }
+//
+//
+//
+//                    }
 
 
                 }
@@ -863,7 +1000,7 @@ TextView barCodTextTemp;
                     }
 
                     ListAdapterAssesst adapter = new ListAdapterAssesst(Item.this, itemListAssest);
-                    list.setAdapter(adapter);
+                    listAssest.setAdapter(adapter);
 
                 }else{
                     for (int i = 0; i < itemListAssest.size(); i++) {
@@ -872,7 +1009,7 @@ TextView barCodTextTemp;
                     }
 
                     ListAdapterAssesst adapter = new ListAdapterAssesst(Item.this, itemListAssest);
-                    list.setAdapter(adapter);
+                    listAssest.setAdapter(adapter);
 
                 }
             }
@@ -949,7 +1086,7 @@ TextView barCodTextTemp;
 //        });
 //
 //
-        list.setOnTouchListener(new View.OnTouchListener() {
+        listAssest.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -1009,6 +1146,98 @@ TextView barCodTextTemp;
         dialogBarCodeAssesst.show();
     }
 
+
+    void OnEditorKeyPadAssest(){
+        String itemSwitch="";
+        String itemCode=BarcodetextView.getText().toString();
+        boolean isFound=false;
+        if(!itemCode.equals("")& openAssesst){
+
+            if(settingCOName==1){
+                itemCode=BarcodetextView.getText().toString();
+                try {
+                    itemCode = itemCode.substring(0, 12);
+                }catch (Exception e){
+                    itemCode=BarcodetextView.getText().toString();
+                }
+                Log.e("itemCode1_",""+itemCode);
+            }else{
+                itemCode=BarcodetextView.getText().toString();
+            }
+            Log.e("itemCode2_",""+itemCode);
+
+
+            List<String>itemUnite=findUnite(itemCode);
+            int uQty=1;
+
+
+            if(itemUnite.size()!=0){
+
+                itemCode=itemUnite.get(0);
+                uQty=Integer.parseInt(itemUnite.get(2));
+
+            }else{
+                itemSwitch=findSwitch(itemCode);
+                if(!itemSwitch.equals("")){
+                    itemCode=itemSwitch;
+                }
+                uQty=1;
+
+            }
+
+            for(int i = 0; i< itemListAssest.size(); i++){
+                if(itemCode.equals(itemListAssest.get(i).getAssesstCode())){
+                    itemNamePrintBarcode.setText(itemListAssest.get(i).getAssesstName());
+                    barcodeTextBarcode .setText(itemListAssest.get(i).getAssesstCode());
+                    pricePrintBarcode.setText("0.0");
+//                            ItemCard itemCard=finalItemList.get(i);
+//                            barcodeListForPrint.add(itemCard);
+
+                    isFound=true;
+                    itemListAssest.get(i).setCheck(true);
+                    adapterAssest.notifyDataSetChanged();
+                    listAssest.setSelection(i);
+
+                    Bitmap bitmap= null;
+                    try {
+                        bitmap = encodeAsBitmap(itemCode, BarcodeFormat.CODE_128, 350, 100);
+                        barcodeShelfPrintParcode.setImageBitmap(bitmap);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+                }else{
+
+                    itemNamePrintBarcode.setText("");
+                    barcodeTextBarcode .setText("");
+                    pricePrintBarcode.setText("");
+                }
+            }
+
+
+            if(isFound){
+                //noThing
+            }else{
+                showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                BarcodetextView .setText("");
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        BarcodetextView.requestFocus();
+                    }
+                });
+
+
+            }
+
+
+
+        }
+
+
+    }
 
     void showItemPriceDialog() {
         final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
@@ -1422,23 +1651,26 @@ TextView barCodTextTemp;
         final int[] count1 = {1};
         final int[] DesignType = {0};
 
-        final TextView countText,ItemNameEditTextTag,PriceEditTextTag,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,
-                pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3;
+
         final LinearLayout exit,printShelfTag,ClearButtonTag,shelfTagLiner1,shelfTagLiner,shelfTagLiner3,shelfTagLiner4;
         Button SearchButtonTag;
         ImageButton upCount, downCount;
+        ImageView shelfTagLinerTest;
+EditText prinS1,prinSa1;
 
-        final ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
-        final CheckBox PriceCheckBoxTag,ExpCheckBoxTag;
+        final CheckBox PriceCheckBoxTag,ExpCheckBoxTag,startCheckBoxTag,nameCheckBoxTag;
         final LinearLayout priceLinerPrint,ExpLinerTag,priceLinerPrint_;
 //RadioGroup design;
 
+        startEditTextTag=dialog.findViewById(R.id.startEditTextTag);
+        startEditTextTag.setText(""+today);
         ExpLinerTag=(LinearLayout) dialog.findViewById(R.id.ExpLinerTag);
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
         priceLinerPrint_=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint_);
         PriceCheckBoxTag = (CheckBox) dialog.findViewById(R.id.PriceCheckBoxTag);
+        nameCheckBoxTag=dialog.findViewById(R.id.nameCheckBoxTag);
         ExpCheckBoxTag = (CheckBox) dialog.findViewById(R.id.ExpCheckBoxTag);
-
+        startCheckBoxTag=dialog.findViewById(R.id.startCheckBoxTag);
         countText = (TextView) dialog.findViewById(R.id.countT);
         ItemNameEditTextTag= (TextView) dialog.findViewById(R.id.ItemNameEditTextTag);
         PriceEditTextTag= (TextView) dialog.findViewById(R.id.PriceEditTextTag);
@@ -1471,12 +1703,16 @@ TextView barCodTextTemp;
         SearchButtonTag= dialog.findViewById(R.id.SearchButtonTag);
         printShelfTag=  dialog.findViewById(R.id.printShelfTag);
         exit =  dialog.findViewById(R.id.exit);
-
+        prinS1=dialog.findViewById(R.id.prinS);
+        prinSa1=dialog.findViewById(R.id.prinSa);
+        prinS=prinS1;
+        prinSa=prinSa1;
         barcodeShelfPrint= (ImageView) dialog.findViewById(R.id.barcodeShelfPrint);
         barcodeShelfPrint2= (ImageView) dialog.findViewById(R.id.barcodeShelf);
         barcodeShelfPrint3= (ImageView) dialog.findViewById(R.id.barcodeShelf3);
         barcodeShelfPrint4=(ImageView) dialog.findViewById(R.id.barcodeShelfPrint_);
-
+        shelfTagLinerTest=dialog.findViewById(R.id.shelfTagLinerTest);
+        shelfTagLinerTests=shelfTagLinerTest;
         Spinner designSpinner= dialog.findViewById(R.id.spinnerDesign);
         Spinner uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
         final CheckBox uniteCheckBoxTag=dialog.findViewById(R.id.uniteCheckBoxTag);
@@ -1494,6 +1730,7 @@ TextView barCodTextTemp;
         designList.add(getResources().getString(R.string.des_2));
         designList.add(getResources().getString(R.string.des_3));
         designList.add(getResources().getString(R.string.des_4));
+        designList.add(getResources().getString(R.string.des_5));
 
         List<MainSetting> mainSettings = InventDB.getAllMainSetting();
         if (mainSettings.size() != 0) {
@@ -1557,7 +1794,16 @@ TextView barCodTextTemp;
 
                         DesignType[0] =3;
                         break;
+                    case 4:
 
+                        shelfTagLiner3.setVisibility(View.GONE);
+                        shelfTagLiner.setVisibility(View.GONE);
+                        shelfTagLiner1.setVisibility(View.GONE);
+                        shelfTagLiner4.setRotation(180.0f);
+                        shelfTagLiner4.setVisibility(View.VISIBLE);
+
+                        DesignType[0] =4;
+                        break;
                 }
 
 
@@ -1664,6 +1910,8 @@ TextView barCodTextTemp;
             }
         });
 
+
+
         ExpCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1766,181 +2014,182 @@ TextView barCodTextTemp;
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
 
-                    boolean isItemFound = false;
-
-                    String itemCode = ItemCodeEditTextTag.getText().toString();
-                    String itemName = ItemNameEditTextTag.getText().toString();
-
-                    String itemSwitch = "",QRCode="",Price="",itemUnit="";
-                    if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
-//                        itemCardsList = InventDB.getAllItemCard();
-
-                      if(isOnlinePrice.equals("0")) {
-                          boolean isPriceUnite = false;
-                          if (itemCode.length() > 17) {
-                              QRCode = itemCode;
-                              itemCode = itemCode.substring(0, 16);
-                              Log.e("String ", "" + itemCode);
-
-                          } else {
-                              itemCode = ItemCodeEditTextTag.getText().toString();
-                          }
-
-                          List<ItemQR> QRList = findQRCode(itemCode, StkNo);
-
-                          if (QRList.size() != 0) {
-                              itemCode = QRList.get(0).getItemCode();
-
-                              Price = QRList.get(0).getSalesPrice();
-
-                              ItemCodeEditTextTag.setText(itemCode);
-                              isPriceUnite = true;
-                          } else {
-
-                              if(settingCOName==1){
-                                  itemCode=ItemCodeEditTextTag.getText().toString();
-                                  try {
-                                      itemCode = itemCode.substring(0, 12);
-                                  }catch (Exception e){
-                                      itemCode=ItemCodeEditTextTag.getText().toString();
-                                  }
-                                  Log.e("itemCode1_",""+itemCode);
-                              }else{
-                                  itemCode=ItemCodeEditTextTag.getText().toString();
-                              }
-                              Log.e("itemCode2_",""+itemCode);
-
-
-
-                              List<String> itemUnite = findUnite(itemCode);
-                              int uQty = 1;
-
-
-                              if (itemUnite.size() != 0) {
-
-                                  itemCode = itemUnite.get(0);
-                                  uQty = Integer.parseInt(itemUnite.get(2));
-                                  Price = itemUnite.get(1);
-                                  itemUnit=itemUnite.get(3);
-                                  isPriceUnite = true;
-
-                              } else {
-                                  itemSwitch = findSwitch(itemCode);
-                                  if (!itemSwitch.equals("")) {
-                                      itemCode = itemSwitch;
-                                  }
-                                  uQty = 1;
-                                  isPriceUnite = false;
-                              }
-                          }
-
-
-                          ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
-                          String it = itemCard.getItemCode();
-                          Log.e("itemcard_oo", "" + it);
-//                        for (int i = 0; i < itemCardsList.size(); i++) {
-                          if (!TextUtils.isEmpty(it)) {
-                              if (it.equals(itemCode)) {
-                                  isItemFound = true;
-                                  ItemNameEditTextTag.setText(itemCard.getItemName());
-                               //   ItemUnitEditTextTag.setText(itemUnit);
-                                  if (!isPriceUnite) {
-                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
-
-                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
-
-                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
-
-                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
-
-                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
-
-                                  } else {
-                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-
-                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                                  }
-//                            ExpEditTextTag.setText(itemCardsList.get(i).g());
-                                  itemNamePrint.setText(itemCard.getItemName());
-                                  exp.setText(ExpEditTextTag.getText().toString());
-
-                                  itemNamePrint2.setText(itemCard.getItemName());
-                                  itemNamePrint3.setText(itemCard.getItemName());
-                                  itemNamePrint4.setText(itemCard.getItemName());
-                                  exp2.setText(ExpEditTextTag.getText().toString());
-                                  itemText.setText(ItemCodeEditTextTag.getText().toString());
-
-                                  try {
-                                      Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
-                                      barcodeShelfPrint.setImageBitmap(bitmapBa);
-                                      barcodeShelfPrint2.setImageBitmap(bitmapBa);
-                                      barcodeShelfPrint3.setImageBitmap(bitmapBa);
-                                      barcodeShelfPrint4.setImageBitmap(bitmapBa);
-                                  } catch (WriterException e) {
-                                      e.printStackTrace();
-                                  }
-
-//                                break;
-
-                              }
-
-//                            else{
+                    onEditorKeyPadChange();
+//                    boolean isItemFound = false;
 //
-//                                ItemNameEditTextTag.setText("");
-//                                PriceEditTextTag.setText("");
+//                    String itemCode = ItemCodeEditTextTag.getText().toString();
+//                    String itemName = ItemNameEditTextTag.getText().toString();
+//
+//                    String itemSwitch = "",QRCode="",Price="",itemUnit="";
+//                    if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
+////                        itemCardsList = InventDB.getAllItemCard();
+//
+//                      if(isOnlinePrice.equals("0")) {
+//                          boolean isPriceUnite = false;
+//                          if (itemCode.length() > 17) {
+//                              QRCode = itemCode;
+//                              itemCode = itemCode.substring(0, 16);
+//                              Log.e("String ", "" + itemCode);
+//
+//                          } else {
+//                              itemCode = ItemCodeEditTextTag.getText().toString();
+//                          }
+//
+//                          List<ItemQR> QRList = findQRCode(itemCode, StkNo);
+//
+//                          if (QRList.size() != 0) {
+//                              itemCode = QRList.get(0).getItemCode();
+//
+//                              Price = QRList.get(0).getSalesPrice();
+//
+//                              ItemCodeEditTextTag.setText(itemCode);
+//                              isPriceUnite = true;
+//                          } else {
+//
+//                              if(settingCOName==1){
+//                                  itemCode=ItemCodeEditTextTag.getText().toString();
+//                                  try {
+//                                      itemCode = itemCode.substring(0, 12);
+//                                  }catch (Exception e){
+//                                      itemCode=ItemCodeEditTextTag.getText().toString();
+//                                  }
+//                                  Log.e("itemCode1_",""+itemCode);
+//                              }else{
+//                                  itemCode=ItemCodeEditTextTag.getText().toString();
+//                              }
+//                              Log.e("itemCode2_",""+itemCode);
+//
+//
+//
+//                              List<String> itemUnite = findUnite(itemCode);
+//                              int uQty = 1;
+//
+//
+//                              if (itemUnite.size() != 0) {
+//
+//                                  itemCode = itemUnite.get(0);
+//                                  uQty = Integer.parseInt(itemUnite.get(2));
+//                                  Price = itemUnite.get(1);
+//                                  itemUnit=itemUnite.get(3);
+//                                  isPriceUnite = true;
+//
+//                              } else {
+//                                  itemSwitch = findSwitch(itemCode);
+//                                  if (!itemSwitch.equals("")) {
+//                                      itemCode = itemSwitch;
+//                                  }
+//                                  uQty = 1;
+//                                  isPriceUnite = false;
+//                              }
+//                          }
+//
+//
+//                          ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+//                          String it = itemCard.getItemCode();
+//                          Log.e("itemcard_oo", "" + it);
+////                        for (int i = 0; i < itemCardsList.size(); i++) {
+//                          if (!TextUtils.isEmpty(it)) {
+//                              if (it.equals(itemCode)) {
+//                                  isItemFound = true;
+//                                  ItemNameEditTextTag.setText(itemCard.getItemName());
+//                               //   ItemUnitEditTextTag.setText(itemUnit);
+//                                  if (!isPriceUnite) {
+//                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
+//
+//                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+//
+//                                  } else {
+//                                      PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+//
+//                                      pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                                      pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                                      pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//                                      pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                                  }
 ////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
-//                                itemNamePrint.setText("");
-//                                pricePrint.setText("");
+//                                  itemNamePrint.setText(itemCard.getItemName());
+//                                  exp.setText(ExpEditTextTag.getText().toString());
+//
+//                                  itemNamePrint2.setText(itemCard.getItemName());
+//                                  itemNamePrint3.setText(itemCard.getItemName());
+//                                  itemNamePrint4.setText(itemCard.getItemName());
+//                                  exp2.setText(ExpEditTextTag.getText().toString());
+//                                  itemText.setText(ItemCodeEditTextTag.getText().toString());
+//
+//                                  try {
+//                                      Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+//                                      barcodeShelfPrint.setImageBitmap(bitmapBa);
+//                                      barcodeShelfPrint2.setImageBitmap(bitmapBa);
+//                                      barcodeShelfPrint3.setImageBitmap(bitmapBa);
+//                                      barcodeShelfPrint4.setImageBitmap(bitmapBa);
+//                                  } catch (WriterException e) {
+//                                      e.printStackTrace();
+//                                  }
+//
+////                                break;
+//
+//                              }
+//
+////                            else{
+////
+////                                ItemNameEditTextTag.setText("");
+////                                PriceEditTextTag.setText("");
+//////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+////                                itemNamePrint.setText("");
+////                                pricePrint.setText("");
+////
+////
+////                            }
+////                        }
+////////
+//
+//                              //
+//
+//                          }
+//
+//                          if (isItemFound) {
+//
+//                              //nothing
+//
+//                          } else {
+////                        save.setClickable(false);
+//                              showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+//                              ItemCodeEditTextTag.setText("");
+//                              new Handler().post(new Runnable() {
+//                                  @Override
+//                                  public void run() {
+//                                      ItemCodeEditTextTag.requestFocus();
+//                                  }
+//                              });
+//                              PriceEditTextTag.setText("");
+//                              ItemNameEditTextTag.setText("");
+//                           //   ItemUnitEditTextTag.setText("");
+//                              pricePrint.setText("");
+//                          }
+//
+//                      }else{
+//
+//                          textView=PriceEditTextTag;
+//                          textItemName= ItemNameEditTextTag;
+//
+//                          importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
+//                          sendCloud.startSending("ItemPrice");
 //
 //
-//                            }
-//                        }
-//////
-
-                              //
-
-                          }
-
-                          if (isItemFound) {
-
-                              //nothing
-
-                          } else {
-//                        save.setClickable(false);
-                              showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                              ItemCodeEditTextTag.setText("");
-                              new Handler().post(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      ItemCodeEditTextTag.requestFocus();
-                                  }
-                              });
-                              PriceEditTextTag.setText("");
-                              ItemNameEditTextTag.setText("");
-                           //   ItemUnitEditTextTag.setText("");
-                              pricePrint.setText("");
-                          }
-
-                      }else{
-
-                          textView=PriceEditTextTag;
-                          textItemName= ItemNameEditTextTag;
-
-                          importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
-                          sendCloud.startSending("ItemPrice");
-
-
-
-                      }
-
-
-                    }
+//
+//                      }
+//
+//
+//                    }
                 }
                 return false;
             }});
@@ -2267,6 +2516,20 @@ TextView barCodTextTemp;
                         itemCardForPrint.setSalePrc("**");
                     }
 
+
+                    if(nameCheckBoxTag.isChecked()){
+                        itemCardForPrint.setIsName("");
+                    }else{
+                        itemCardForPrint.setIsName("**");
+                    }
+
+                    if(startCheckBoxTag.isChecked()){
+                        itemCardForPrint.setIsStartDay(""+startEditTextTag.getText().toString() );
+
+                    }else{
+                        itemCardForPrint.setIsStartDay("**");
+                    }
+
                     if(uniteCheckBoxTag.isChecked()){
                         itemCardForPrint.setIsUnite("");
                         itemCardForPrint.setItemUnit(uniteNames);
@@ -2337,6 +2600,185 @@ TextView barCodTextTemp;
         dialog.show();
     }
 
+    void onEditorKeyPadChange(){
+
+        boolean isItemFound = false;
+
+        String itemCode = ItemCodeEditTextTag.getText().toString();
+        String itemName = ItemNameEditTextTag.getText().toString();
+
+        String itemSwitch = "",QRCode="",Price="",itemUnit="";
+        if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
+//                        itemCardsList = InventDB.getAllItemCard();
+
+            if(isOnlinePrice.equals("0")) {
+                boolean isPriceUnite = false;
+                if (itemCode.length() > 17) {
+                    QRCode = itemCode;
+                    itemCode = itemCode.substring(0, 16);
+                    Log.e("String ", "" + itemCode);
+
+                } else {
+                    itemCode = ItemCodeEditTextTag.getText().toString();
+                }
+
+                List<ItemQR> QRList = findQRCode(itemCode, StkNo);
+
+                if (QRList.size() != 0) {
+                    itemCode = QRList.get(0).getItemCode();
+
+                    Price = QRList.get(0).getSalesPrice();
+
+                    ItemCodeEditTextTag.setText(itemCode);
+                    isPriceUnite = true;
+                } else {
+
+                    if(settingCOName==1){
+                        itemCode=ItemCodeEditTextTag.getText().toString();
+                        try {
+                            itemCode = itemCode.substring(0, 12);
+                        }catch (Exception e){
+                            itemCode=ItemCodeEditTextTag.getText().toString();
+                        }
+                        Log.e("itemCode1_",""+itemCode);
+                    }else{
+                        itemCode=ItemCodeEditTextTag.getText().toString();
+                    }
+                    Log.e("itemCode2_",""+itemCode);
+
+
+
+                    List<String> itemUnite = findUnite(itemCode);
+                    int uQty = 1;
+
+
+                    if (itemUnite.size() != 0) {
+
+                        itemCode = itemUnite.get(0);
+                        uQty = Integer.parseInt(itemUnite.get(2));
+                        Price = itemUnite.get(1);
+                        itemUnit=itemUnite.get(3);
+                        isPriceUnite = true;
+
+                    } else {
+                        itemSwitch = findSwitch(itemCode);
+                        if (!itemSwitch.equals("")) {
+                            itemCode = itemSwitch;
+                        }
+                        uQty = 1;
+                        isPriceUnite = false;
+                    }
+                }
+
+
+                ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+                String it = itemCard.getItemCode();
+                Log.e("itemcard_oo", "" + it);
+//                        for (int i = 0; i < itemCardsList.size(); i++) {
+                if (!TextUtils.isEmpty(it)) {
+                    if (it.equals(itemCode)) {
+                        isItemFound = true;
+                        ItemNameEditTextTag.setText(itemCard.getItemName());
+                        //   ItemUnitEditTextTag.setText(itemUnit);
+                        if (!isPriceUnite) {
+                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
+
+                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+
+                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+
+                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+
+                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+
+                        } else {
+                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                        }
+//                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+                        itemNamePrint.setText(itemCard.getItemName());
+                        exp.setText(ExpEditTextTag.getText().toString());
+
+                        itemNamePrint2.setText(itemCard.getItemName());
+                        itemNamePrint3.setText(itemCard.getItemName());
+                        itemNamePrint4.setText(itemCard.getItemName());
+                        exp2.setText(ExpEditTextTag.getText().toString());
+                        itemText.setText(ItemCodeEditTextTag.getText().toString());
+
+                        try {
+                            Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+                            barcodeShelfPrint.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint2.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint4.setImageBitmap(bitmapBa);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        }
+
+//                                break;
+
+                    }
+
+//                            else{
+//
+//                                ItemNameEditTextTag.setText("");
+//                                PriceEditTextTag.setText("");
+////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+//                                itemNamePrint.setText("");
+//                                pricePrint.setText("");
+//
+//
+//                            }
+//                        }
+//////
+
+                    //
+
+                }
+
+                if (isItemFound) {
+
+                    //nothing
+
+                } else {
+//                        save.setClickable(false);
+                    showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                    ItemCodeEditTextTag.setText("");
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ItemCodeEditTextTag.requestFocus();
+                        }
+                    });
+                    PriceEditTextTag.setText("");
+                    ItemNameEditTextTag.setText("");
+                    //   ItemUnitEditTextTag.setText("");
+                    pricePrint.setText("");
+                }
+
+            }else{
+
+                textView=PriceEditTextTag;
+                textItemName= ItemNameEditTextTag;
+
+                importJson sendCloud = new importJson(Item.this,ItemCodeEditTextTag.getText().toString(),0,"","");
+                sendCloud.startSending("ItemPrice");
+
+
+
+            }
+
+
+        }
+
+    }
 
     void showNewItemDialog(final int tr) {
         final Dialog dialogNew = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
@@ -2438,7 +2880,7 @@ TextView barCodTextTemp;
                     String itemSwitch = "";
 
                     if (!itemCodeNew.getText().toString().equals("") && openSave) {
-                        itemCardsList = InventDB.getAllItemCard();
+                        itemCardsList = getItemCard();
 
                         if(settingCOName==1){
                             itemCode=itemCodeNew.getText().toString();
@@ -2573,8 +3015,26 @@ TextView barCodTextTemp;
                     itemCard.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(itemPrice.getText().toString()))));
                     itemCard.setIsExport("0");
                     itemCard.setIsNew("1");
-
-                    InventDB.addItemcardTable(itemCard);
+                    itemCard.setAVLQty("0");
+                    itemCard.setItemG("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setCostPrc("0");
+                    itemCard.setSalePrc("0");
+                    itemCard.setAVLQty("0");
+                    itemCard.setBranchId("0");
+                    itemCard.setBranchName("0");
+                    itemCard.setDepartmentId("0");
+                    itemCard.setDepartmentName("0");
+                    itemCard.setItemK("0");
+                    itemCard.setItemL("0");
+                    itemCard.setItemDiv("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setOrgPrice("0");
+                    itemCard.setInDate("0");
+                    itemCard.setIsExport("0");
+                    itemCard.setIsNew("1");
+                    itemCard.setItemM("0");
+                    dd(itemCard);
                     prograseSave();
                     itemCodeNew.setText("");
                     itemNameNew.setText("");
@@ -2918,11 +3378,24 @@ TextView barCodTextTemp;
         });
 
 
+
+        TextView sizeM,colorM;
+        sizeM=dialogSearch.findViewById(R.id.sizeM);
+        colorM=dialogSearch.findViewById(R.id.colorM);
+
+        if(companyNo==1){
+            sizeM.setVisibility(View.VISIBLE);
+            colorM.setVisibility(View.VISIBLE);
+        }else{
+            sizeM.setVisibility(View.GONE);
+            colorM.setVisibility(View.GONE);
+        }
+
         itemCodeCard = new ArrayList<>();
 
-        itemCodeCard = InventDB.getAllItemCard();
+        itemCodeCard = getItemCard();
 
-        ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,itemCodeCard);
+        ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,itemCodeCard,companyNo);
         tabeSearch.setAdapter(listAdapterSearch);
         final ArrayList<ItemCard> ItemCodeCardSearch=new ArrayList<>();
         for (int i = 0; i < itemCodeCard.size(); i++) {
@@ -2959,17 +3432,17 @@ TextView barCodTextTemp;
                 if (!itemCodeReader.equals("")) {
                     if (openSearch) {
                     for (int i = 0; i < itemCodeCard.size(); i++) {
-                        if (itemCodeCard.get(i).getItemCode().contains(itemCodeReader) || itemCodeCard.get(i).getItemName().contains(itemCodeReader)) {
+                        if (itemCodeCard.get(i).getItemCode().contains(itemCodeReader) || itemCodeCard.get(i).getItemName().contains(itemCodeReader)|| itemCodeCard.get(i).getItemL().contains(itemCodeReader)) {
 //                            insertRowSearch(finalItemCodeCard.get(i).getItemName(), finalItemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
                           ItemCard itemCard= itemCodeCard.get(i);
                             ItemCodeCardSearch.add(itemCard);
                         }
                     }
-                        ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,ItemCodeCardSearch);
+                        ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,ItemCodeCardSearch,companyNo);
                         tabeSearch.setAdapter(listAdapterSearch);
                 }
             }else{
-                    ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,itemCodeCard);
+                    ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,itemCodeCard,companyNo);
                     tabeSearch.setAdapter(listAdapterSearch);
                 }
             }
@@ -2994,6 +3467,7 @@ TextView barCodTextTemp;
                         break;
                     case 1:
                         openBarcode = true;
+                        searchEventBarcode();
                         break;
                     case 4:
                         openPrice = true;
@@ -3010,6 +3484,28 @@ TextView barCodTextTemp;
 
                 try {
                     itemCodeText.setText(ItemCodeCardSearch.get(position).getItemCode());
+                    switch (swSearch) {
+                        case 3:
+//                            openSave = true;
+                            break;
+                        case 2:
+                            onEditorKeyPadChange();
+//                            openShelfTag = true;
+                            break;
+                        case 1:
+//                            openBarcode = true;
+                            searchEventBarcode();
+                            break;
+                        case 4:
+//                            openPrice = true;
+                            break;
+                        case 5:
+//                            openAssesst = true;
+                            break;
+                        case 6:
+//                            openCost = true;
+                            break;
+                    }
                     textId = 0;
                 }catch (Exception e ){
 
@@ -3084,6 +3580,19 @@ TextView barCodTextTemp;
 
         dialogSearch.setCanceledOnTouchOutside(false);
 
+
+        TextView sizeM,colorM;
+        sizeM=dialogSearch.findViewById(R.id.sizeM);
+        colorM=dialogSearch.findViewById(R.id.colorM);
+
+        if(companyNo==1){
+            sizeM.setVisibility(View.VISIBLE);
+            colorM.setVisibility(View.VISIBLE);
+        }else{
+            sizeM.setVisibility(View.GONE);
+            colorM.setVisibility(View.GONE);
+        }
+
         LinearLayout exit =  dialogSearch.findViewById(R.id.exitsearch);
         final EditText itemCodeSearch = (EditText) dialogSearch.findViewById(R.id.itemCodeSearch);
         final ListView tabeSearch = (ListView) dialogSearch.findViewById(R.id.tableSearch);
@@ -3099,7 +3608,7 @@ TextView barCodTextTemp;
 
         itemAssetsCa = InventDB.getAllAssesstItem();
 
-        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,itemAssetsCa);
+        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,itemAssetsCa,companyNo);
         tabeSearch.setAdapter(listAdapterSearch);
         final ArrayList<AssestItem> ItemCodeCardSearch=new ArrayList<>();
         for (int i = 0; i < itemAssetsCa.size(); i++) {
@@ -3142,11 +3651,11 @@ TextView barCodTextTemp;
                                 ItemCodeCardSearch.add(itemCard);
                             }
                         }
-                        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,ItemCodeCardSearch);
+                        ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,ItemCodeCardSearch,companyNo);
                         tabeSearch.setAdapter(listAdapterSearch);
                     }
                 }else{
-                    ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,ItemCodeCardSearch);
+                    ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,ItemCodeCardSearch,companyNo);
                     tabeSearch.setAdapter(listAdapterSearch);
                 }
             }
@@ -3186,6 +3695,29 @@ TextView barCodTextTemp;
 //                Log.e("rowid,", "...." + "" + v.getId() + "----->" + text.getText().toString());
 
                 itemCodeText.setText(ItemCodeCardSearch.get(position).getAssesstCode());
+
+
+                switch (swSearch) {
+                    case 3:
+//                        openSave = true;
+                        break;
+                    case 2:
+//                        openShelfTag = true;
+                        break;
+                    case 1:
+//                        openBarcode = true;
+                        break;
+                    case 4:
+//                        openPrice = true;
+                        break;
+                    case 5:
+                        OnEditorKeyPadAssest();
+//                        openAssesst = true;
+                        break;
+                    case 6:
+//                        openCost = true;
+                        break;
+                }
                 textId = 0;
                 dialogSearch.dismiss();
 
@@ -3758,5 +4290,26 @@ TextView barCodTextTemp;
 //
 //    }
 
+
+
+    public void dd(ItemCard list){
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
+        UserDaoCard userDao = db.itemCard();
+
+        userDao.insertUsers(list);
+
+
+    }
+
+    public List<ItemCard> getItemCard(){
+
+       // UserDaoCard userDao = db.itemCard();
+
+       return  db.itemCard().getAll();
+
+
+    }
 
 }

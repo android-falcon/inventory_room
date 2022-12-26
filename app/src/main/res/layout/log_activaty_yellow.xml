@@ -123,12 +123,22 @@
             android:text="@string/log_in"
             android:textColor="@color/white"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/data"
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/clear_buttons"
+            android:text="data NO"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/button14"
         android:layout_width="wrap_content"
-        android:layout_height="197dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"

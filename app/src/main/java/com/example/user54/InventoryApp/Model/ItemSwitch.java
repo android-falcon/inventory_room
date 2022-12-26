@@ -3,6 +3,7 @@ package com.example.user54.InventoryApp.Model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "ITEM_SWITCH")

@@ -17,10 +17,14 @@ public class ListAdapterSearchAssets extends BaseAdapter {
     CheckBox checkPriceed;
     private Context context;
     List<AssestItem> itemsList;
+    int companyNo;
 
-    public ListAdapterSearchAssets(Context context, List<AssestItem> itemsList) {
+
+    public ListAdapterSearchAssets(Context context, List<AssestItem> itemsList,int companyNo) {
         this.context = context;
         this.itemsList = itemsList;
+        this.companyNo=companyNo;
+
     }
 
     public ListAdapterSearchAssets() {
@@ -47,7 +51,7 @@ public class ListAdapterSearchAssets extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView itemCode, itemName;//, price
+        TextView itemCode, itemName,size,color;//, price
     }
 
     @Override
@@ -60,6 +64,20 @@ public class ListAdapterSearchAssets extends BaseAdapter {
         holder.itemName = (TextView) view.findViewById(R.id.itemName);
 //        holder.price = (TextView) view.findViewById(R.id.price);
 
+
+        holder.size=view.findViewById(R.id.size);
+        holder.color=view.findViewById(R.id.color);
+
+        if(companyNo==1){
+            holder.size.setVisibility(View.VISIBLE);
+            holder.color.setVisibility(View.VISIBLE);
+//            holder.size.setText(""+itemsList.get(1).getItemM());
+//            holder.color.setText(""+itemsList.get(1).getItemK());
+
+        }else {
+            holder.size.setVisibility(View.GONE);
+            holder.color.setVisibility(View.GONE);
+        }
         holder.itemCode.setText("" + itemsList.get(i).getAssesstCode());
         holder.itemName.setText("" + itemsList.get(i).getAssesstName());
 //        holder.price.setText("" + itemsList.get(i).getSalePrc());

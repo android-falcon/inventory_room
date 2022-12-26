@@ -11,6 +11,13 @@ public class MainSetting {
     private String printerType;
     private String currencyType;
     private int CoName;
+    private String numberType;
+    private String rotate;
+    private int reSize;
+    private int width;
+    private int height;
+    private int dataBaseNo;
+    private int dataBaseNoRoom;
     public MainSetting() {
     }
 
@@ -21,7 +28,7 @@ public class MainSetting {
         this.isQr = isQr;
     }
 
-    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName,String numberType,String rotate,int dataBaseNo,int reSize,int width,int height) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
@@ -31,6 +38,12 @@ public class MainSetting {
         this.printerType = printerType;
         this.currencyType=currencyType;
         this.CoName=CoName;
+        this.numberType=numberType;
+        this.rotate=rotate;
+        this.reSize=reSize;
+        this.width=width;
+        this.height=height;
+        this.dataBaseNo=dataBaseNo;
     }
 
     public String getPrinterType() {
@@ -103,5 +116,62 @@ public class MainSetting {
 
     public void setCoName(int coName) {
         CoName = coName;
+    }
+
+    public String getNumberType() {
+        return numberType;
+    }
+
+    public void setNumberType(String numberType) {
+        this.numberType = numberType;
+    }
+
+    public String getRotate() {
+        return rotate;
+    }
+
+    public void setRotate(String rotate) {
+        this.rotate = rotate;
+    }
+
+
+    public int getDataBaseNo() {
+        return dataBaseNo;
+    }
+
+    public void setDataBaseNo(int dataBaseNo) {
+        this.dataBaseNo = dataBaseNo;
+    }
+
+    public int getDataBaseNoRoom() {
+        return dataBaseNoRoom;
+    }
+
+    public int getReSize() {
+        return reSize;
+    }
+
+    public void setReSize(int reSize) {
+        this.reSize = reSize;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setDataBaseNoRoom(int dataBaseNoRoom) {
+        this.dataBaseNoRoom = dataBaseNoRoom;
     }
 }

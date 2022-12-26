@@ -27,14 +27,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.R;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoCard;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class Item2 extends AppCompatActivity {
 
@@ -56,8 +61,9 @@ public class Item2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_menu);
-
-        InventDB = new InventoryDatabase(Item2.this);
+        controll co=new controll();
+        int data= Integer.parseInt(co.readFromFile(Item2.this));
+        InventDB = new InventoryDatabase(Item2.this,data);
 
         initialization();
         main.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +391,26 @@ public class Item2 extends AppCompatActivity {
                     itemCard.setItemCode(itemCodeNew.getText().toString());
                     itemCard.setItemName(itemNameNew.getText().toString());
                     itemCard.setFDPRC(itemPrice.getText().toString());
-
+                    itemCard.setIsExport("0");
+                    itemCard.setAVLQty("0");
+                    itemCard.setItemG("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setCostPrc("0");
+                    itemCard.setSalePrc("0");
+                    itemCard.setAVLQty("0");
+                    itemCard.setBranchId("0");
+                    itemCard.setBranchName("0");
+                    itemCard.setDepartmentId("0");
+                    itemCard.setDepartmentName("0");
+                    itemCard.setItemK("0");
+                    itemCard.setItemL("0");
+                    itemCard.setItemDiv("0");
+                    itemCard.setItemGs("0");
+                    itemCard.setOrgPrice("0");
+                    itemCard.setInDate("0");
+                    itemCard.setIsExport("0");
+                    itemCard.setIsNew("1");
+                    itemCard.setItemM("0");
                     InventDB.addItemcardTable(itemCard);
                     progressDialog();
                     itemCodeNew.setText("");
@@ -792,6 +817,17 @@ public class Item2 extends AppCompatActivity {
         Clickable();
 
     }
+
+//    public void dd(ItemCard list){
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+//
+//        UserDaoCard userDao = db.itemCard();
+//
+//        userDao.insertAll(Collections.singletonList(list));
+//
+//    }
+
 
 
 }

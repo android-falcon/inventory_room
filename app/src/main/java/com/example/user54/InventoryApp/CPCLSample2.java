@@ -97,7 +97,7 @@ public class CPCLSample2 {
         this.cpclPrinter.printForm();
     }
 
-    public void imageTestArabic(int count, Bitmap testB) throws IOException {//
+    public void imageTestArabic(int count, Bitmap testB,String printType) throws IOException {//
         this.cpclPrinter.setForm(0, 0, 0,testB.getHeight()+30 , count);
         this.cpclPrinter.setMedia(this.paperType);
 
@@ -191,7 +191,7 @@ public class CPCLSample2 {
     public void dmStamp(int count, Bitmap bitmap) throws IOException {
         this.cpclPrinter.setForm(0, 200, 200, 120, count);
         this.cpclPrinter.setMedia(this.paperType);
-        this.cpclPrinter.printBitmap(bitmap, 200, 0);//70
+        this.cpclPrinter.printBitmap(bitmap, 130, 0);//70 //200
         Log.e("PrintType","dmStamp");
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//denmark_flag.jpg", 222, 55);
 //        this.cpclPrinter.setCPCLBarcode(0, 0, 0);
@@ -204,7 +204,7 @@ public class CPCLSample2 {
     public void dmStamp2(int count, Bitmap bitmap) throws IOException {
         this.cpclPrinter.setForm(0, 200, 200, 120, count);
         this.cpclPrinter.setMedia(this.paperType);
-        this.cpclPrinter.printBitmap(bitmap, 70, 0);
+        this.cpclPrinter.printBitmap(bitmap, 130, 0);//70
         Log.e("PrintType","dmStamp2");
 //        this.cpclPrinter.printBitmap("//sdcard//temp//test//denmark_flag.jpg", 222, 55);
 //        this.cpclPrinter.setCPCLBarcode(0, 0, 0);
