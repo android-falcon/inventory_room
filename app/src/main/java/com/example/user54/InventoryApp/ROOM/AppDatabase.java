@@ -16,7 +16,7 @@ import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.controll;
 
 
-@Database(entities = {ItemCard.class, ItemSwitch.class, ItemUnit.class}, version =  96 , exportSchema = false)
+@Database(entities = {ItemCard.class, ItemSwitch.class, ItemUnit.class}, version =  97 , exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDaoCard itemCard();

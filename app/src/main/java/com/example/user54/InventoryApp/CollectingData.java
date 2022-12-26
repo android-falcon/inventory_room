@@ -118,6 +118,7 @@ public class CollectingData extends AppCompatActivity {
 
     String StkNo = "";
     String QrUse = "";
+    int MinUse = 0;
     int settingCOName=0;
     Animation animFadein;
     TableRow row;
@@ -1350,11 +1351,15 @@ public class CollectingData extends AppCompatActivity {
         barcode = dialog.findViewById(R.id.barcode);
         itemDate.setText(convertToEnglish(today));
         String StkName = "";
+        min.setVisibility(View.VISIBLE);
         if (mainSettings.size() != 0) {
             StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
             StkNo = mainSettings.get(0).getStorNo();
             QrUse = mainSettings.get(0).getIsQr();
             settingCOName=mainSettings.get(0).getCoName();
+            MinUse=mainSettings.get(0).getIsMinus();
+
+
         }
         locations.setEnabled(false);
         locations.setText(LocationEdite);
@@ -1428,14 +1433,22 @@ public class CollectingData extends AppCompatActivity {
 //        });
 
 
+
         if(QrUse.equals("1")){
             min.setVisibility(View.GONE);
             rawQr.setVisibility(View.VISIBLE);
             rawQrLot.setVisibility(View.VISIBLE);
         }else{
+
+            if(MinUse==1){
+                min.setVisibility(View.GONE);
+
+            }else {
+                min.setVisibility(View.VISIBLE);
+            }
             rawQrLot.setVisibility(View.GONE);
             rawQr.setVisibility(View.GONE);
-            min.setVisibility(View.VISIBLE);
+           // min.setVisibility(View.VISIBLE);
         }
 
         salePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {

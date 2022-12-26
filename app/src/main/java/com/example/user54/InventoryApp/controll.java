@@ -21,7 +21,7 @@ public class controll {
     public static String F_D="";
     public static String Item_name="";
     public static int dataBaseNo=85;
-    public  static int   RoomVersion=96;
+    public  static int   RoomVersion=97;
 
 
     public String readFromFile(Context context) {

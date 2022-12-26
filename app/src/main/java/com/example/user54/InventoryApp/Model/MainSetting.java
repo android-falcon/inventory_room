@@ -18,6 +18,7 @@ public class MainSetting {
     private int height;
     private int dataBaseNo;
     private int dataBaseNoRoom;
+    private int isMinus;
     public MainSetting() {
     }
 
@@ -28,7 +29,7 @@ public class MainSetting {
         this.isQr = isQr;
     }
 
-    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName,String numberType,String rotate,int dataBaseNo,int reSize,int width,int height) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName,String numberType,String rotate,int dataBaseNo,int reSize,int width,int height,int isMinus) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
@@ -44,6 +45,7 @@ public class MainSetting {
         this.width=width;
         this.height=height;
         this.dataBaseNo=dataBaseNo;
+        this.isMinus=isMinus;
     }
 
     public String getPrinterType() {
@@ -173,5 +175,13 @@ public class MainSetting {
 
     public void setDataBaseNoRoom(int dataBaseNoRoom) {
         this.dataBaseNoRoom = dataBaseNoRoom;
+    }
+
+    public int getIsMinus() {
+        return isMinus;
+    }
+
+    public void setIsMinus(int isMinus) {
+        this.isMinus = isMinus;
     }
 }

@@ -226,6 +226,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String RESIZE="RESIZE";
     private static final String SHELF_TAG_WIDTH="SHELF_TAG_WIDTH";
     private static final String SHELF_TAG_HEIGHT="SHELF_TAG_HEIGHT";
+    private static final String IS_QTY_MINUS="IS_QTY_MINUS";
+
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
 
@@ -524,7 +526,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + ROOM_DATABASE_NO + " NVARCHAR   ,"
                 + RESIZE + " NVARCHAR   ,"
                 + SHELF_TAG_WIDTH + " NVARCHAR   ,"
-                + SHELF_TAG_HEIGHT + " NVARCHAR " + ")";
+                + SHELF_TAG_HEIGHT + " NVARCHAR   ,"
+                + IS_QTY_MINUS + " NVARCHAR " + ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -971,6 +974,13 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }
 
 
+        try {
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + IS_QTY_MINUS + " TEXT"+" DEFAULT '0'");
+        }catch (Exception e){
+            Log.e("upgrade", "MAIN_SETTING_TABLE IS_ASSEST");
+        }
+
+
     }
 
 
@@ -1114,6 +1124,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(RESIZE,  convertToEnglish(""+mainSetting.getReSize()));
         values.put(SHELF_TAG_WIDTH,  convertToEnglish(""+mainSetting.getWidth()));
         values.put(SHELF_TAG_HEIGHT,  convertToEnglish(""+mainSetting.getHeight()));
+        values.put(IS_QTY_MINUS,  convertToEnglish(""+mainSetting.getIsMinus()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -2152,6 +2163,8 @@ sum+=cursor.getFloat(2);
                 item.setReSize(cursor.getInt(13));
                 item.setWidth(cursor.getInt(14));
                 item.setHeight(cursor.getInt(15));
+                item.setIsMinus(cursor.getInt(16));
+
                 passwords.add(item);
 
             } while (cursor.moveToNext());
