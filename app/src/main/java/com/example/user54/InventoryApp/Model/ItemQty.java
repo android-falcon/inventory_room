@@ -5,6 +5,15 @@ public class ItemQty {
     private String itemCode ;
     private String itemName ;
     private String Qty;
+    private String f_d;
+
+    public String getF_d() {
+        return f_d;
+    }
+
+    public void setF_d(String f_d) {
+        this.f_d = f_d;
+    }
 
     public ItemQty() {
 

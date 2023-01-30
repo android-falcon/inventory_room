@@ -600,10 +600,12 @@
     <string name="PrinterSizeH">Printer Size H</string>
     <string name="Production_Date">تاريخ الانتاج</string>
     <string name="ProData">تاريخ الانتاج</string>
+    <string name="PriData">تاريخ الطباعة</string>
     <string name="unite">الوحدة</string>
     <string name="AddAssest">اضافة اصول</string>
     <string name="size">حجم</string>
     <string name="color">لون</string>
+    <string name="print_Date">تاريخ الطباعة</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

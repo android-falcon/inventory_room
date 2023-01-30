@@ -597,10 +597,13 @@
     <string name="PrinterSizeH">Printer Size H</string>
     <string name="Production_Date">Production Date</string>
     <string name="ProData">P.Date</string>
+    <string name="PriData">Pri.Date</string>
     <string name="unite">unite</string>
     <string name="AddAssest">Add Assest</string>
     <string name="size">Size</string>
     <string name="color">Color</string>
+    <string name="print_Date">print_Date</string>
+
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

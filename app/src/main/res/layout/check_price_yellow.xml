@@ -125,8 +125,10 @@
 
 
                 <pl.droidsonroids.gif.GifImageButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
                     android:background="@drawable/clear_buttons"
                     android:src="@drawable/barcode_scanner" />
 
@@ -237,9 +239,116 @@
                         tools:visibility="invisible" />
 
                 </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/textView34"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:padding="5dp"
+                        android:text="@string/qty"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/qty_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bac_frame_no"
+                        android:ems="9"
+                        android:gravity="center"
+                        android:inputType="textPersonName"
+                        android:textColor="@color/white"
+                        android:textCursorDrawable="@color/orFloor"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/search3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:visibility="invisible" />
+
+                </TableRow>
+                <TextView
+                    android:id="@+id/editText8"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@color/pinkLow"
+                    android:ems="10" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="3"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bac_frame"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@drawable/bac_white"
+                            android:gravity="center"
+                            android:text="@string/unite"
+                            android:textColor="@color/dark_blue"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@drawable/bac_white"
+                            android:gravity="center"
+                            android:text="@string/price"
+                            android:textColor="@color/dark_blue"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@drawable/bac_white"
+                            android:gravity="center"
+                            android:text="@string/qty"
+                            android:textColor="@color/dark_blue"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:background="@drawable/bac_white"
+                            android:gravity="center"
+                            android:text="@string/item_code"
+                            android:textColor="@color/dark_blue"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/unit_detail_recycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:padding="3dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
+
+
+
+                </LinearLayout>
             </LinearLayout>
+
         </ScrollView>
 
     </LinearLayout>

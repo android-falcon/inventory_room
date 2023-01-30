@@ -531,7 +531,7 @@ public class bMITP extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName,price,BarcodeText,exp,textView421 ;
 
         LinearLayout ExpLiner,priceLiner;
 
@@ -542,7 +542,10 @@ public class bMITP extends Activity {
         price = (TextView) dialog_Header.findViewById(R.id.price);
         BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
         exp=(TextView) dialog_Header.findViewById(R.id.exp);
-
+        textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
+        Log.e("PrintDateFlag==",Item.PrintDateFlag+"");
+      if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+      else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
@@ -592,7 +595,7 @@ public class bMITP extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog_design2);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName,price,BarcodeText,exp ;
+        TextView itemName,price,BarcodeText,exp ,textView421;
 
         LinearLayout ExpLiner,priceLiner;
 
@@ -603,7 +606,9 @@ public class bMITP extends Activity {
         price = (TextView) dialog_Header.findViewById(R.id.price);
         BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
         exp=(TextView) dialog_Header.findViewById(R.id.exp);
-
+        textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
+        if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+        else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());

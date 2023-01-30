@@ -43,15 +43,19 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
+import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.UnitName;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.adapters.Cash_detail_adapter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -78,14 +82,16 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.TRANSPARENT;
 
 public class Item extends AppCompatActivity {
-
+    RecyclerView dis_detail_recycle;
     private static final int READ_REQUEST_CODE = 42;
+    public static int PrintDateFlag  =0;
+    public static List<ItemQty> listItemUnitQty=new ArrayList<>();
      EditText BarcodetextView;
-     TextView itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode;
+     TextView itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode,textView41_;
      ImageView barcodeShelfPrintParcode;
     ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
      TextView ItemNameEditTextTag,PriceEditTextTag,countText,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,startEditTextTag,
-             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3;;
+             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3,printEditTextTag;;
     ListView list;
      ListAdapter adapter;
     ListView listAssest;
@@ -105,7 +111,7 @@ public class Item extends AppCompatActivity {
     List<MainSetting>mainSettingsList;
     public static ImageView shelfTagLinerTests;
     int settingCOName=0;
-    public static TextView textView,textItemName;
+    public static TextView textView,textItemName,textQty,textViewFd;
     public static ItemCard itemCardForPrint;
     public static AssestItem itemAssesstForPrint;
     TextView pathNameFr,tempText;
@@ -116,6 +122,7 @@ public class Item extends AppCompatActivity {
     public static List<ItemCard> itemList;
     public static List<AssestItem> itemListAssest;
     List<ItemCard> itemCodeCard ;
+
     ArrayList<AssestItem> itemAssetsCa ;
     public static EditText ItemCodeEditTextTag,prinS,prinSa;
     int companyNo=0;
@@ -1266,7 +1273,7 @@ TextView barCodTextTemp;
 
         final int[] count1 = {1};
 
-        final TextView salesPrice,itemName;
+        final TextView salesPrice,itemName,qty_text_value;
 
         Button exit,prepare;
         ImageView search;
@@ -1274,26 +1281,27 @@ TextView barCodTextTemp;
 
         salesPrice= dialogBarCode.findViewById(R.id.salesPrice);
         search=  dialogBarCode.findViewById(R.id.search);
-
+        qty_text_value=  dialogBarCode.findViewById(R.id.qty_text);
         exit =  dialogBarCode.findViewById(R.id.exit);
 
         itemName= dialogBarCode.findViewById(R.id.itemName);
         itemCode= (EditText) dialogBarCode.findViewById(R.id.itemCode);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                itemCode.requestFocus();
 
-//        prepare.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(!itemCode.getText().toString().equals("")&& openPrice){
-//                    textView=salesPrice;
-//                    importJson sendCloud = new importJson(Item.this,itemCode.getText().toString());
-//                    sendCloud.startSending("ItemPrice");
-//
-//                }
-//            }
-//        });
 
+            }
+        });
+        dis_detail_recycle=dialogBarCode.findViewById(R.id.unit_detail_recycle);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Item.this);
+        dis_detail_recycle.setLayoutManager(layoutManager);
+        listItemUnitQty.clear();
         textView=salesPrice;
+        textViewFd=salesPrice;
         textItemName= itemName;
+        textQty=qty_text_value;
         textView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -1302,16 +1310,35 @@ TextView barCodTextTemp;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 if(textView.getText().toString().equals("-1")){
+                    listItemUnitQty.clear();
                     showAlertDialog(getResources().getString(R.string.falidTogetdata));
                     salesPrice.setText("");
                     itemName.setText("");
+                    textViewFd.setText("");
+                    qty_text_value.setText("");
+                    Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
+                    dis_detail_recycle.setAdapter(dis_detail_adapter);
 
                 }else if(textView.getText().toString().equals("*")){
+                    listItemUnitQty.clear();
                     showAlertDialog(getResources().getString(R.string.thisitemnotfound));
                     salesPrice.setText("");
                     itemName.setText("");
+                    textViewFd.setText("");
+                    qty_text_value.setText("");
+                    Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
+                    dis_detail_recycle.setAdapter(dis_detail_adapter);
+
+                }
+                else  if(textView.getText().toString().equals("fill_unit")){
+
+                    Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
+                    dis_detail_recycle.setAdapter(dis_detail_adapter);
+//                   if( listItemUnitQty.size()==0)
+                    textViewFd=salesPrice;
+                    textViewFd.setText(controll.F_D);
+
                 }
 
 
@@ -1344,8 +1371,10 @@ TextView barCodTextTemp;
                         || actionId == EditorInfo.IME_NULL  ) {
 //                    if (isEnter[0]) {
                         if(!itemCode.getText().toString().equals("")&& openPrice ){
-                            textView=salesPrice;
+//                            textView=salesPrice;
+                            textViewFd=salesPrice;
                             textItemName= itemName;
+                            textQty=qty_text_value;
                             List<MainSetting> mainSetting=InventDB.getAllMainSetting();
                             if(mainSetting.size()!=0) {
 
@@ -1357,6 +1386,7 @@ TextView barCodTextTemp;
                                     @Override
                                     public void run() {
                                         itemCode.requestFocus();
+
 
                                     }
                                 });
@@ -1658,16 +1688,20 @@ TextView barCodTextTemp;
         ImageView shelfTagLinerTest;
 EditText prinS1,prinSa1;
 
-        final CheckBox PriceCheckBoxTag,ExpCheckBoxTag,startCheckBoxTag,nameCheckBoxTag;
+        final CheckBox PriceCheckBoxTag,ExpCheckBoxTag,startCheckBoxTag,nameCheckBoxTag,PrintCheckBoxTag;
         final LinearLayout priceLinerPrint,ExpLinerTag,priceLinerPrint_;
 //RadioGroup design;
 
         startEditTextTag=dialog.findViewById(R.id.startEditTextTag);
+        printEditTextTag=dialog.findViewById(R.id.printEditTextTag);
+
         startEditTextTag.setText(""+today);
+       // pri_LinerTag=(LinearLayout) dialog.findViewById(R.id.pri_LinerTag);
         ExpLinerTag=(LinearLayout) dialog.findViewById(R.id.ExpLinerTag);
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
         priceLinerPrint_=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint_);
         PriceCheckBoxTag = (CheckBox) dialog.findViewById(R.id.PriceCheckBoxTag);
+        PrintCheckBoxTag=dialog.findViewById(R.id.printCheckBoxTag);
         nameCheckBoxTag=dialog.findViewById(R.id.nameCheckBoxTag);
         ExpCheckBoxTag = (CheckBox) dialog.findViewById(R.id.ExpCheckBoxTag);
         startCheckBoxTag=dialog.findViewById(R.id.startCheckBoxTag);
@@ -1719,6 +1753,8 @@ EditText prinS1,prinSa1;
         upCount = (ImageButton) dialog.findViewById(R.id.up);
         downCount = (ImageButton) dialog.findViewById(R.id.down);
         ExpEditTextTag.setText(convertToEnglish(today));
+
+printEditTextTag.setText(convertToEnglish(today));
 
         shelfTagLiner1.setVisibility(View.GONE);
         shelfTagLiner.setVisibility(View.VISIBLE);
@@ -1882,6 +1918,7 @@ EditText prinS1,prinSa1;
                     }
                 });
                 ExpEditTextTag.setText(convertToEnglish(today));
+                printEditTextTag.setText(convertToEnglish(today));
                 itemNamePrint.setText("Item Name");
                 pricePrint.setText(" 0.00 JD");
                 barcodeShelfPrint.setImageDrawable(getResources().getDrawable(R.drawable.barcodes));
@@ -1910,7 +1947,20 @@ EditText prinS1,prinSa1;
             }
         });
 
+         PrintCheckBoxTag.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
 
+                 if(PrintCheckBoxTag.isChecked()){
+                     ExpLinerTag.setVisibility(View.VISIBLE);
+
+//                     textView41_.setText("PRI:");
+                 }else{
+                     ExpLinerTag.setVisibility(View.INVISIBLE);
+          //           textView41_.setText("EXP:");
+                 }
+             }
+         });
 
         ExpCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1933,7 +1983,13 @@ EditText prinS1,prinSa1;
             }
         });
 
-
+        printEditTextTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeDialog(printEditTextTag);
+                exp.setText(printEditTextTag.getText().toString());
+            }
+        });
 
         PriceEditTextTag.addTextChangedListener(new TextWatcher() {
             @Override
@@ -2500,7 +2556,15 @@ EditText prinS1,prinSa1;
                   //  itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
                     itemCardForPrint.setCostPrc(countText.getText().toString());
                     if(ExpCheckBoxTag.isChecked()){
+                        PrintDateFlag  =0;
                             itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
+
+                    }else{
+                        itemCardForPrint.setDepartmentId("**" );
+                    }
+                    if(PrintCheckBoxTag.isChecked()){
+                        PrintDateFlag=1;
+                        itemCardForPrint.setDepartmentId("" + printEditTextTag.getText().toString());
 
                     }else{
                         itemCardForPrint.setDepartmentId("**" );
@@ -3951,6 +4015,7 @@ EditText prinS1,prinSa1;
 
                 selectedMonth = selectedMonth + 1;
                 itemExpDate.setText(convertToEnglish("" + selectedDay + "/" + selectedMonth + "/" + selectedYear));
+
                 tempText.setText(convertToEnglish("" + selectedDay + "/" + selectedMonth + "/" + selectedYear));
             }
         }, mYear, mMonth, mDay);

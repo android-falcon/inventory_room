@@ -19,8 +19,8 @@ public class controll {
     public static boolean isYellow=true;
     public static String URL="http://10.0.0.22:8081/";
     public static String F_D="";
-    public static String Item_name="";
-    public static int dataBaseNo=85;
+    public static String Item_name="",qty_name;
+    public static int dataBaseNo=96;
     public  static int   RoomVersion=97;
 
 

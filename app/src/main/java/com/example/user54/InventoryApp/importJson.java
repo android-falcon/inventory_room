@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
+import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
@@ -37,8 +38,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.user54.InventoryApp.CollectingData.textItemNameUpdate;
 import static com.example.user54.InventoryApp.CollectingData.textViewUpdate;
+import static com.example.user54.InventoryApp.Item.listItemUnitQty;
 import static com.example.user54.InventoryApp.Item.textItemName;
+import static com.example.user54.InventoryApp.Item.textQty;
 import static com.example.user54.InventoryApp.Item.textView;
+import static com.example.user54.InventoryApp.Item.textViewFd;
 
 public class importJson {
 
@@ -765,13 +769,6 @@ public class importJson {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(context,R.style.MyTheme);
-//            progressDialog.setCancelable(false);
-//            progressDialog.setMessage("Loading...");
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            progressDialog.setProgress(0);
-//            progressDialog.show();
-
              pdItem = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
             pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             pdItem.setTitleText(context.getResources().getString(R.string.itemprice));
@@ -860,13 +857,17 @@ public class importJson {
 
                         controll.F_D= finalObject.getString("F_D");
                         controll.Item_name= finalObject.getString("ITEMNAMEA");
-                        textView.setText(controll.F_D);
+                        controll.qty_name= finalObject.getString("QTY");
+//                        textView.setText(controll.F_D);
+                        textQty.setText(controll.qty_name);
+                        textViewFd.setText(controll.F_D);
                         textItemName.setText(controll.Item_name);
                                 Log.e("TAG_itemPrice", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
 
                     }
-
+                  new   SyncItemPrice_Unit().execute();
                     if(pdItem !=null) {
+
                         pdItem.dismissWithAnimation();
 //                        new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
 //                                .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
@@ -898,10 +899,138 @@ public class importJson {
 
                 textView.setText("-1");
             }
-//            progressDialog.dismiss();
         }
     }
+    private class SyncItemPrice_Unit extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+        SweetAlertDialog pdItem=null;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pdItem = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pdItem.setTitleText(context.getResources().getString(R.string.qty));
+            pdItem.setCancelable(false);
+            pdItem.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+                String ip="";
+                if(mainSettings.size()!=0) {
+                    ip= mainSettings.get(0).getIP();
+                }
+                String link = "http://"+ip + "/GetUnitDTL";
+//                String link = controll.URL + "GetJRDITEMPRICE";
+//
+                String data = "ITEMCODE=" + URLEncoder.encode(itemCode, "UTF-8")  + "&" +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+
+//
+                URL url = new URL(link);
+                Log.e("TAG_itemPrice", "link -->" +link);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "TAG_itemPrice -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+            if (JsonResponse != null && JsonResponse.contains("F_D")) {
+                Log.e("TAG_itemPrice", "****Success");
+
+                try {
+                    listItemUnitQty.clear();
+
+                    JSONArray parentArray = new JSONArray(JsonResponse);
+                    for (int i = 0; i < parentArray.length(); i++) {
+                        JSONObject finalObject = parentArray.getJSONObject(i);
+                        ItemQty item=new ItemQty();
+
+                        item.setF_d( finalObject.getString("F_D"));
+                        item.setItemName(finalObject.getString("ITEMNAMEA"));
+                        item.setQty(finalObject.getString("QTY"));
+                        item.setItemCode(finalObject.getString("ITEMBARCODE"));
+                     listItemUnitQty.add(item);
+                        Log.e("TAG_itemPrice", "****getSuccess name= "+listItemUnitQty.size());
+
+                    }
+                    textView.setText("fill_unit");
+                    textViewFd.setText(controll.F_D);
+                    if(pdItem !=null) {
+                        pdItem.dismissWithAnimation();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else if(JsonResponse != null && JsonResponse.contains("No Parameter Found.")){
+                Log.e("TAG_itemPrice", "****No Parameter Found.");
+                listItemUnitQty.clear();
+                textView.setText("fill_unit");
+                if(pdItem !=null) {
+                    pdItem.dismissWithAnimation();
+                }
+//                textView.setText("*");
+            } else {
+                Log.e("TAG_itemPrice", "****Failed to export data");
+
+                if(pdItem !=null) {
+                    pdItem.dismissWithAnimation();
+                }
+
+//                textView.setText("-1");
+            }
+        }
+    }
 
     private class SyncItemCoastPrice extends AsyncTask<String, String, String> {
         private String JsonResponse = null;

@@ -638,6 +638,7 @@ public class BluetoothConnectMenu extends Activity {
                                 }
                                 if (bitmaps != null) {
                                     Log.e("Count = ", "" + Item.itemCardForPrint.getCostPrc());
+                                    Log.e("PrintType = ", "" + PrintType);
                                     if(PrintType.equals("0")||  PrintType.equals("3")){
                                         sample.imageTestEnglishBarcode(Integer.parseInt(Item.itemCardForPrint.getCostPrc()), bitmaps,PrintType);
                                     }else if (PrintType.equals("1")){
@@ -743,7 +744,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName, price, BarcodeText, exp;
+        TextView itemName, price, BarcodeText, exp,textView421;
 
         LinearLayout ExpLiner, priceLiner;
 
@@ -754,7 +755,10 @@ public class BluetoothConnectMenu extends Activity {
         price = (TextView) dialog_Header.findViewById(R.id.price);
         BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
         exp = (TextView) dialog_Header.findViewById(R.id.exp);
-
+        textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
+//        Log.e("PrintDateFlag==",Item.PrintDateFlag+"");
+        if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+        else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
@@ -1139,7 +1143,7 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog_design2_bitaltmoin);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName, price, BarcodeText, exp;
+        TextView itemName, price, BarcodeText, exp,textView421;
 
         LinearLayout ExpLiner, priceLiner;
 
@@ -1150,7 +1154,9 @@ public class BluetoothConnectMenu extends Activity {
         price = (TextView) dialog_Header.findViewById(R.id.price);
         BarcodeText = (TextView) dialog_Header.findViewById(R.id.BarcodeText);
         exp = (TextView) dialog_Header.findViewById(R.id.exp);
-
+        textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
+        if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+        else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());

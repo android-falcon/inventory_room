@@ -307,7 +307,39 @@
                             android:textColor="@color/white"
                             android:textSize="10sp" />
                     </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
 
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center|start">
+
+                        <TextView
+                            android:layout_width="95dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/print_Date"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/printEditTextTag"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bac_frame_no"
+                            android:ems="10"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/printCheckBoxTag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="@string/PriData"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
+                    </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
