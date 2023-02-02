@@ -1310,7 +1310,10 @@ TextView barCodTextTemp;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e("aya1,onTextChanged","onTextChanged");
+
                 if(textView.getText().toString().equals("-1")){
+                    Log.e("aya5,onTextChanged","onTextChanged");
                     listItemUnitQty.clear();
                     showAlertDialog(getResources().getString(R.string.falidTogetdata));
                     salesPrice.setText("");
@@ -1321,6 +1324,7 @@ TextView barCodTextTemp;
                     dis_detail_recycle.setAdapter(dis_detail_adapter);
 
                 }else if(textView.getText().toString().equals("*")){
+                    Log.e("aya6,onTextChanged","onTextChanged");
                     listItemUnitQty.clear();
                     showAlertDialog(getResources().getString(R.string.thisitemnotfound));
                     salesPrice.setText("");
@@ -1332,15 +1336,25 @@ TextView barCodTextTemp;
 
                 }
                 else  if(textView.getText().toString().equals("fill_unit")){
-
+                    Log.e("aya7",printEditTextTag.getText().toString());
                     Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
                     dis_detail_recycle.setAdapter(dis_detail_adapter);
 //                   if( listItemUnitQty.size()==0)
                     textViewFd=salesPrice;
                     textViewFd.setText(controll.F_D);
+                    Log.e("aya2",printEditTextTag.getText().toString());
 
                 }
+                else {
+                    Log.e("aya8",printEditTextTag.getText().toString());
+                    Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
+                    dis_detail_recycle.setAdapter(dis_detail_adapter);
+//                   if( listItemUnitQty.size()==0)
+                    textViewFd=salesPrice;
+                    textViewFd.setText(controll.F_D);
+                    Log.e("aya2",printEditTextTag.getText().toString());
 
+                }
 
             }
 
@@ -1719,6 +1733,7 @@ EditText prinS1,prinSa1;
         pricePrint2= (TextView) dialog.findViewById(R.id.price);
         itemText= (TextView) dialog.findViewById(R.id.itemText);
         exp2= (TextView) dialog.findViewById(R.id.exp1);
+
 //        design=  dialog.findViewById(R.id.design);
 
         shelfTagLiner1 =dialog.findViewById(R.id.shelfTagLiner1);

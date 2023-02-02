@@ -859,9 +859,9 @@ public class importJson {
                         controll.Item_name= finalObject.getString("ITEMNAMEA");
                         controll.qty_name= finalObject.getString("QTY");
 //                        textView.setText(controll.F_D);
-                        textQty.setText(controll.qty_name);
-                        textViewFd.setText(controll.F_D);
-                        textItemName.setText(controll.Item_name);
+if(textQty!=null)                        textQty.setText(controll.qty_name);
+                        if(textViewFd!=null)               textViewFd.setText(controll.F_D);
+                        if(textItemName!=null)              textItemName.setText(controll.Item_name);
                                 Log.e("TAG_itemPrice", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
 
                     }
@@ -1002,8 +1002,9 @@ public class importJson {
                         Log.e("TAG_itemPrice", "****getSuccess name= "+listItemUnitQty.size());
 
                     }
-                    textView.setText("fill_unit");
-                    textViewFd.setText(controll.F_D);
+                    textView.setText(controll.F_D);
+                    Log.e("aya", "****textView name ");
+if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
                     if(pdItem !=null) {
                         pdItem.dismissWithAnimation();
                     }
@@ -1013,9 +1014,11 @@ public class importJson {
                 }
 
             } else if(JsonResponse != null && JsonResponse.contains("No Parameter Found.")){
-                Log.e("TAG_itemPrice", "****No Parameter Found.");
+                Log.e("TAG_itemPrice22", "****No Parameter Found.");
                 listItemUnitQty.clear();
-                textView.setText("fill_unit");
+                Log.e("TAG_itemPrice23", "****No Parameter Found.");
+                textView.setText(controll.F_D);
+                Log.e("TAG_itemPrice24", "****No Parameter Found.");
                 if(pdItem !=null) {
                     pdItem.dismissWithAnimation();
                 }
