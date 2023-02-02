@@ -2562,13 +2562,13 @@ printEditTextTag.setText(convertToEnglish(today));
                     }else{
                         itemCardForPrint.setDepartmentId("**" );
                     }
-                    if(PrintCheckBoxTag.isChecked()){
-                        PrintDateFlag=1;
-                        itemCardForPrint.setDepartmentId("" + printEditTextTag.getText().toString());
-
-                    }else{
-                        itemCardForPrint.setDepartmentId("**" );
-                    }
+//                    if(PrintCheckBoxTag.isChecked()){
+//                        PrintDateFlag=1;
+//                        itemCardForPrint.setDepartmentId("" + printEditTextTag.getText().toString());
+//
+//                    }else{
+//                        itemCardForPrint.setDepartmentId("**" );
+//                    }
 
                     itemCardForPrint.setItemG(""+DesignType[0]);
 
