@@ -82,6 +82,7 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.TRANSPARENT;
 
 public class Item extends AppCompatActivity {
+    CheckBox SalesPriceCheckBoxTag;
     RecyclerView dis_detail_recycle;
     private static final int READ_REQUEST_CODE = 42;
     public static int PrintDateFlag  =0;
@@ -91,7 +92,8 @@ public class Item extends AppCompatActivity {
      ImageView barcodeShelfPrintParcode;
     ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
      TextView ItemNameEditTextTag,PriceEditTextTag,countText,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,startEditTextTag,
-             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,pricePrint3,printEditTextTag;;
+             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,
+             pricePrint3,printEditTextTag,salesPriceEditTextTag;
     ListView list;
      ListAdapter adapter;
     ListView listAssest;
@@ -1341,18 +1343,20 @@ TextView barCodTextTemp;
                     dis_detail_recycle.setAdapter(dis_detail_adapter);
 //                   if( listItemUnitQty.size()==0)
                     textViewFd=salesPrice;
+                    if(textViewFd!=null)
                     textViewFd.setText(controll.F_D);
-                    Log.e("aya2",printEditTextTag.getText().toString());
+//                    Log.e("aya2",printEditTextTag.getText().toString());
 
                 }
                 else {
-                    Log.e("aya8",printEditTextTag.getText().toString());
+//                    Log.e("aya8",printEditTextTag.getText().toString());
                     Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
                     dis_detail_recycle.setAdapter(dis_detail_adapter);
 //                   if( listItemUnitQty.size()==0)
                     textViewFd=salesPrice;
+                    if(textViewFd!=null)
                     textViewFd.setText(controll.F_D);
-                    Log.e("aya2",printEditTextTag.getText().toString());
+//                    Log.e("aya2",printEditTextTag.getText().toString());
 
                 }
 
@@ -1678,7 +1682,7 @@ TextView barCodTextTemp;
     }
 
 
-    void showPrintShelfTagDialog() {
+    void showPrintShelfTagDialog() {//here tahani*********
         dialog = new Dialog(Item.this,android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -1715,6 +1719,7 @@ EditText prinS1,prinSa1;
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
         priceLinerPrint_=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint_);
         PriceCheckBoxTag = (CheckBox) dialog.findViewById(R.id.PriceCheckBoxTag);
+        SalesPriceCheckBoxTag= (CheckBox) dialog.findViewById(R.id.SalesPriceCheckBoxTag);
         PrintCheckBoxTag=dialog.findViewById(R.id.printCheckBoxTag);
         nameCheckBoxTag=dialog.findViewById(R.id.nameCheckBoxTag);
         ExpCheckBoxTag = (CheckBox) dialog.findViewById(R.id.ExpCheckBoxTag);
@@ -1722,6 +1727,7 @@ EditText prinS1,prinSa1;
         countText = (TextView) dialog.findViewById(R.id.countT);
         ItemNameEditTextTag= (TextView) dialog.findViewById(R.id.ItemNameEditTextTag);
         PriceEditTextTag= (TextView) dialog.findViewById(R.id.PriceEditTextTag);
+        salesPriceEditTextTag= (TextView) dialog.findViewById(R.id.SalesPriceEditTextTag);
         ExpEditTextTag= (TextView) dialog.findViewById(R.id.ExpEditTextTag);
         itemNamePrint= (TextView) dialog.findViewById(R.id.itemNamePrint);
         pricePrint= (TextView) dialog.findViewById(R.id.pricePrint);
@@ -1926,6 +1932,7 @@ printEditTextTag.setText(convertToEnglish(today));
                 ItemNameEditTextTag.setText("");
 //                ItemUnitEditTextTag.setText("");
                 PriceEditTextTag.setText("");
+                salesPriceEditTextTag.setText("");
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -1952,8 +1959,21 @@ printEditTextTag.setText(convertToEnglish(today));
         PriceCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onEditorKeyPadChange();
                 if(PriceCheckBoxTag.isChecked()){
+                    priceLinerPrint.setVisibility(View.VISIBLE);
+                }else{
+                    priceLinerPrint.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        });
+        SalesPriceCheckBoxTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onEditorKeyPadChange();
+                if(SalesPriceCheckBoxTag.isChecked()){
                     priceLinerPrint.setVisibility(View.VISIBLE);
                 }else{
                     priceLinerPrint.setVisibility(View.INVISIBLE);
@@ -2026,10 +2046,12 @@ printEditTextTag.setText(convertToEnglish(today));
                             }
                         });
                         PriceEditTextTag.setText("");
+                        salesPriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
                   //      ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
-                    } else if (PriceEditTextTag.getText().toString().equals("-1")) {
+                    }
+                    else if (PriceEditTextTag.getText().toString().equals("-1")) {
                         showAlertDialog(getResources().getString(R.string.falidTogetdata));
                         ItemCodeEditTextTag.setText("");
                         new Handler().post(new Runnable() {
@@ -2039,20 +2061,28 @@ printEditTextTag.setText(convertToEnglish(today));
                             }
                         });
                         PriceEditTextTag.setText("");
+                        salesPriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
                     //    ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
-                    } else {
+                    } else
+                    {
                         itemNamePrint.setText(ItemNameEditTextTag.getText().toString()+"/"+uniteNames);
                         exp.setText(ExpEditTextTag.getText().toString());
 
+                        if(salesPriceEditTextTag.getText().toString().trim().length()==0)salesPriceEditTextTag.setText(PriceEditTextTag.getText().toString());
                         pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+                        pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))) + " JD");
 
                         pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+                        pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))) + " JD");
 
                         pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+                        pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))) + " JD");
 
                         pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))) + " JD");
+                        pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))) + " JD");
+
                         itemNamePrint2.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
                         itemNamePrint3.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
                         itemNamePrint4.setText(ItemNameEditTextTag.getText().toString()+" / "+uniteNames);
@@ -2571,7 +2601,7 @@ printEditTextTag.setText(convertToEnglish(today));
                   //  itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
                     itemCardForPrint.setCostPrc(countText.getText().toString());
                     if(ExpCheckBoxTag.isChecked()){
-                        PrintDateFlag  =0;
+                      //  PrintDateFlag  =0;
                             itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
 
                     }else{
@@ -2592,6 +2622,11 @@ printEditTextTag.setText(convertToEnglish(today));
                         itemCardForPrint.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(PriceEditTextTag.getText().toString()))));
 
                     }else{
+                        if(SalesPriceCheckBoxTag.isChecked()){
+                            itemCardForPrint.setSalePrc(""+salesPriceEditTextTag.getText().toString() );
+                            itemCardForPrint.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))));
+
+                        }else
                         itemCardForPrint.setSalePrc("**");
                     }
 
@@ -2610,6 +2645,7 @@ printEditTextTag.setText(convertToEnglish(today));
                     }
 
                     if(uniteCheckBoxTag.isChecked()){
+                        //**************here unit*******************
                         itemCardForPrint.setIsUnite("");
                         itemCardForPrint.setItemUnit(uniteNames);
 
@@ -2760,17 +2796,26 @@ printEditTextTag.setText(convertToEnglish(today));
                         ItemNameEditTextTag.setText(itemCard.getItemName());
                         //   ItemUnitEditTextTag.setText(itemUnit);
                         if (!isPriceUnite) {
+                            String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC())));
+                            if(SalesPriceCheckBoxTag.isChecked())
+                                priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getSalePrc())));
+
+
+                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getSalePrc()))));
+
                             PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))));
 
-                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                            pricePrint.setText(priceValue+ " JD");
 
-                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                            pricePrint2.setText(priceValue+ " JD");
 
-                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                            pricePrint3.setText(priceValue+ " JD");
 
-                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) + " JD");
+                            pricePrint4.setText(priceValue+ " JD");
 
                         } else {
+                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
                             PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
 
                             pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
@@ -3587,6 +3632,7 @@ printEditTextTag.setText(convertToEnglish(today));
                     }
                     textId = 0;
                 }catch (Exception e ){
+                    Log.e("dialogSearch,",""+e.getMessage());
 
                 }
                 dialogSearch.dismiss();
