@@ -25,7 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDaoUnit itemUnit();
 
     private static AppDatabase InstanceDatabase;
-    private static String DatabaseName="InventoryDBase";
+    private static String DatabaseName="InventoryDBase1";
 
 
     static final Migration FROM_1_TO_2 = new Migration(54, 55) {
@@ -45,7 +45,7 @@ public abstract class AppDatabase extends RoomDatabase {
             InstanceDatabase = Room.databaseBuilder(context, AppDatabase.class, DatabaseName)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
-                    .fallbackToDestructiveMigrationFrom(36, 37, 38, 39,40)
+                   .fallbackToDestructiveMigrationFrom(36, 37, 38, 39,40)
                     .build();
 
         }
