@@ -19,6 +19,16 @@ public class MainSetting {
     private int dataBaseNo;
     private int dataBaseNoRoom;
     private int isMinus;
+    private String ONlINEshlf;
+
+    public String getONlINEshlf() {
+        return ONlINEshlf;
+    }
+
+    public void setONlINEshlf(String ONlINEshlf) {
+        this.ONlINEshlf = ONlINEshlf;
+    }
+
     public MainSetting() {
     }
 
@@ -29,7 +39,7 @@ public class MainSetting {
         this.isQr = isQr;
     }
 
-    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName,String numberType,String rotate,int dataBaseNo,int reSize,int width,int height,int isMinus) {
+    public MainSetting(String IP, String storNo, String isAssest, String isQr, String onlinePrice, String companyNo,String printerType,String currencyType,int CoName,String numberType,String rotate,int dataBaseNo,int reSize,int width,int height,int isMinus,String onlinShl) {
         this.IP = IP;
         this.StorNo = storNo;
         this.isAssest = isAssest;
@@ -46,6 +56,7 @@ public class MainSetting {
         this.height=height;
         this.dataBaseNo=dataBaseNo;
         this.isMinus=isMinus;
+        this.ONlINEshlf= onlinShl;
     }
 
     public String getPrinterType() {

@@ -227,6 +227,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private static final String SHELF_TAG_WIDTH="SHELF_TAG_WIDTH";
     private static final String SHELF_TAG_HEIGHT="SHELF_TAG_HEIGHT";
     private static final String IS_QTY_MINUS="IS_QTY_MINUS";
+    private static final String ONlINEshlf="ONlINEshlf";
 
     //___________________________________________________________________________________
     private static final String TRANSFER_ITEMS_INFO = "TRANSFER_ITEMS_INFO";
@@ -527,7 +528,10 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 + RESIZE + " NVARCHAR   ,"
                 + SHELF_TAG_WIDTH + " NVARCHAR   ,"
                 + SHELF_TAG_HEIGHT + " NVARCHAR   ,"
-                + IS_QTY_MINUS + " NVARCHAR " + ")";
+                + IS_QTY_MINUS + " NVARCHAR ,"
+                + ONlINEshlf + " NVARCHAR " +
+
+                ")";
         Idb.execSQL(CREATE_TABLE_MAIN_SETTING);
 
 //=========================================================================================
@@ -980,7 +984,13 @@ public class InventoryDatabase extends SQLiteOpenHelper {
             Log.e("upgrade", "MAIN_SETTING_TABLE IS_ASSEST");
         }
 
+        try {
+            Log.e("upgrade","MAIN_SETTING_TABLE TABLE  ONlINEshlf");
+            Idb.execSQL("ALTER TABLE MAIN_SETTING_TABLE ADD " + ONlINEshlf + " TEXT"+" DEFAULT '0'");
 
+        }catch (Exception e){
+            Log.e("Exceptionupgrade", "MAIN_SETTING_TABLE TABLE  ONlINEshlf");
+        }
     }
 
 
@@ -1125,6 +1135,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         values.put(SHELF_TAG_WIDTH,  convertToEnglish(""+mainSetting.getWidth()));
         values.put(SHELF_TAG_HEIGHT,  convertToEnglish(""+mainSetting.getHeight()));
         values.put(IS_QTY_MINUS,  convertToEnglish(""+mainSetting.getIsMinus()));
+        values.  put(ONlINEshlf,  convertToEnglish(""+mainSetting.getONlINEshlf()));
 
         Idb.insert(MAIN_SETTING_TABLE, null, values);
         Idb.close();
@@ -2164,7 +2175,7 @@ sum+=cursor.getFloat(2);
                 item.setWidth(cursor.getInt(14));
                 item.setHeight(cursor.getInt(15));
                 item.setIsMinus(cursor.getInt(16));
-
+                item.setONlINEshlf(cursor.getString(17));
                 passwords.add(item);
 
             } while (cursor.moveToNext());

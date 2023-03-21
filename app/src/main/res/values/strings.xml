@@ -496,7 +496,7 @@
     <string name="serial_dialog_noport">Please enter the port</string>
     <string name="serial_dialog_nobaudrate">Please enter the baud rate</string>
     <string name="serial_dialog_noPermissions">The port does not have operating Permissions, please get root Permissions</string>
-
+    <string name="ipConnectionFailed">Ip Connection Failed</string>
 
     <!-- 保存到共享数据的值：0，1，2，3，4，5，6 -->
     <string-array name="feeds_list">
@@ -603,7 +603,8 @@
     <string name="size">Size</string>
     <string name="color">Color</string>
     <string name="print_Date">print_Date</string>
-
+    <string name="enter_password">Enter Password</string>
+    <string name="required">required</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

@@ -488,8 +488,8 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-                if (!itemCode.getText().toString().equals("") && !oldQty.getText().toString().equals("") && !itemName.getText().toString().equals("") && !NewQty.getText().toString().equals("")) {
+ //&& !oldQty.getText().toString().equals("") && !itemName.getText().toString().equals("")
+                if (!itemCode.getText().toString().equals("") && !NewQty.getText().toString().equals("")) {
                     String Kind = "500";
                     if (minus.isChecked()) {
                         Kind = "500";
