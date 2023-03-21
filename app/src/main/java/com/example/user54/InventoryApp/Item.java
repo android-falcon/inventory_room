@@ -2577,13 +2577,28 @@ printEditTextTag.setText(convertToEnglish(today));
                     }else{
                         itemCardForPrint.setDepartmentId("**" );
                     }
-                    if(PrintCheckBoxTag.isChecked()){
-                        PrintDateFlag=1;
-                        itemCardForPrint.setDepartmentId("" + printEditTextTag.getText().toString());
+                    try {
+                        if(PrintCheckBoxTag.isChecked()){
+                            Log.e("PrintCheckBoxTag,isChecked===","Checked");
+                            PrintDateFlag=1;
+                            itemCardForPrint.setDepartmentId("" + printEditTextTag.getText().toString());
 
-                    }else{
-                        itemCardForPrint.setDepartmentId("**" );
+                        }else{
+                            itemCardForPrint.setDepartmentId("**" );
+                        }
+                    }catch (Exception e){
+
+                        if(ExpCheckBoxTag.isChecked()){
+                            PrintDateFlag  =0;
+                            itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
+
+                        }else{
+                            itemCardForPrint.setDepartmentId("**" );
+                        }
+
+                        Log.e("Exception===",e.getMessage());
                     }
+
 
                     itemCardForPrint.setItemG(""+DesignType[0]);
 

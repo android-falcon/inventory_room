@@ -544,8 +544,8 @@ public class bMITP extends Activity {
         exp=(TextView) dialog_Header.findViewById(R.id.exp);
         textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
         Log.e("PrintDateFlag==",Item.PrintDateFlag+"");
-      if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
-      else  textView421.setText("EXP:");
+//      if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+//      else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
@@ -607,8 +607,8 @@ public class bMITP extends Activity {
         BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
         exp=(TextView) dialog_Header.findViewById(R.id.exp);
         textView421=(TextView) dialog_Header.findViewById(R.id.textView421);
-        if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
-        else  textView421.setText("EXP:");
+//        if(Item.PrintDateFlag==1)  textView421.setText("PRI:");
+//        else  textView421.setText("EXP:");
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
         BarcodeText.setText(itemCard.getItemCode());
