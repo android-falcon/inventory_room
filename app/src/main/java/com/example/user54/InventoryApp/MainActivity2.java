@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -60,6 +61,9 @@ public class MainActivity2 extends AppCompatActivity {
 //    Button exit, collecting, item, setting, report,send;
     LinearLayout  collecting, item, report,send;
     Button exit,  setting;
+    EditText passwordEt;
+    Dialog passwordDialog;
+    Button okBtn;
     Animation animFadein;
     private ScaleAnimation scale;
 //    LinearLayout master;
@@ -434,8 +438,8 @@ public class MainActivity2 extends AppCompatActivity {
                     startActivity(report);
                     break;
                 case R.id.setting:
-                    Intent tools = new Intent(MainActivity2.this, Tools.class);
-                    startActivity(tools);
+                    showpassworddailog();
+
 
                     break;
                 case R.id.send:
@@ -921,7 +925,50 @@ public class MainActivity2 extends AppCompatActivity {
         fromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateClick(fromDate);
+                passwordDialog = new Dialog(MainActivity2.this);
+                passwordDialog.setCancelable(false);
+                passwordDialog.setContentView(R.layout.passworddailog);
+                passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                passwordEt = passwordDialog.findViewById(R.id.passwordd);
+                okBtn = passwordDialog.findViewById(R.id.done);
+                passwordDialog.show();
+
+
+                okBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (passwordEt.getText().toString().trim().equals("")) {
+
+                            passwordEt.requestFocus();
+                            passwordEt.setError(getString(R.string.required));
+
+                        } else {
+
+                            if (passwordEt.getText().toString().trim().equals("2023000")) {
+
+                                DateClick(fromDate);
+
+                                passwordDialog.dismiss();
+
+                            } else {
+
+                                passwordEt.setError("");
+
+                            }
+
+
+                        }
+
+                    }
+                });
+
+
+
+
+
             }
         });
         toDate.setOnClickListener(new View.OnClickListener() {
@@ -1092,5 +1139,51 @@ public class MainActivity2 extends AppCompatActivity {
 
         return ret;
     }
+    public void showpassworddailog(){
+        Log.e("showpassworddailog","showpassworddailog");
+        passwordDialog = new Dialog(MainActivity2.this);
+        passwordDialog.setCancelable(false);
+        passwordDialog.setContentView(R.layout.passworddailog);
+        passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+
+        passwordEt = passwordDialog.findViewById(R.id.passwordd);
+        okBtn = passwordDialog.findViewById(R.id.done);
+        passwordDialog.show();
+
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (passwordEt.getText().toString().trim().equals("")) {
+
+                    passwordEt.requestFocus();
+                    passwordEt.setError(getString(R.string.required));
+
+                } else {
+
+                    if (passwordEt.getText().toString().trim().equals("2023000")) {
+
+                       Intent tools = new Intent(MainActivity2.this, Tools.class);
+                        startActivity(tools);
+
+                        passwordDialog.dismiss();
+
+                    } else {
+
+                        passwordEt.setError("");
+
+                    }
+
+
+                }
+
+            }
+        });
+
+
+
+
+    }
 }

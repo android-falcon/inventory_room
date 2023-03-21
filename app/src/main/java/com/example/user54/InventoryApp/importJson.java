@@ -4,20 +4,30 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.service.controls.Control;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
+import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.OnlineItems;
 import com.example.user54.InventoryApp.Model.Stk;
 import com.example.user54.InventoryApp.Model.UnitName;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -39,6 +50,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.example.user54.InventoryApp.CollectingData.textItemNameUpdate;
 import static com.example.user54.InventoryApp.CollectingData.textViewUpdate;
 import static com.example.user54.InventoryApp.Item.listItemUnitQty;
+import static com.example.user54.InventoryApp.Item.texetrespone;
 import static com.example.user54.InventoryApp.Item.textItemName;
 import static com.example.user54.InventoryApp.Item.textQty;
 import static com.example.user54.InventoryApp.Item.textView;
@@ -57,7 +69,8 @@ public class importJson {
     String JsonResponseSaveUnite;
     String JsonResponseSaveQRCode;
     String JsonResponseSaveSwitch;
-    SweetAlertDialog pd = null;
+    public static ArrayList<OnlineItems> onlineItems = new ArrayList<>();
+    SweetAlertDialog pd = null,pdRepla4;
     controll co;
           String isAssetsIn,ip,QrUse,onlinePrice,CompanyNo;
           String fromDate,ToDate;
@@ -351,7 +364,150 @@ public class importJson {
 
         }
     }
+    private class SyncItemCard333 extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+       String ITEMCODE;
 
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+
+        public SyncItemCard333(String ITEMCODE) {
+            this.ITEMCODE = ITEMCODE;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+
+
+
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
+            try {
+//                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+//                String ip="";
+//                if(mainSettings.size()!=0) {
+//                    ip= mainSettings.get(0).getIP();
+//                }
+
+//
+                String link = "http://"+ip + "/GetDirectItems";
+                // ITEM_CARD
+
+
+
+
+
+                String data = "ITEMCODE=" + URLEncoder.encode(ITEMCODE.toString().trim()+"", "UTF-8") + "&" +
+                        "CONO="+URLEncoder.encode(CompanyNo, "UTF-8");
+
+////
+
+                URL url = new URL(link);
+                Log.e("urlStringCard = ",""+url.toString()+"   "+data);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                // Log.e("tag", "ItemOCode -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                pdRepla4.dismiss();
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        pdRepla4.dismiss();
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String array) {
+            super.onPostExecute(array);
+
+
+            pdRepla4.dismiss();
+            if (array != null && array.contains("ItemOCode")) {
+
+Log.e("ItemOCode==","ItemOCode");
+                if (array.length() != 0) {
+                    try {
+                        Log.e("here====","here");
+                        JSONArray requestArray = null;
+                        requestArray = new JSONArray(array);
+
+                        JSONObject jsonObject1 = null;
+                        for (int i = 0; i < requestArray.length(); i++) {
+                            Log.e("here2====","here");
+                            jsonObject1 = requestArray.getJSONObject(i);
+                            OnlineItems item = new OnlineItems();
+                            item.setItemOCode(jsonObject1.getString("ItemOCode"));
+                            item.setItemNameA(jsonObject1.getString("ItemNameA"));
+                            item.setSalePrice(jsonObject1.getString("SalePrice"));
+                            item.setF_D(jsonObject1.getString("F_D"));
+                            Log.e("item====","item"+item.getItemOCode());
+                            onlineItems.add(item);
+                            texetrespone.setText("ItemOCode");
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+
+            }else if (JsonResponse != null && JsonResponse.contains("No Data Found.")){
+                Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+        }
+    }
     private class SyncItemSwitch extends AsyncTask<String, String, String> {
         private String JsonResponse = null;
         private HttpURLConnection urlConnection = null;
@@ -2473,6 +2629,197 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
 //            progressDialog.dismiss();
         }
     }
+
+    public void getItems(String itemcode) {
+        Log.e("getItems", "" + "getItems  "+itemcode);
+        pdRepla4 = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pdRepla4.getProgressHelper().setBarColor(Color.parseColor("#7A7A7A"));
+        pdRepla4.setTitleText("Get Item data");
+        pdRepla4.setCancelable(false);
+        pdRepla4.show();
+        onlineItems.clear();
+        final List<MainSetting> mainSettings = dbHandler.getAllMainSetting();
+        if (mainSettings.size() != 0) {
+            this.ip = mainSettings.get(0).getIP();
+            this.isAssetsIn = mainSettings.get(0).getIsAssest();
+            this.QrUse = mainSettings.get(0).getIsQr();
+            this.onlinePrice=mainSettings.get(0).getOnlinePrice();
+            this.CompanyNo=mainSettings.get(0).getCompanyNo();
+            this.coName=mainSettings.get(0).getCoName();
+        }
+        new SyncItemCard333(itemcode).execute();
+       // new JSONTaskGetDirectItems(itemcode).execute();
+    }
+    //
+    private class JSONTaskGetDirectItems extends AsyncTask<String, String, String> {
+
+       String ITEMCODE ;
+        String   link;
+        public JSONTaskGetDirectItems(String ITEMCODE) {
+            Log.e("JSONTaskGetDirectItems", "" + "JSONTaskGetDirectItems  ");
+            this.ITEMCODE = ITEMCODE;
+            Log.e("JSONTaskGetDirectItems2", "" + "JSONTaskGetDirectItems  ");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            String do_ = "my";
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+
+                Log.e("ip===", "" + ip);
+                if (!ip.equals("")) {
+
+                    http://10.0.0.22:8085/GetJRDITEMS?FROM_DATE=01%2F12%2F2021&TO_DATE=27%2F06%2F2022&CONO=290
+                    Log.e("link===", "" + link);
+                    link = "http://" + ip.trim() + "/GetDirectItems?CONO="+ CompanyNo.trim()+"&ITEMCODE="+ITEMCODE;
+
+                    Log.e("link===", "" + link);
+                }
+            } catch (Exception e) {
+                Log.e("getAllSto", e.getMessage());
+                pdRepla4.dismiss();
+            }
+
+            try {
+
+                //*************************************
+
+                String JsonResponse = null;
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(link));
+
+//
+
+                HttpResponse response = client.execute(request);
+
+
+                BufferedReader in = new BufferedReader(new
+                        InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                Log.e("finalJson***Import", sb.toString());
+
+                while ((line = in.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                in.close();
+
+
+                // JsonResponse = sb.toString();
+
+                String finalJson = sb.toString();
+
+
+                //JSONArray parentObject = new JSONArray(finalJson);
+
+                return finalJson;
+
+
+            }//org.apache.http.conn.HttpHostConnectException: Connection to http://10.0.0.115 refused
+            catch (HttpHostConnectException ex) {
+                ex.printStackTrace();
+//                progressDialog.dismiss();
+
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        pdRepla4.dismiss();
+                        Toast.makeText(context, context.getString(R.string.ipConnectionFailed), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Exception", "" + e.getMessage());
+                pdRepla4.dismiss();
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        try {
+
+                            Toast.makeText(context, "The target server failed to respond", Toast.LENGTH_SHORT).show();
+                        } catch (WindowManager.BadTokenException e) {
+                            //use a log message
+                        }
+                    }
+                });
+//                progressDialog.dismiss();
+                return null;
+            }
+
+
+            //***************************
+
+        }
+
+        @Override
+        protected void onPostExecute(String array) {
+            super.onPostExecute(array);
+            pdRepla4.dismiss();
+            JSONObject jsonObject1 = null;
+            if (array != null) {
+                Log.e("array====",array+"");
+
+                if (array.contains("ItemOCode")) {
+
+                    if (array.length() != 0) {
+                        try {
+                            Log.e("here====","here");
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(array);
+
+
+                            for (int i = 0; i < requestArray.length(); i++) {
+                                Log.e("here2====","here");
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                OnlineItems item = new OnlineItems();
+                                item.setItemOCode(jsonObject1.getString("ItemOCode"));
+                                item.setItemNameA(jsonObject1.getString("ItemNameA"));
+                                item.setSalePrice(jsonObject1.getString("SalePrice"));
+                                item.setF_D(jsonObject1.getString("F_D"));
+                                Log.e("item====","item"+item.getItemOCode());
+                                onlineItems.add(item);
+                                texetrespone.setText("ItemOCode");
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+
+
+                }
+
+            } else {
+
+
+
+
+            }
+        }
+
+
+    }
+
+
+
 }
 
 //

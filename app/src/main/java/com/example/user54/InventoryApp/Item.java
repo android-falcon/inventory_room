@@ -52,6 +52,7 @@ import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.OnlineItems;
 import com.example.user54.InventoryApp.Model.UnitName;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
@@ -83,6 +84,7 @@ import static android.graphics.Color.TRANSPARENT;
 
 public class Item extends AppCompatActivity {
     CheckBox SalesPriceCheckBoxTag;
+    public static String  OnlineItems="0";
     RecyclerView dis_detail_recycle;
     private static final int READ_REQUEST_CODE = 42;
     public static int PrintDateFlag  =0;
@@ -124,7 +126,7 @@ public class Item extends AppCompatActivity {
     public static List<ItemCard> itemList;
     public static List<AssestItem> itemListAssest;
     List<ItemCard> itemCodeCard ;
-
+    public static  TextView  texetrespone;
     ArrayList<AssestItem> itemAssetsCa ;
     public static EditText ItemCodeEditTextTag,prinS,prinSa;
     int companyNo=0;
@@ -1353,9 +1355,10 @@ TextView barCodTextTemp;
                     Cash_detail_adapter dis_detail_adapter= new Cash_detail_adapter(listItemUnitQty, Item.this);
                     dis_detail_recycle.setAdapter(dis_detail_adapter);
 //                   if( listItemUnitQty.size()==0)
-                    textViewFd=salesPrice;
-                    if(textViewFd!=null)
-                    textViewFd.setText(controll.F_D);
+//                    Log.e("aya99,controll=",controll.F_D+"");
+//                    textViewFd=salesPrice;
+//                    if(textViewFd!=null)
+//                    textViewFd.setText(controll.F_D);
 //                    Log.e("aya2",printEditTextTag.getText().toString());
 
                 }
@@ -1753,7 +1756,7 @@ EditText prinS1,prinSa1;
 
         tempText=exp;
         ItemCodeEditTextTag= (EditText) dialog.findViewById(R.id.ItemCodeEditTextTag);
-
+        texetrespone=dialog.findViewById(R.id.texetrespone);
         ClearButtonTag=dialog.findViewById(R.id.ClearButtonTag);
         SearchButtonTag= dialog.findViewById(R.id.SearchButtonTag);
         printShelfTag=  dialog.findViewById(R.id.printShelfTag);
@@ -1793,6 +1796,7 @@ printEditTextTag.setText(convertToEnglish(today));
         if (mainSettings.size() != 0) {
             StkNo=mainSettings.get(0).getStorNo();
             isOnlinePrice=mainSettings.get(0).getOnlinePrice();
+            OnlineItems=mainSettings.get(0).getONlINEshlf();
         }
 
       uniteList = InventDB.getAllUnite();
@@ -2108,14 +2112,37 @@ printEditTextTag.setText(convertToEnglish(today));
             }
         });
 
+        texetrespone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+          if(editable.length()!=0){
+              onEditorKeyPadChange2();
+          }
+            }
+        });
         ItemCodeEditTextTag.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
-
+                    if(OnlineItems.equals("0"))
                     onEditorKeyPadChange();
+                    else
+                    {     importJson json=new importJson(Item.this,"",0,"","");
+                        json .getItems(ItemCodeEditTextTag.getText().toString());
+
+
+                    }
 //                    boolean isItemFound = false;
 //
 //                    String itemCode = ItemCodeEditTextTag.getText().toString();
@@ -2898,6 +2925,195 @@ printEditTextTag.setText(convertToEnglish(today));
 
 
             }
+
+
+        }
+
+    }
+    void onEditorKeyPadChange2(){
+
+        boolean isItemFound = false;
+
+        String itemCode = ItemCodeEditTextTag.getText().toString();
+        String itemName = ItemNameEditTextTag.getText().toString();
+
+        String itemSwitch = "",QRCode="",Price="",itemUnit="";
+        if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
+//                        itemCardsList = InventDB.getAllItemCard();
+
+
+                boolean isPriceUnite = false;
+                if (itemCode.length() > 17) {
+                    QRCode = itemCode;
+                    itemCode = itemCode.substring(0, 16);
+                    Log.e("String ", "" + itemCode);
+
+                } else {
+                    itemCode = ItemCodeEditTextTag.getText().toString();
+                }
+
+
+                if (importJson.onlineItems.size() != 0) {
+                    itemCode = importJson.onlineItems.get(0).getItemOCode();
+
+                    Price = importJson.onlineItems.get(0).getSalePrice();
+
+                    ItemCodeEditTextTag.setText(itemCode);
+                    isPriceUnite = true;
+                } else {
+
+                    if(settingCOName==1){
+                        itemCode=ItemCodeEditTextTag.getText().toString();
+                        try {
+                            itemCode = itemCode.substring(0, 12);
+                        }catch (Exception e){
+                            itemCode=ItemCodeEditTextTag.getText().toString();
+                        }
+                        Log.e("itemCode1_",""+itemCode);
+                    }else{
+                        itemCode=ItemCodeEditTextTag.getText().toString();
+                    }
+                    Log.e("itemCode2_",""+itemCode);
+
+
+
+                    List<String> itemUnite = findUnite(itemCode);
+                    int uQty = 1;
+
+
+
+
+                        itemCode =    importJson.onlineItems.get(0).getItemOCode();
+                        uQty =   1;
+                        Price = importJson.onlineItems.get(0).getSalePrice();
+                        itemUnit=importJson.onlineItems.get(0).getITEMU();
+                        isPriceUnite = true;
+
+                }
+
+
+                ItemCard itemCards = new ItemCard();
+            itemCards.setItemCode(importJson.onlineItems.get(0).getItemOCode());
+            itemCards.setItemName(importJson.onlineItems.get(0).getItemNameA());
+            itemCards.setCostPrc(importJson.onlineItems.get(0).getF_D());
+            itemCards.setSalePrc(importJson.onlineItems.get(0).getSalePrice());
+            itemCards.setAVLQty(importJson.onlineItems.get(0).getAVLQTY());
+            itemCards.setFDPRC(importJson.onlineItems.get(0).getF_D());
+            itemCards.setBranchId("");
+            itemCards.setBranchName("");
+            itemCards.setDepartmentId("");
+            itemCards.setDepartmentName("");
+            itemCards.setItemG(importJson.onlineItems.get(0).getItemG());
+            itemCards.setItemK(importJson.onlineItems.get(0).getItemK());
+            itemCards.setItemL(importJson.onlineItems.get(0).getItemL());
+            itemCards.setItemDiv(importJson.onlineItems.get(0).getITEMDIV());
+            itemCards.setItemGs(importJson.onlineItems.get(0).getItemG());
+            itemCards.setOrgPrice("");
+            itemCards.setIsExport("");
+            itemCards.setIsNew("");
+            itemCards.setItemM("");
+
+                String it = itemCards.getItemCode();
+                Log.e("itemcard_oo", "" + it);
+//                        for (int i = 0; i < itemCardsList.size(); i++) {
+                if (!TextUtils.isEmpty(it)) {
+                    if (it.equals(itemCode)) {
+                        isItemFound = true;
+                        ItemNameEditTextTag.setText(itemCards.getItemName());
+                        //   ItemUnitEditTextTag.setText(itemUnit);
+                        if (!isPriceUnite) {
+                            String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC())));
+                            if(SalesPriceCheckBoxTag.isChecked())
+                                priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc())));
+
+
+                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc()))));
+
+                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC()))));
+
+                            pricePrint.setText(priceValue+ " JD");
+
+                            pricePrint2.setText(priceValue+ " JD");
+
+                            pricePrint3.setText(priceValue+ " JD");
+
+                            pricePrint4.setText(priceValue+ " JD");
+
+                        } else {
+                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                        }
+//                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+                        itemNamePrint.setText(itemCards.getItemName());
+                        exp.setText(ExpEditTextTag.getText().toString());
+
+                        itemNamePrint2.setText(itemCards.getItemName());
+                        itemNamePrint3.setText(itemCards.getItemName());
+                        itemNamePrint4.setText(itemCards.getItemName());
+                        exp2.setText(ExpEditTextTag.getText().toString());
+                        itemText.setText(ItemCodeEditTextTag.getText().toString());
+
+                        try {
+                            Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+                            barcodeShelfPrint.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint2.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                            barcodeShelfPrint4.setImageBitmap(bitmapBa);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        }
+
+//                                break;
+
+                    }
+
+//                            else{
+//
+//                                ItemNameEditTextTag.setText("");
+//                                PriceEditTextTag.setText("");
+////                            ExpEditTextTag.setText(itemCardsList.get(i).g());
+//                                itemNamePrint.setText("");
+//                                pricePrint.setText("");
+//
+//
+//                            }
+//                        }
+//////
+
+                    //
+
+                }
+
+                if (isItemFound) {
+
+                    //nothing
+
+                } else {
+//                        save.setClickable(false);
+                    showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                    ItemCodeEditTextTag.setText("");
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ItemCodeEditTextTag.requestFocus();
+                        }
+                    });
+                    PriceEditTextTag.setText("");
+                    ItemNameEditTextTag.setText("");
+                    //   ItemUnitEditTextTag.setText("");
+                    pricePrint.setText("");
+                }
+
+
 
 
         }

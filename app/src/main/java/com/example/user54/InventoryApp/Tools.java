@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -67,7 +68,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class Tools extends AppCompatActivity {
     //    LinearLayout   pSetting, changePassword, sendServer, receiveServer;
     LinearLayout sendServer, mainSetting, ExportDb, importDb;
-
+    EditText passwordEt;
+    Dialog passwordDialog;
+    Button okBtn;
     Dialog dialog;
      int W = 200, H = 200;
     EditText printerw,printerH;
@@ -433,7 +436,7 @@ public class Tools extends AppCompatActivity {
           printerw = MainSettingdialog.findViewById(R.id.printerw);
           printerH = MainSettingdialog.findViewById(R.id.printerH);
           final CheckBox minusQty=MainSettingdialog.findViewById(R.id.minusQty);
-
+        final CheckBox OnlinShl=MainSettingdialog.findViewById(R.id.OnlinShl);
 
         final LinearLayout resize = MainSettingdialog.findViewById(R.id.resize);
 
@@ -540,6 +543,12 @@ public class Tools extends AppCompatActivity {
             }else {
                 minusQty.setChecked(false);
             }
+            if(mainSettings.get(0).getONlINEshlf().equals("1")) {
+                OnlinShl.setChecked(true);
+            }else {
+                OnlinShl.setChecked(false);
+            }
+
            // dataBaseNo = mainSettings.get(0).getDataBaseNo();
            // RoomVersion = mainSettings.get(0).getDataBaseNoRoom();
 
@@ -672,6 +681,7 @@ public class Tools extends AppCompatActivity {
                     String rot = "0";
                     String resz = "0";
                     int isMin=0;
+                    int  onlinShl=0;
                     if (StokNo.size() != 0) {
                         Store = stkSpinner.getSelectedItem().toString();
                     } else {
@@ -700,6 +710,12 @@ public class Tools extends AppCompatActivity {
                     } else {
                         isMin = 0;
                     }
+                    if (OnlinShl.isChecked()) {
+                        onlinShl = 1;
+                    } else {
+                        onlinShl = 0;
+                    }
+
                     if (sewPrinter.isChecked()) {
                         printerType = "0";
                     } else if (zebraPrinter.isChecked()) {
@@ -738,10 +754,10 @@ public class Tools extends AppCompatActivity {
                     }
 
                     if (resizeCheckBox.isChecked()) {
-                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString()),isMin));
+                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString()),isMin,onlinShl+""));
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     } else {
-                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ,isMin ));
+                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ,isMin,onlinShl+"" ));
 
                     }
                     //writeToFile(dataBase.getText().toString(),Tools.this);
@@ -1148,5 +1164,48 @@ public class Tools extends AppCompatActivity {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
+    public void showpassworddailog(){
+        Log.e("showpassworddailog","showpassworddailog");
+         passwordDialog = new Dialog(Tools.this);
+        passwordDialog.setCancelable(false);
+        passwordDialog.setContentView(R.layout.passworddailog);
+        passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+
+         passwordEt = passwordDialog.findViewById(R.id.passwordd);
+         okBtn = passwordDialog.findViewById(R.id.done);
+        passwordDialog.show();
+
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (passwordEt.getText().toString().trim().equals("")) {
+
+                    passwordEt.requestFocus();
+                    passwordEt.setError(getString(R.string.required));
+
+                } else {
+
+                    if (passwordEt.getText().toString().trim().equals("2023000")) {
+                        showReceiveFromServerDialog();
+                        passwordDialog.dismiss();
+
+                    } else {
+
+                        passwordEt.setError("");
+
+                    }
+
+
+                }
+
+            }
+        });
+
+
+
+
+    }
 }

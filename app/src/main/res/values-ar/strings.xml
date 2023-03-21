@@ -499,8 +499,9 @@
     <string name="serial_dialog_noport">Please enter the port</string>
     <string name="serial_dialog_nobaudrate">Please enter the baud rate</string>
     <string name="serial_dialog_noPermissions">The port does not have operating Permissions, please get root Permissions</string>
-
-
+    <string name="enter_password">أدخل كلمة المرور</string>
+    <string name="ipConnectionFailed">خطأ في اتصال السيرفر</string>
+    <string name="required">حقل فارغ</string>
     <!-- 保存到共享数据的值：0，1，2，3，4，5，6 -->
     <string-array name="feeds_list">
         <item>"0mm"</item>
