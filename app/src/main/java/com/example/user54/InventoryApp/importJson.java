@@ -853,16 +853,14 @@ public class importJson {
                     Log.e("TAG_itemPriceR", " "+JsonResponse);
                     for (int i = 0; i < parentArray.length(); i++) {
                         JSONObject finalObject = parentArray.getJSONObject(i);
-
-
                         controll.F_D= finalObject.getString("F_D");
                         controll.Item_name= finalObject.getString("ITEMNAMEA");
                         controll.qty_name= finalObject.getString("QTY");
 //                        textView.setText(controll.F_D);
-if(textQty!=null)                        textQty.setText(controll.qty_name);
-                        if(textViewFd!=null)               textViewFd.setText(controll.F_D);
-                        if(textItemName!=null)              textItemName.setText(controll.Item_name);
-                                Log.e("TAG_itemPrice", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
+                        if(textQty!=null)  textQty.setText(controll.qty_name);
+                        if(textViewFd!=null) textViewFd.setText(controll.F_D);
+                        if(textItemName!=null)textItemName.setText(controll.Item_name);
+//                                Log.e("TAG_itemPrice", "****getSuccess"+controll.F_D+"name= "+ controll.Item_name);
 
                     }
                   new   SyncItemPrice_Unit().execute();
@@ -1955,7 +1953,7 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
 
                  //   dbHandler.addItemcardTable(itemCard.get(i));
 
-                    Log.e("rrrrrrrr", "s_"+i);
+//                    Log.e("rrrrrrrr", "s_"+i);
 //
 
 //                        q += "('" +
