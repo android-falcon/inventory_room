@@ -85,6 +85,7 @@ import static android.graphics.Color.TRANSPARENT;
 public class Item extends AppCompatActivity {
     CheckBox SalesPriceCheckBoxTag;
     public static String  OnlineItems="0";
+    Spinner uniteSpinner;
     RecyclerView dis_detail_recycle;
     private static final int READ_REQUEST_CODE = 42;
     public static int PrintDateFlag  =0;
@@ -1772,7 +1773,7 @@ EditText prinS1,prinSa1;
         shelfTagLinerTest=dialog.findViewById(R.id.shelfTagLinerTest);
         shelfTagLinerTests=shelfTagLinerTest;
         Spinner designSpinner= dialog.findViewById(R.id.spinnerDesign);
-        Spinner uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
+         uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
         final CheckBox uniteCheckBoxTag=dialog.findViewById(R.id.uniteCheckBoxTag);
         upCount = (ImageButton) dialog.findViewById(R.id.up);
         downCount = (ImageButton) dialog.findViewById(R.id.down);
@@ -2942,54 +2943,55 @@ printEditTextTag.setText(convertToEnglish(today));
 //                        itemCardsList = InventDB.getAllItemCard();
 
 
-                boolean isPriceUnite = false;
-                if (itemCode.length() > 17) {
-                    QRCode = itemCode;
-                    itemCode = itemCode.substring(0, 16);
-                    Log.e("String ", "" + itemCode);
-
-                } else {
-                    itemCode = ItemCodeEditTextTag.getText().toString();
-                }
-
-
-                if (importJson.onlineItems.size() != 0) {
-                    itemCode = importJson.onlineItems.get(0).getItemOCode();
-
-                    Price = importJson.onlineItems.get(0).getSalePrice();
-
-                    ItemCodeEditTextTag.setText(itemCode);
-                    isPriceUnite = true;
-                } else {
-
-                    if(settingCOName==1){
-                        itemCode=ItemCodeEditTextTag.getText().toString();
-                        try {
-                            itemCode = itemCode.substring(0, 12);
-                        }catch (Exception e){
-                            itemCode=ItemCodeEditTextTag.getText().toString();
-                        }
-                        Log.e("itemCode1_",""+itemCode);
-                    }else{
-                        itemCode=ItemCodeEditTextTag.getText().toString();
-                    }
-                    Log.e("itemCode2_",""+itemCode);
-
-
-
-                    List<String> itemUnite = findUnite(itemCode);
-                    int uQty = 1;
-
-
-
-
-                        itemCode =    importJson.onlineItems.get(0).getItemOCode();
-                        uQty =   1;
-                        Price = importJson.onlineItems.get(0).getSalePrice();
-                        itemUnit=importJson.onlineItems.get(0).getITEMU();
-                        isPriceUnite = true;
-
-                }
+//                boolean isPriceUnite = false;
+//                if (itemCode.length() > 17) {
+//                    QRCode = itemCode;
+//                    itemCode = itemCode.substring(0, 16);
+//                    Log.e("String ", "" + itemCode);
+//
+//                } else {
+//                    itemCode = ItemCodeEditTextTag.getText().toString();
+//                }
+//
+//
+//                if (importJson.onlineItems.size() != 0 ) {
+//                    if(!importJson.onlineItems.get(0).getITEMU().equals("") )
+//                    itemCode = importJson.onlineItems.get(0).getItemOCode();
+//
+//                    Price = importJson.onlineItems.get(0).getSalePrice();
+//
+//                    ItemCodeEditTextTag.setText(itemCode);
+//                    isPriceUnite = true;
+//                } else {
+//
+//                    if(settingCOName==1){
+//                        itemCode=ItemCodeEditTextTag.getText().toString();
+//                        try {
+//                            itemCode = itemCode.substring(0, 12);
+//                        }catch (Exception e){
+//                            itemCode=ItemCodeEditTextTag.getText().toString();
+//                        }
+//                        Log.e("itemCode1_",""+itemCode);
+//                    }else{
+//                        itemCode=ItemCodeEditTextTag.getText().toString();
+//                    }
+//                    Log.e("itemCode2_",""+itemCode);
+//
+//
+//
+//                    List<String> itemUnite = findUnite(itemCode);
+//                    int uQty = 1;
+//
+//
+//
+//
+//                        itemCode =    importJson.onlineItems.get(0).getItemOCode();
+//                        uQty =   1;
+//                        Price = importJson.onlineItems.get(0).getSalePrice();
+//                        itemUnit=importJson.onlineItems.get(0).getITEMU();
+//                        isPriceUnite = true;
+//
+//                }
 
 
                 ItemCard itemCards = new ItemCard();
@@ -3008,10 +3010,13 @@ printEditTextTag.setText(convertToEnglish(today));
             itemCards.setItemL(importJson.onlineItems.get(0).getItemL());
             itemCards.setItemDiv(importJson.onlineItems.get(0).getITEMDIV());
             itemCards.setItemGs(importJson.onlineItems.get(0).getItemG());
+            itemCards.setInDate(importJson.onlineItems.get(0).getInDate());
             itemCards.setOrgPrice("");
             itemCards.setIsExport("");
             itemCards.setIsNew("");
             itemCards.setItemM("");
+            itemCards.setItemUnit(importJson.onlineItems.get(0).getITEMU());
+
 
                 String it = itemCards.getItemCode();
                 Log.e("itemcard_oo", "" + it);
@@ -3021,7 +3026,7 @@ printEditTextTag.setText(convertToEnglish(today));
                         isItemFound = true;
                         ItemNameEditTextTag.setText(itemCards.getItemName());
                         //   ItemUnitEditTextTag.setText(itemUnit);
-                        if (!isPriceUnite) {
+//                        if (!isPriceUnite) {
                             String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC())));
                             if(SalesPriceCheckBoxTag.isChecked())
                                 priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc())));
@@ -3039,19 +3044,21 @@ printEditTextTag.setText(convertToEnglish(today));
 
                             pricePrint4.setText(priceValue+ " JD");
 
-                        } else {
-                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-
-                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-
-                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-
-                        }
+//                        } else {
+//                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+//
+//                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+//
+//
+//
+//                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+//
+//                        }
 //                            ExpEditTextTag.setText(itemCardsList.get(i).g());
                         itemNamePrint.setText(itemCards.getItemName());
                         exp.setText(ExpEditTextTag.getText().toString());
@@ -3061,6 +3068,19 @@ printEditTextTag.setText(convertToEnglish(today));
                         itemNamePrint4.setText(itemCards.getItemName());
                         exp2.setText(ExpEditTextTag.getText().toString());
                         itemText.setText(ItemCodeEditTextTag.getText().toString());
+                        final List<String> listOfUnite1=new ArrayList<>();
+                        listOfUnite1.add(itemCards.getItemUnit());
+                        ArrayAdapter   uniteAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, listOfUnite1);
+                        uniteSpinner.setAdapter(uniteAdapter);
+
+                        if(listOfUnite1.size()!=0)
+                        {
+
+
+                            uniteSpinner.setSelection(0);
+
+                        }
+
 
                         try {
                             Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
