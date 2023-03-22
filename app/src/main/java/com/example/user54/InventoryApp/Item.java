@@ -3026,7 +3026,8 @@ printEditTextTag.setText(convertToEnglish(today));
                 Log.e("itemcard_oo", "" + it);
 //                        for (int i = 0; i < itemCardsList.size(); i++) {
                 if (!TextUtils.isEmpty(it)) {
-                    if (it.equals(itemCode)) {
+                    Log.e("itemcard_oo==", "" + it+"    "+itemCode);
+
                         isItemFound = true;
                         ItemNameEditTextTag.setText(itemCards.getItemName());
                         //   ItemUnitEditTextTag.setText(itemUnit);
@@ -3098,7 +3099,7 @@ printEditTextTag.setText(convertToEnglish(today));
 
 //                                break;
 
-                    }
+
 
 //                            else{
 //
