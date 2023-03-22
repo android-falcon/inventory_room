@@ -1880,6 +1880,7 @@ printEditTextTag.setText(convertToEnglish(today));
         uniteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!OnlineItems.equals("1"))
                 uniteNames=listOfUnite.get(position);
 
 
