@@ -1965,6 +1965,7 @@ printEditTextTag.setText(convertToEnglish(today));
         PriceCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(OnlineItems.equals("0"))
                 onEditorKeyPadChange();
                 if(PriceCheckBoxTag.isChecked()){
                     priceLinerPrint.setVisibility(View.VISIBLE);
@@ -1977,8 +1978,9 @@ printEditTextTag.setText(convertToEnglish(today));
         SalesPriceCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                   if(OnlineItems.equals("0"))
                 onEditorKeyPadChange();
+
                 if(SalesPriceCheckBoxTag.isChecked()){
                     priceLinerPrint.setVisibility(View.VISIBLE);
                 }else{
@@ -2993,7 +2995,7 @@ printEditTextTag.setText(convertToEnglish(today));
 //                        isPriceUnite = true;
 //
 //                }
-
+            boolean isPriceUnite = false;
 
                 ItemCard itemCards = new ItemCard();
             itemCards.setItemCode(importJson.onlineItems.get(0).getItemOCode());
@@ -3002,6 +3004,7 @@ printEditTextTag.setText(convertToEnglish(today));
             itemCards.setSalePrc(importJson.onlineItems.get(0).getSalePrice());
             itemCards.setAVLQty(importJson.onlineItems.get(0).getAVLQTY());
             itemCards.setFDPRC(importJson.onlineItems.get(0).getF_D());
+            Price=importJson.onlineItems.get(0).getF_D();
             itemCards.setBranchId("");
             itemCards.setBranchName("");
             itemCards.setDepartmentId("");
@@ -3027,7 +3030,7 @@ printEditTextTag.setText(convertToEnglish(today));
                         isItemFound = true;
                         ItemNameEditTextTag.setText(itemCards.getItemName());
                         //   ItemUnitEditTextTag.setText(itemUnit);
-//                        if (!isPriceUnite) {
+                        if (!isPriceUnite) {
                             String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC())));
                             if(SalesPriceCheckBoxTag.isChecked())
                                 priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc())));
@@ -3045,21 +3048,21 @@ printEditTextTag.setText(convertToEnglish(today));
 
                             pricePrint4.setText(priceValue+ " JD");
 
-//                        } else {
-//                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-//
-//                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-//
-//
-//
-//                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-//
-//                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-//
-//                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-//                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-//
-//                        }
+                        } else {
+                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+
+
+                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                        }
 //                            ExpEditTextTag.setText(itemCardsList.get(i).g());
                         itemNamePrint.setText(itemCards.getItemName());
                         exp.setText(ExpEditTextTag.getText().toString());
