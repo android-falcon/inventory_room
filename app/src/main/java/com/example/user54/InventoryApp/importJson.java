@@ -462,52 +462,57 @@ public class importJson {
         protected void onPostExecute(String array) {
             super.onPostExecute(array);
 
-
+            Log.e("array====","array"+array);
             pdRepla4.dismiss();
-            if (array != null && array.contains("ItemOCode")) {
 
-Log.e("ItemOCode==","ItemOCode");
-                if (array.length() != 0) {
-                    try {
-                        Log.e("here====","here");
-                        JSONArray requestArray = null;
-                        requestArray = new JSONArray(array);
+            if (array != null) {
+                if (array.contains("ItemOCode")) {
 
-                        JSONObject jsonObject1 = null;
-                        for (int i = 0; i < requestArray.length(); i++) {
-                            Log.e("here2====","here");
-                            jsonObject1 = requestArray.getJSONObject(i);
-                            OnlineItems item = new OnlineItems();
-                            item.setItemOCode(jsonObject1.getString("ItemOCode"));
-                            item.setItemNameA(jsonObject1.getString("ItemNameA"));
-                            item.setSalePrice(jsonObject1.getString("SalePrice"));
-                            item.setF_D(jsonObject1.getString("F_D"));
-                            item.setITEMU(jsonObject1.getString("ITEMU"));
-                            item.setInDate(jsonObject1.getString("InDate"));
-                            Log.e("item====","item"+item.getItemOCode());
-                            onlineItems.add(item);
-                            texetrespone.setText("ItemOCode");
+                    Log.e("ItemOCode==", "ItemOCode");
+                    if (array.length() != 0) {
+                        try {
+                            Log.e("here====", "here");
+                            JSONArray requestArray = null;
+                            requestArray = new JSONArray(array);
 
+                            JSONObject jsonObject1 = null;
+                            for (int i = 0; i < requestArray.length(); i++) {
+                                Log.e("here2====", "here");
+                                jsonObject1 = requestArray.getJSONObject(i);
+                                OnlineItems item = new OnlineItems();
+                                item.setItemOCode(jsonObject1.getString("ItemOCode"));
+                                item.setItemNameA(jsonObject1.getString("ItemNameA"));
+                                item.setSalePrice(jsonObject1.getString("SalePrice"));
+                                item.setF_D(jsonObject1.getString("F_D"));
+                                item.setITEMU(jsonObject1.getString("ITEMU"));
+                                item.setInDate(jsonObject1.getString("InDate"));
+                                Log.e("item====", "item" + item.getItemOCode());
+                                onlineItems.add(item);
+                                texetrespone.setText("ItemOCode");
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
 
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
 
 
+                } else if (array != null && array.contains("No Data Found.")) {
+                    Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+
+
                 }
-
-
-            }else if (JsonResponse != null && JsonResponse.contains("No Data Found.")){
-                Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(context, "No Data Found", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(context, "Connection Error", Toast.LENGTH_SHORT).show();
 
 
             }
-
         }
     }
     private class SyncItemSwitch extends AsyncTask<String, String, String> {
