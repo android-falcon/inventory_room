@@ -3020,7 +3020,7 @@ printEditTextTag.setText(convertToEnglish(today));
             itemCards.setIsNew("");
             itemCards.setItemM("");
             itemCards.setItemUnit(importJson.onlineItems.get(0).getITEMU());
-
+            uniteNames=importJson.onlineItems.get(0).getITEMU();
 
                 String it = itemCards.getItemCode();
                 Log.e("itemcard_oo", "" + it);
