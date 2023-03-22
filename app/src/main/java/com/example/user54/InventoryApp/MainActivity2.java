@@ -921,12 +921,32 @@ public class MainActivity2 extends AppCompatActivity {
         fromDateString=today;
         ToDateString=today;
         fromDate.setText(convertToEnglish(today));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Calendar.getInstance().getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -2);
+
+      String  isOnlinePrice="0";
+        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+        if (mainSettings.size() != 0) {
+
+            isOnlinePrice=mainSettings.get(0).getONlINEshlf();
+
+        }
+
+        Date newDate = calendar.getTime();
+        String myFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String date = sdf.format(newDate);
+        if(isOnlinePrice.equals("1"))
+           fromDate.setText(convertToEnglish(date));//5555555555
+
         toDate.setText(convertToEnglish(today));
         fromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 passwordDialog = new Dialog(MainActivity2.this);
-                passwordDialog.setCancelable(false);
+                passwordDialog.setCancelable(true);
                 passwordDialog.setContentView(R.layout.passworddailog);
                 passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -1040,6 +1060,7 @@ public class MainActivity2 extends AppCompatActivity {
                 String myFormat = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                 DateText.setText(sdf.format(myCalendar.getTime()));
+
             }
 
         };
@@ -1142,7 +1163,7 @@ public class MainActivity2 extends AppCompatActivity {
     public void showpassworddailog(){
         Log.e("showpassworddailog","showpassworddailog");
         passwordDialog = new Dialog(MainActivity2.this);
-        passwordDialog.setCancelable(false);
+        passwordDialog.setCancelable(true);
         passwordDialog.setContentView(R.layout.passworddailog);
         passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 

@@ -12,6 +12,7 @@ public class OnlineItems {
     private String     ItemL;
     private String  ITEMDIV;
     private String    ITEMGS;
+    private String    InDate;
 
     public String getItemK() {
         return ItemK;
@@ -43,6 +44,14 @@ public class OnlineItems {
 
     public void setITEMGS(String ITEMGS) {
         this.ITEMGS = ITEMGS;
+    }
+
+    public String getInDate() {
+        return InDate;
+    }
+
+    public void setInDate(String inDate) {
+        InDate = inDate;
     }
 
     public String getItemG() {

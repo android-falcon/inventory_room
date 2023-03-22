@@ -482,6 +482,8 @@ Log.e("ItemOCode==","ItemOCode");
                             item.setItemNameA(jsonObject1.getString("ItemNameA"));
                             item.setSalePrice(jsonObject1.getString("SalePrice"));
                             item.setF_D(jsonObject1.getString("F_D"));
+                            item.setITEMU(jsonObject1.getString("ITEMU"));
+                            item.setInDate(jsonObject1.getString("InDate"));
                             Log.e("item====","item"+item.getItemOCode());
                             onlineItems.add(item);
                             texetrespone.setText("ItemOCode");

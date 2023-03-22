@@ -1167,7 +1167,7 @@ public class Tools extends AppCompatActivity {
     public void showpassworddailog(){
         Log.e("showpassworddailog","showpassworddailog");
          passwordDialog = new Dialog(Tools.this);
-        passwordDialog.setCancelable(false);
+        passwordDialog.setCancelable(true);
         passwordDialog.setContentView(R.layout.passworddailog);
         passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
