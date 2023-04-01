@@ -41,7 +41,9 @@ public class LogIn extends AppCompatActivity {
     importJson json1;
     CheckBox design;
     public static TextView intentControl;
-
+    EditText passwordEt;
+    Dialog passwordDialog;
+    Button okBtn;
   //  InventoryDatabase database;
 
 
@@ -71,7 +73,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
 
                     Log.e("showpassworddailog","showpassworddailog");
-                    passwordDialog = new Dialog(MainActivity2.this);
+                    passwordDialog = new Dialog(LogIn.this);
                     passwordDialog.setCancelable(true);
                     passwordDialog.setContentView(R.layout.passworddailog);
                     passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
