@@ -69,7 +69,7 @@ public class LogIn extends AppCompatActivity {
         dataB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                public void showpassworddailog(){
+
                     Log.e("showpassworddailog","showpassworddailog");
                     passwordDialog = new Dialog(MainActivity2.this);
                     passwordDialog.setCancelable(true);
@@ -114,7 +114,7 @@ public class LogIn extends AppCompatActivity {
 
 
 
-                }
+
 
             }
         });
