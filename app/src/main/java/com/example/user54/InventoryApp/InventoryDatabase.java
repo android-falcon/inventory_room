@@ -1759,7 +1759,7 @@ sum+=cursor.getFloat(2);
 
                 item.setItemCode(cursor.getString(0));
                 item.setItemName(cursor.getString(1));
-                item.setSalePrice(cursor.getInt(2));
+                item.setSalePrice(cursor.getFloat(2));
                 item.setItemQty(cursor.getFloat(3));
                 sum+=item.getItemQty();
 

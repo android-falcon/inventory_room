@@ -111,7 +111,7 @@ String location="1";
 
                 case R.id.expText:
                     exportText.setClickable(false);
-                    showExportToTextDialog();
+                    showExportToTextDialog();//here
                     break;
                 case R.id.expTransfer:
                     ExportTransfer.setClickable(false);

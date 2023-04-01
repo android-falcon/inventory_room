@@ -97,6 +97,7 @@ public class CollectingData extends AppCompatActivity {
     LinearLayout collectData, collectByORG, transferData, collectingByExpiry,
             collectByReceipt, UpdateQty, itemAssest,TransferPhar,addAssest;
     TextView barCodTextTemp;
+    String isOnlinePrice="0";
     TextView home;
     public static TextView textViewUpdate, textItemNameUpdate;
     Dialog dialog;
@@ -1326,6 +1327,9 @@ public class CollectingData extends AppCompatActivity {
         itemLocation = dialog.findViewById(R.id.location);
         locations = dialog.findViewById(R.id.locations);
         salePrice = (EditText) dialog.findViewById(R.id.salePrice);
+        isOnlinePrice=mainSettings.get(0).getONlINEshlf();
+       if(isOnlinePrice.equals("1"))
+        salePrice.setEnabled(false);
         itemName = (TextView) dialog.findViewById(R.id.item_name);
         itemNameBefore = (TextView) dialog.findViewById(R.id.itemNameB);
         itemCodeBefore = (TextView) dialog.findViewById(R.id.itemCodeB);
@@ -1523,7 +1527,8 @@ public class CollectingData extends AppCompatActivity {
         itemLocation.setText(StkName);
         itemLocation.setEnabled(false);
         salePrice.setText("");
-
+        if(isOnlinePrice.equals("1"))
+            salePrice.setEnabled(false);
         final int[] serialInfo = {InventDB.getAllItemInfo().size()};
 
         clear.setOnClickListener(new View.OnClickListener() {
@@ -1541,6 +1546,8 @@ public class CollectingData extends AppCompatActivity {
 //                itemLocation.setText("");
                 _qty.setText("1");
                 salePrice.setText("");
+                if(isOnlinePrice.equals("1"))
+                salePrice.setEnabled(false);
                 qrCode.setText("0");
                 lotNo.setText("0");
 //                if (!itemPreviousScan.isEmpty()) {
@@ -1628,38 +1635,13 @@ public class CollectingData extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
-//                    if (isEnter[0]) {
-//                        if (!isFound[0]) {
-//                            showAlertDialog("This item not found please add this item before ");
-//                            new Handler().post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    itemCodeText.requestFocus();
-//                                }
-//                            });
-//
-//                            itemQty.setEnabled(true);
-//                            itemCodeText.setEnabled(true);
-//
-//                            save.setClickable(true);
-//                            itemCodeText.setText("");
-//                            itemQty.setText("1");
-//                            itemName.setText("");
-//                            salePrice.setText("");
-//                            itemLocation.setText("");
-//                            isEnter[0] = false;
-//                        }
-//
-//                    }
-
-
                     String itemCode = itemCodeText.getText().toString();
                     String itemSwitch = "";
                     String QRCode = "", lot = "", Price = "";
                     if (!itemCode.equals("") && collDOpen && noEnterData[0]) {
                         isEnter[0] = true;
 
-                        Log.e("itemCardsList.size()", "-->" + itemCardsList.size());
+                        Log.e("itemCardsList.size()", "here1-->" + itemCardsList.size()+"\tisOnlinePrice="+isOnlinePrice);
                         List<ItemQR> QRList = new ArrayList<>();
                         boolean isSaleFromUnit = false;
 
@@ -1686,6 +1668,8 @@ public class CollectingData extends AppCompatActivity {
                             itemCodeText.setText(itemCode);
                             _qty.setText("1");
                             salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(QRList.get(0).getSalesPrice()))));
+                            if(isOnlinePrice.equals("1"))
+                                salePrice.setEnabled(false);
                             isSaleFromUnit = true;
                         } else {
 
@@ -1714,6 +1698,8 @@ public class CollectingData extends AppCompatActivity {
 
                                 _qty.setText("" + convertToEnglish("" + Integer.parseInt(itemUnite.get(2))));
                                 salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(itemUnite.get(1)))));
+                                if(isOnlinePrice.equals("1"))
+                                salePrice.setEnabled(false);
                                 isSaleFromUnit = true;
                             } else {
                                 itemSwitch = findSwitch(itemCode);
@@ -1746,6 +1732,8 @@ public class CollectingData extends AppCompatActivity {
                                 itemQty.setText("" + (Double.parseDouble(itemQty.getText().toString())));
                                 if (!isSaleFromUnit) {
                                     salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
+                                    if(isOnlinePrice.equals("1"))
+                                        salePrice.setEnabled(false);
                                     _qty.setText("1");
                                 }
 
@@ -1757,7 +1745,8 @@ public class CollectingData extends AppCompatActivity {
                                         salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
                                     }
                                 }
-
+                                if(isOnlinePrice.equals("1"))
+                                    salePrice.setEnabled(false);
                                 break;
                             } else {
                                 isFound[0] = false;
@@ -1977,7 +1966,8 @@ public class CollectingData extends AppCompatActivity {
                             lotNo.setText("0");
                             itemCodeText.requestFocus();
 
-
+                            if(isOnlinePrice.equals("1"))
+                                salePrice.setEnabled(false);
 //                        showAlertDialog("This item not found please add this item before ");
 //                        Toast.makeText(CollectingData.this, "This item not found please add this item before ", Toast.LENGTH_SHORT).show();
                         }
@@ -2232,6 +2222,8 @@ public class CollectingData extends AppCompatActivity {
 //                        item.setExpDate(today);
 //                    }
                     item.setSalePrice(Float.parseFloat(convertToEnglish(numberFormat.format(Double.parseDouble(salePrice.getText().toString())))));
+                        if(isOnlinePrice.equals("1"))
+                            salePrice.setEnabled(false);
                     item.setTrnDate(convertToEnglish(today));
                     item.setIsExport("0");
                     item.setLocation("" + locations.getText().toString());
@@ -2264,6 +2256,8 @@ public class CollectingData extends AppCompatActivity {
                     itemQty.setText("1");
                     itemName.setText("");
                     salePrice.setText("");
+                    if(isOnlinePrice.equals("1"))
+                    salePrice.setEnabled(false);
                     _qty.setText("1");
                     qrCode.setText("0");
                     lotNo.setText("0");
