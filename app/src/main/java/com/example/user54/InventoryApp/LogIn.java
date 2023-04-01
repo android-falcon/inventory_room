@@ -3,8 +3,11 @@ package com.example.user54.InventoryApp;
 import static com.example.user54.InventoryApp.controll.RoomVersion;
 import static com.example.user54.InventoryApp.controll.dataBaseNo;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.service.controls.Control;
 import android.text.Editable;
@@ -66,8 +69,53 @@ public class LogIn extends AppCompatActivity {
         dataB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                controll co=new controll();
-                co.WriteBtn(LogIn.this,RoomVersion+"");
+                public void showpassworddailog(){
+                    Log.e("showpassworddailog","showpassworddailog");
+                    passwordDialog = new Dialog(MainActivity2.this);
+                    passwordDialog.setCancelable(true);
+                    passwordDialog.setContentView(R.layout.passworddailog);
+                    passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                    passwordEt = passwordDialog.findViewById(R.id.passwordd);
+                    okBtn = passwordDialog.findViewById(R.id.done);
+                    passwordDialog.show();
+
+
+                    okBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            if (passwordEt.getText().toString().trim().equals("")) {
+
+                                passwordEt.requestFocus();
+                                passwordEt.setError(getString(R.string.required));
+
+                            } else {
+
+                                if (passwordEt.getText().toString().trim().equals("2023000")) {
+                                    controll co=new controll();
+                                    co.WriteBtn(LogIn.this,RoomVersion+"");
+
+                                    passwordDialog.dismiss();
+
+                                } else {
+
+                                    passwordEt.setError("");
+
+                                }
+
+
+                            }
+
+                        }
+                    });
+
+
+
+
+                }
+
             }
         });
         String data=readFromFile(LogIn.this);
