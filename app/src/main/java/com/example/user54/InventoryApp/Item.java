@@ -52,10 +52,12 @@ import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.OfferTable;
 import com.example.user54.InventoryApp.Model.OnlineItems;
 import com.example.user54.InventoryApp.Model.UnitName;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoOffer;
 import com.example.user54.InventoryApp.adapters.Cash_detail_adapter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -66,6 +68,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,6 +76,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -679,44 +683,74 @@ TextView barCodTextTemp;
         String itemSwitch="";
         String itemCode=BarcodetextView.getText().toString();
         boolean isFound=false;
-        if(!itemCode.equals("")& openBarcode){
+        if(!itemCode.equals("")& openBarcode) {
 
-            if(settingCOName==1){
-                itemCode=BarcodetextView.getText().toString();
+            if (settingCOName == 1) {
+                itemCode = BarcodetextView.getText().toString();
                 try {
                     itemCode = itemCode.substring(0, 12);
-                }catch (Exception e){
-                    itemCode=BarcodetextView.getText().toString();
+                } catch (Exception e) {
+                    itemCode = BarcodetextView.getText().toString();
                 }
-                Log.e("itemCode1_",""+itemCode);
-            }else{
-                itemCode=BarcodetextView.getText().toString();
+                Log.e("itemCode1_", "" + itemCode);
+            } else {
+                itemCode = BarcodetextView.getText().toString();
             }
-            Log.e("itemCode2_",""+itemCode);
+            Log.e("itemCode2_", "" + itemCode);
 
+            boolean offer=false;
+            String codeFromText="";
 
-            List<String>itemUnite=findUnite(itemCode);
-            int uQty=1;
+            String price="";
+            codeFromText=itemCode;
+            List<String> itemUnite = findUnite(itemCode);
+            int uQty = 1;
 
-            if(itemUnite.size()!=0){
+            if (itemUnite.size() != 0) {
 
-                itemCode=itemUnite.get(0);
-                uQty=Integer.parseInt(itemUnite.get(2));
+                itemCode = itemUnite.get(0);
+                uQty = Integer.parseInt(itemUnite.get(2));
 
-            }else{
-                itemSwitch=findSwitch(itemCode);
-                if(!itemSwitch.equals("")){
-                    itemCode=itemSwitch;
+            } else {
+                itemSwitch = findSwitch(itemCode);
+                if (!itemSwitch.equals("")) {
+                    itemCode = itemSwitch;
                 }
-                uQty=1;
+                uQty = 1;
 
             }
+
+
+            List<OfferTable> offerTables=findOffer(itemCode);
+            List<OfferTable> offerTablesO=findOffer(codeFromText);
+
+            if(offerTablesO.size()!=0){
+
+                offer=true;
+//                itemCode = offerTables.get(0).getITEMOCODE();
+                price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTablesO.get(0).getF_D())));
+
+
+            }else
+            if (offerTables.size()!=0) {
+                offer=true;
+//                itemCode = offerTables.get(0).getITEMOCODE();
+                price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTables.get(0).getF_D())));
+
+            }
+
 
             for(int i = 0; i< itemList.size(); i++){
                 if(itemCode.equals(itemList.get(i).getItemCode())){
                     itemNamePrintBarcode.setText(itemList.get(i).getItemName());
                     barcodeTextBarcode .setText(itemList.get(i).getItemCode());
-                    pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
+                    if(offer){
+                        pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(price))));
+
+                    }else {
+                        pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
+
+                    }
 //                            ItemCard itemCard=finalItemList.get(i);
 //                            barcodeListForPrint.add(itemCard);
 
@@ -2752,7 +2786,7 @@ printEditTextTag.setText(convertToEnglish(today));
 
         String itemCode = ItemCodeEditTextTag.getText().toString();
         String itemName = ItemNameEditTextTag.getText().toString();
-
+        String codeFromText="";
         String itemSwitch = "",QRCode="",Price="",itemUnit="";
         if (!ItemCodeEditTextTag.getText().toString().equals("") && openShelfTag) {
 //                        itemCardsList = InventDB.getAllItemCard();
@@ -2792,29 +2826,55 @@ printEditTextTag.setText(convertToEnglish(today));
                     }
                     Log.e("itemCode2_",""+itemCode);
 
+                    codeFromText=itemCode;
+
+                        List<String> itemUnite = findUnite(itemCode);
+                        int uQty = 1;
 
 
-                    List<String> itemUnite = findUnite(itemCode);
-                    int uQty = 1;
+                        if (itemUnite.size() != 0) {
 
+                            itemCode = itemUnite.get(0);
+                            uQty = Integer.parseInt(itemUnite.get(2));
+                            Price = itemUnite.get(1);
+                            itemUnit = itemUnite.get(3);
+                            isPriceUnite = true;
 
-                    if (itemUnite.size() != 0) {
-
-                        itemCode = itemUnite.get(0);
-                        uQty = Integer.parseInt(itemUnite.get(2));
-                        Price = itemUnite.get(1);
-                        itemUnit=itemUnite.get(3);
-                        isPriceUnite = true;
-
-                    } else {
-                        itemSwitch = findSwitch(itemCode);
-                        if (!itemSwitch.equals("")) {
-                            itemCode = itemSwitch;
+                        } else {
+                            itemSwitch = findSwitch(itemCode);
+                            if (!itemSwitch.equals("")) {
+                                itemCode = itemSwitch;
+                            }
+                            uQty = 1;
+                            isPriceUnite = false;
                         }
-                        uQty = 1;
-                        isPriceUnite = false;
-                    }
+
                 }
+
+                boolean offer=false;
+
+                List<OfferTable> offerTables=findOffer(itemCode);
+                List<OfferTable> offerTablesO=findOffer(codeFromText);
+
+                if(offerTablesO.size()!=0){
+
+                    offer=true;
+                    isPriceUnite=true;
+//                    itemCode = offerTablesO.get(0).getITEMOCODE();
+                    Price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTablesO.get(0).getF_D())));
+
+
+                }else
+                if (offerTables.size()!=0) {
+                    offer=true;
+                    isPriceUnite=true;
+//                    itemCode = offerTables.get(0).getITEMOCODE();
+                    Price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTables.get(0).getF_D())));
+
+                }
+
+
+
 
 
                 ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
@@ -4656,6 +4716,46 @@ printEditTextTag.setText(convertToEnglish(today));
 //        }
 //
 //    }
+
+    public List<OfferTable> findOffer(String Item) {
+
+
+        UserDaoOffer userDao = db.itemOffer();
+        List<OfferTable> itemOCode =   userDao.getOfferByCode(Item);
+        List<OfferTable> itemResult=new ArrayList<>();
+        for(int i=0;i<itemOCode.size();i++){
+            if((formatDate(convertToEnglish(today)).after(formatDate(itemOCode.get(i).getFRMDATE() ))
+                    &&formatDate(convertToEnglish(today)).before(formatDate(itemOCode.get(i).getTODATE() )))||
+                    (formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getFRMDATE() )))||
+                    formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getTODATE() ))){
+                OfferTable offerTable=new OfferTable();
+                offerTable=itemOCode.get(i);
+                itemResult.add(offerTable);
+                break;
+            }
+
+        }
+
+        return itemResult;
+    }
+
+
+
+    public Date formatDate(String date) {
+
+//        Log.e("date", date);
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(myFormat, Locale.US);
+        Date d = null;
+        try {
+            d = simpleDateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d;
+    }
+
+
 
 
 

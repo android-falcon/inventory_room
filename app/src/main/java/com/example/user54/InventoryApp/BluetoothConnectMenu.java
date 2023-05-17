@@ -631,7 +631,7 @@ public class BluetoothConnectMenu extends Activity {
                             for (int i = 0; i < Item.barcodeListForPrint.size(); i++) {
                                 Bitmap bitmaps=null;
                                 if(companyNo==0) {
-                                     bitmaps = convertLayoutToImage_Barcode_qastas(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(),Item.itemCardForPrint.getIsName());
+                                     bitmaps = convertLayoutToImage_Barcode_max(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(),Item.itemCardForPrint.getIsName());
                                 }else if (companyNo==1){
                                      bitmaps = convertLayoutToImage_Barcode_athouab(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(), Item.itemCardForPrint.getIsName());
 
@@ -723,7 +723,7 @@ public class BluetoothConnectMenu extends Activity {
                         .show();
                 //convertLayoutToImage_shelfTag(Item.itemCardForPrint);
                // convertLayoutToImage_shelfTag_barcode_qasion(Item.itemCardForPrint);
-
+//                convertLayoutToImage_shelfTag_Design3(Item.itemCardForPrint);
             }
 
             super.onPostExecute(result);
@@ -1233,18 +1233,18 @@ public class BluetoothConnectMenu extends Activity {
         dialog_Header.setContentView(R.layout.shlf_tag_dialog_design3);
 //        CompanyInfo companyInfo = obj.getAllCompanyInfo().get(0);
 
-        TextView itemName, price, itemBar;//,BarcodeText;//,exp ;
+        TextView itemName, price, itemBar,exp;//,BarcodeText;// ;
 
-        LinearLayout priceLiner;//ExpLiner,
+        LinearLayout priceLiner,ExpLiner;
 
-//        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
+        ExpLiner= (LinearLayout) dialog_Header.findViewById(R.id.ExpLiner);
         priceLiner = (LinearLayout) dialog_Header.findViewById(R.id.priceLiner);
 
         itemName = (TextView) dialog_Header.findViewById(R.id.itemName);
         price = (TextView) dialog_Header.findViewById(R.id.price);
         itemBar = (TextView) dialog_Header.findViewById(R.id.itemBar);
 //        BarcodeText=(TextView) dialog_Header.findViewById(R.id.BarcodeText);
-//        exp=(TextView) dialog_Header.findViewById(R.id.exp);
+        exp=(TextView) dialog_Header.findViewById(R.id.exp);
 
         ImageView barcode = (ImageView) dialog_Header.findViewById(R.id.barcodeShelf);
 
@@ -1276,11 +1276,11 @@ public class BluetoothConnectMenu extends Activity {
             price.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCard.getFDPRC()))) +" "+ Currency);
         }
 
-//        if(itemCard.getDepartmentId().equals("**")){
-//            ExpLiner.setVisibility(View.INVISIBLE);
-//        }else{
-//            exp.setText(itemCard.getDepartmentId());
-//        }
+        if(itemCard.getDepartmentId().equals("**")){
+            ExpLiner.setVisibility(View.INVISIBLE);
+        }else{
+            exp.setText(itemCard.getDepartmentId());
+        }
 
 
         try {

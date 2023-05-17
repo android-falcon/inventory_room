@@ -19,6 +19,7 @@ import com.example.user54.InventoryApp.Model.ItemQty;
 import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.OfferTable;
 import com.example.user54.InventoryApp.Model.OnlineItems;
 import com.example.user54.InventoryApp.Model.Stk;
 import com.example.user54.InventoryApp.Model.UnitName;
@@ -956,7 +957,7 @@ public class importJson {
 
 //
                 URL url = new URL(link);
-                Log.e("TAG_itemPrice", "link -->" +link);
+                Log.e("TAG_itemPrice", "link -->" +link+"?"+data);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setDoInput(true);
@@ -1793,6 +1794,215 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
                     pd.setTitleText(context.getResources().getString(R.string.storeSave));
 
 
+//                    if(!isAssetsIn.equals("1")) {
+                        if(pd!=null) {
+                            pd.dismiss();
+
+                            new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText(context.getResources().getString(R.string.save_SUCCESS))
+                                    .setContentText(context.getResources().getString(R.string.importSuc))
+                                    .show();
+                            new SyncGetItemOffer().execute();
+                        }
+//
+//                    }else{
+//                        pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+//                        pd.setTitleText(context.getResources().getString(R.string.unitSave));
+//                        new SyncGetAssest().execute();
+//                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.e("TAG_GetStor", "****Failed to export data");
+                if (!JsonResponse.contains("<title>Title of the document</title>")) {
+//                    if (!isAssetsIn.equals("1")) {
+                        if (pd != null) {
+                            pd.dismiss();
+//                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                    .setTitleText(context.getResources().getString(R.string.ops))
+//                                    .setContentText(context.getResources().getString(R.string.faildUn))
+//                                    .show();
+                          new  SyncGetItemOffer().execute();
+                        }
+//                    } else {
+//                        pd.dismiss();
+//                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                .setTitleText(context.getResources().getString(R.string.ops))
+//                                .setContentText(context.getResources().getString(R.string.faildUn))
+//                                .show();
+//                        new SyncGetAssest().execute();
+//                    }
+                }else{
+                    Toast.makeText(context, "no Parameter", Toast.LENGTH_SHORT).show();
+//                    if (!isAssetsIn.equals("1")) {
+                        if (pd != null) {
+                            pd.dismiss();
+//                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                    .setTitleText(context.getResources().getString(R.string.ops))
+//                                    .setContentText(context.getResources().getString(R.string.faildU))
+//                                    .show();
+                          new  SyncGetItemOffer().execute();
+                        }
+//                    } else {
+//                        pd.dismiss();
+//                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                .setTitleText(context.getResources().getString(R.string.ops))
+//                                .setContentText(context.getResources().getString(R.string.faildU))
+//                                .show();
+//                        new SyncGetAssest().execute();
+//                    }
+
+
+                }
+                }
+
+//            progressDialog.dismiss();
+
+        }
+    }
+
+    private class SyncGetItemOffer extends AsyncTask<String, String, String> {
+        private String JsonResponse = null;
+        private HttpURLConnection urlConnection = null;
+        private BufferedReader reader = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            progressDialog = new ProgressDialog(context,R.style.MyTheme);
+//            progressDialog.setCancelable(false);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progressDialog.setProgress(0);
+//            progressDialog.show();
+
+            pd.getProgressHelper().setBarColor(Color.parseColor("#FDD835"));
+            pd.setTitleText(context.getResources().getString(R.string.importOffer));
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+//
+//                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+//                String ip="";
+//                if(mainSettings.size()!=0) {
+//                    ip=mainSettings.get(0).getIP();
+//                }
+                String link = "http://"+ip + "/GetOffersItems";
+
+                //
+                String data = "CONO=" + URLEncoder.encode(CompanyNo, "UTF-8") + "&" +
+                  "D1=" + URLEncoder.encode(fromDate, "UTF-8") + "&" +
+                        "D2=" + URLEncoder.encode(ToDate, "UTF-8") ;
+////
+                URL url = new URL(link);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestMethod("POST");
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes(data);
+                wr.flush();
+                wr.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while ((JsonResponse = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(JsonResponse + "\n");
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                Log.e("tag", "TAG_GetStor -->" + stringBuffer.toString());
+
+                return stringBuffer.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("tag", "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String JsonResponse) {
+            super.onPostExecute(JsonResponse);
+
+//            JsonResponse= "[{\"CONO\":\"290\",\"ITEMOCODE\":\"40043\",\"ITEMNAMEA\":\"دجاج مسلخ عمان\",\"DESCNAME\":\"\",\"F_D\":\"1.49\",\n" +
+//                    "             \"FRMDATE\":\"01\\/01\\/2023\",\"TODATE\":\"02\\/01\\/2023\",\"OFFERNO\":\"1851\"},{\"CONO\":\"290\",\"ITEMOCODE\":\"10128\",\"ITEMNAMEA\":\"فول أخضر\",\"DESCNAME\":\"\",\"F_D\":\"1.49\",\"FRMDATE\":\"29\\/01\\/2023\",\"TODATE\":\"30\\/01\\/2023\",\"OFFERNO\":\"2208\"},{\"CONO\":\"290\",\"ITEMOCODE\":\"20236\",\"ITEMNAMEA\":\"مياسي مشكل\",\"DESCNAME\":\"\",\"F_D\":\"2.49\",\"FRMDATE\":\"01\\/01\\/2023\",\"TODATE\":\"02\\/01\\/2023\",\"OFFERNO\":\"1859\"},{\"CONO\":\"290\",\"ITEMOCODE\":\"10018\",\"ITEMNAMEA\":\"فاصولياء بلدية\",\n" +
+//                    "             \"DESCNAME\":\"\",\"F_D\":\"0.99\",\"FRMDATE\":\"29\\/01\\/2023\",\"TODATE\":\"30\\/01\\/2023\",\"OFFERNO\":\"2210\"}]";
+
+            if (JsonResponse != null && JsonResponse.contains("CONO")) {
+                Log.e("TAG_GetStor", "****Success");
+
+                pd.getProgressHelper().setBarColor(Color.parseColor("#1F6381"));
+                pd.setTitleText(context.getResources().getString(R.string.offerSave));
+                try {
+                    //[{"CONO":"290","ITEMOCODE":"40043","ITEMNAMEA":"دجاج مسلخ عمان","DESCNAME":"","F_D":"1.49",
+                    // "FRMDATE":"01\/01\/2023","TODATE":"02\/01\/2023","OFFERNO":"1851"}
+
+                    JSONArray parentArray = new JSONArray(JsonResponse);
+
+
+                    List<OfferTable> ITEM=new ArrayList<>();
+
+                    for (int i = 0; i < parentArray.length(); i++) {
+                        JSONObject finalObject = parentArray.getJSONObject(i);
+
+                        OfferTable obj = new OfferTable();
+
+                        obj.setCONO(finalObject.getString("CONO"));
+                        obj.setITEMOCODE(finalObject.getString("ITEMOCODE"));
+                        obj.setITEMNAMEA(finalObject.getString("ITEMNAMEA"));
+                        obj.setDESCNAME(finalObject.getString("DESCNAME"));
+
+                        obj.setF_D(finalObject.getString("F_D"));
+                        obj.setFRMDATE(finalObject.getString("FRMDATE"));
+                        obj.setTODATE(finalObject.getString("TODATE"));
+                        obj.setOFFERNO(finalObject.getString("OFFERNO"));
+
+
+                        ITEM.add(obj);
+
+                    }
+
+                    MainActivity2  contextM=(MainActivity2)context;
+                    contextM.SaveOffer(ITEM);
+
+//
+//                    dbHandler.deleteAllItem("ITEM_UNIT");
+//                    for (int i = 0; i < ITEM.size(); i++) {
+//                        dbHandler.addItemU(ITEM.get(i));
+//                    }
+
+                    Log.e("TAG_etOffer", "****SaveSuccess");
+                    pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                    pd.setTitleText(context.getResources().getString(R.string.saveOffer));
+
+
                     if(!isAssetsIn.equals("1")) {
                         if(pd!=null) {
                             pd.dismiss();
@@ -1805,7 +2015,7 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
 
                     }else{
                         pd.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                        pd.setTitleText(context.getResources().getString(R.string.unitSave));
+                        pd.setTitleText(context.getResources().getString(R.string.offerSave));
                         new SyncGetAssest().execute();
                     }
 
@@ -1819,17 +2029,17 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
                     if (!isAssetsIn.equals("1")) {
                         if (pd != null) {
                             pd.dismiss();
-                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText(context.getResources().getString(R.string.ops))
-                                    .setContentText(context.getResources().getString(R.string.faildUn))
-                                    .show();
+//                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                    .setTitleText(context.getResources().getString(R.string.ops))
+//                                    .setContentText(context.getResources().getString(R.string.faildUn))
+//                                    .show();
                         }
                     } else {
                         pd.dismiss();
-                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText(context.getResources().getString(R.string.ops))
-                                .setContentText(context.getResources().getString(R.string.faildUn))
-                                .show();
+//                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                .setTitleText(context.getResources().getString(R.string.ops))
+//                                .setContentText(context.getResources().getString(R.string.faildUn))
+//                                .show();
                         new SyncGetAssest().execute();
                     }
                 }else{
@@ -1837,27 +2047,26 @@ if(textViewFd!=null)                    textViewFd.setText(controll.F_D);
                     if (!isAssetsIn.equals("1")) {
                         if (pd != null) {
                             pd.dismiss();
-                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                                    .setTitleText(context.getResources().getString(R.string.ops))
-                                    .setContentText(context.getResources().getString(R.string.faildU))
-                                    .show();
+//                            new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                    .setTitleText(context.getResources().getString(R.string.ops))
+//                                    .setContentText(context.getResources().getString(R.string.faildU))
+//                                    .show();
                         }
                     } else {
                         pd.dismiss();
-                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText(context.getResources().getString(R.string.ops))
-                                .setContentText(context.getResources().getString(R.string.faildU))
-                                .show();
+//                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+//                                .setTitleText(context.getResources().getString(R.string.ops))
+//                                .setContentText(context.getResources().getString(R.string.faildU))
+//                                .show();
                         new SyncGetAssest().execute();
                     }
                 }
-                }
+            }
 
 //            progressDialog.dismiss();
 
         }
     }
-
 
     private class SyncGetAssest extends AsyncTask<String, String, String> {
         private String JsonResponse = null;

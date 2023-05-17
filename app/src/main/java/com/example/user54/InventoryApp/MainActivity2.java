@@ -32,10 +32,12 @@ import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.Model.OfferTable;
 import com.example.user54.InventoryApp.Model.Password;
 import com.example.user54.InventoryApp.R;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoOffer;
 import com.example.user54.InventoryApp.ROOM.UserDaoSwitch;
 import com.example.user54.InventoryApp.ROOM.UserDaoUnit;
 
@@ -945,48 +947,49 @@ public class MainActivity2 extends AppCompatActivity {
         fromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                passwordDialog = new Dialog(MainActivity2.this);
-                passwordDialog.setCancelable(true);
-                passwordDialog.setContentView(R.layout.passworddailog);
-                passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                passwordDialog = new Dialog(MainActivity2.this);
+//                passwordDialog.setCancelable(true);
+//                passwordDialog.setContentView(R.layout.passworddailog);
+//                passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
+//
+//                passwordEt = passwordDialog.findViewById(R.id.passwordd);
+//                okBtn = passwordDialog.findViewById(R.id.done);
+//                passwordDialog.show();
+//
+//
+//                okBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        if (passwordEt.getText().toString().trim().equals("")) {
+//
+//                            passwordEt.requestFocus();
+//                            passwordEt.setError(getString(R.string.required));
+//
+//                        } else {
+//
+//                            if (passwordEt.getText().toString().trim().equals("2023000")) {
+//
+//                                DateClick(fromDate);
+//
+//                                passwordDialog.dismiss();
+//
+//                            } else {
+//
+//                                passwordEt.setError("");
+//
+//                            }
+//
+//
+//                        }
+//
+//                    }
+//                });
 
 
-                passwordEt = passwordDialog.findViewById(R.id.passwordd);
-                okBtn = passwordDialog.findViewById(R.id.done);
-                passwordDialog.show();
 
-
-                okBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (passwordEt.getText().toString().trim().equals("")) {
-
-                            passwordEt.requestFocus();
-                            passwordEt.setError(getString(R.string.required));
-
-                        } else {
-
-                            if (passwordEt.getText().toString().trim().equals("2023000")) {
-
-                                DateClick(fromDate);
-
-                                passwordDialog.dismiss();
-
-                            } else {
-
-                                passwordEt.setError("");
-
-                            }
-
-
-                        }
-
-                    }
-                });
-
-
-
+                DateClick(fromDate);
 
 
             }
@@ -1204,6 +1207,15 @@ public class MainActivity2 extends AppCompatActivity {
         });
 
 
+
+
+    }
+
+    public void SaveOffer(List<OfferTable> item) {
+
+        UserDaoOffer userDao = db.itemOffer();
+        userDao.deleteAll();
+        userDao.insertAll(item);
 
 
     }
