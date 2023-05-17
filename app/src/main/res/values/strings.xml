@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Inventory App </string>
-    <string name="inventory_system">V2.16-04-23</string>
+    <string name="inventory_system">V2.30-03-23</string>
     <string name="item_code">Item Code </string>
     <string name="item_name">Item Name </string>
     <string name="item_qty">Item QTY </string>
@@ -605,9 +605,6 @@
     <string name="print_Date">print_Date</string>
     <string name="enter_password">Enter Password</string>
     <string name="required">required</string>
-    <string name="importOffer">Import Offers</string>
-    <string name="offerSave">Offer Table Save ...</string>
-    <string name="saveOffer">save Offer Table Successful</string>
     <string-array name="printer_list_all">
         <item>"TP801"</item>
         <item>"TP805"</item>

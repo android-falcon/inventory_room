@@ -61,14 +61,12 @@ import com.example.user54.InventoryApp.Model.ItemInfoExp;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
-import com.example.user54.InventoryApp.Model.OfferTable;
 import com.example.user54.InventoryApp.Model.Stk;
 import com.example.user54.InventoryApp.Model.TransferItemsInfo;
 import com.example.user54.InventoryApp.Model.TransferVhfSerial;
 import com.example.user54.InventoryApp.R;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
-import com.example.user54.InventoryApp.ROOM.UserDaoOffer;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
@@ -85,14 +83,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -1639,7 +1635,6 @@ public class CollectingData extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
-                    String codeFromText="";
                     String itemCode = itemCodeText.getText().toString();
                     String itemSwitch = "";
                     String QRCode = "", lot = "", Price = "";
@@ -1649,7 +1644,7 @@ public class CollectingData extends AppCompatActivity {
                         Log.e("itemCardsList.size()", "here1-->" + itemCardsList.size()+"\tisOnlinePrice="+isOnlinePrice);
                         List<ItemQR> QRList = new ArrayList<>();
                         boolean isSaleFromUnit = false;
-                        boolean offer=false;
+
                         if (QrUse.equals("1")) {
                             if (itemCode.length() > 17) {
                                 QRCode = itemCode;
@@ -1678,21 +1673,20 @@ public class CollectingData extends AppCompatActivity {
                             isSaleFromUnit = true;
                         } else {
 
-                            if (settingCOName == 1) {//rawan work
-                                itemCode = itemCodeText.getText().toString();
+                            if(settingCOName==1){
+                                itemCode=itemCodeText.getText().toString();
                                 try {
                                     itemCode = itemCode.substring(0, 12);
-                                } catch (Exception e) {
-                                    itemCode = itemCodeText.getText().toString();
+                                }catch (Exception e){
+                                    itemCode=itemCodeText.getText().toString();
                                 }
-                                Log.e("itemCode1_", "" + itemCode);
-                            } else {
-                                itemCode = itemCodeText.getText().toString();
+                                Log.e("itemCode1_",""+itemCode);
+                            }else{
+                                itemCode=itemCodeText.getText().toString();
                             }
-                            Log.e("itemCode2_", "" + itemCode);
+                            Log.e("itemCode2_",""+itemCode);
 
 
-                             codeFromText=itemCode;
 
                             List<String> itemUnite = findUnite(itemCode);
 
@@ -1704,8 +1698,8 @@ public class CollectingData extends AppCompatActivity {
 
                                 _qty.setText("" + convertToEnglish("" + Integer.parseInt(itemUnite.get(2))));
                                 salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(itemUnite.get(1)))));
-                                if (isOnlinePrice.equals("1"))
-                                    salePrice.setEnabled(false);
+                                if(isOnlinePrice.equals("1"))
+                                salePrice.setEnabled(false);
                                 isSaleFromUnit = true;
                             } else {
                                 itemSwitch = findSwitch(itemCode);
@@ -1729,24 +1723,6 @@ public class CollectingData extends AppCompatActivity {
                             oldQtys.setText("---");
                         }
 
-                        List<OfferTable> offerTables=findOffer(itemCode);
-                        List<OfferTable> offerTablesO=findOffer(codeFromText);
-
-                        if(offerTablesO.size()!=0){
-
-                            offer=true;
-//                            itemCode = offerTables.get(0).getITEMOCODE();
-                            salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(offerTablesO.get(0).getF_D()))));
-
-
-                        }else
-                        if (offerTables.size()!=0) {
-                            offer=true;
-//                            itemCode = offerTables.get(0).getITEMOCODE();
-                            salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(offerTables.get(0).getF_D()))));
-
-                        }
-
                         for (int i = 0; i < itemCardsList.size(); i++) {
                             String itemCodeList = itemCardsList.get(i).getItemCode();
                             if (itemCode.equals(itemCodeList)) {
@@ -1754,7 +1730,7 @@ public class CollectingData extends AppCompatActivity {
 
                                 itemName.setText(itemCardsList.get(i).getItemName());
                                 itemQty.setText("" + (Double.parseDouble(itemQty.getText().toString())));
-                                if (!isSaleFromUnit && !offer) {//
+                                if (!isSaleFromUnit) {
                                     salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
                                     if(isOnlinePrice.equals("1"))
                                         salePrice.setEnabled(false);
@@ -1769,8 +1745,6 @@ public class CollectingData extends AppCompatActivity {
                                         salePrice.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCardsList.get(i).getFDPRC()))));
                                     }
                                 }
-
-                                //
                                 if(isOnlinePrice.equals("1"))
                                     salePrice.setEnabled(false);
                                 break;
@@ -4268,7 +4242,6 @@ public class CollectingData extends AppCompatActivity {
 //                    }
 
                     if (Enterin[0]) {
-                        String codeFromText="";
                         String itemCode = ItemCode.getText().toString();
                         String itemSwitch = "";
                         Enterin[0] = false;
@@ -4278,43 +4251,25 @@ public class CollectingData extends AppCompatActivity {
 
                             Log.e("itemCardsList.size()", "-->" + itemCardsList.size());
 
-//                                offer = false;
-
-                                 codeFromText=itemCode;
-                                List<String> itemUnite = findUnite(itemCode);
+                            List<String> itemUnite = findUnite(itemCode);
 
 
-                                if (itemUnite.size() != 0) {
+                            if (itemUnite.size() != 0) {
 
-                                    itemCode = itemUnite.get(0);
-                                    uQty[0] = Double.parseDouble(itemUnite.get(2));
-                                    _qty.setText("" + convertToEnglish("" + Double.parseDouble(itemUnite.get(2))));
+                                itemCode = itemUnite.get(0);
+                                uQty[0] = Double.parseDouble(itemUnite.get(2));
+                                _qty.setText("" + convertToEnglish("" + Double.parseDouble(itemUnite.get(2))));
 
-                                } else {
-                                    itemSwitch = findSwitch(itemCode);
-                                    if (!itemSwitch.equals("")) {
-                                        itemCode = itemSwitch;
-                                    }
-                                    uQty[0] = 1;
-                                    _qty.setText("1");
-
+                            } else {
+                                itemSwitch = findSwitch(itemCode);
+                                if (!itemSwitch.equals("")) {
+                                    itemCode = itemSwitch;
                                 }
-
-                            List<OfferTable> offerTables=findOffer(itemCode);
-                            List<OfferTable> offerTablesO=findOffer(codeFromText);
-
-                            if(offerTablesO.size()!=0){
-
-//                                offer=true;
-//                            itemCode = offerTables.get(0).getITEMOCODE();
-
-
-                            }else
-                            if (offerTables.size()!=0) {
-//                                offer=true;
-//                            itemCode = offerTables.get(0).getITEMOCODE();
+                                uQty[0] = 1;
+                                _qty.setText("1");
 
                             }
+
                             for (int i = 0; i < itemCardsList.size(); i++) {
                                 String itemCodeList = itemCardsList.get(i).getItemCode();
                                 if (itemCode.equals(itemCodeList)) {
@@ -5761,44 +5716,6 @@ public class CollectingData extends AppCompatActivity {
 
         return itemOCode;
     }
-    public List<OfferTable> findOffer(String Item) {
-
-
-        UserDaoOffer userDao = db.itemOffer();
-        List<OfferTable> itemOCode =   userDao.getOfferByCode(Item);
-        List<OfferTable> itemResult=new ArrayList<>();
-        for(int i=0;i<itemOCode.size();i++){
-            if((formatDate(convertToEnglish(today)).after(formatDate(itemOCode.get(i).getFRMDATE() ))
-                    &&formatDate(convertToEnglish(today)).before(formatDate(itemOCode.get(i).getTODATE() )))||
-                    (formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getFRMDATE() )))||
-                    formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getTODATE() ))){
-                OfferTable offerTable=new OfferTable();
-                offerTable=itemOCode.get(i);
-                itemResult.add(offerTable);
-                break;
-            }
-
-        }
-
-        return itemResult;
-    }
-
-
-
-    public Date formatDate(String date) {
-
-//        Log.e("date", date);
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(myFormat, Locale.US);
-        Date d = null;
-        try {
-            d = simpleDateFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return d;
-    }
-
 
     public List<ItemQR> findQRCode(String ItemQR, String strNo, boolean eqQR) {
         List<ItemQR> itemOCode = new ArrayList<>();
