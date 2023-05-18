@@ -1,23 +1,48 @@
 package com.example.user54.InventoryApp.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "SEWOO_SETTING")
 public class SewooSetting {
 
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "COMPORT")
     private String ComPort;
+    @ColumnInfo(name = "BARCODE_X")
     private int barcodeX;
+    @ColumnInfo(name = "BARCODE_Y")
     private int barcodeY;
+    @ColumnInfo(name = "ITEM_X")
     private int itemX;
+    @ColumnInfo(name = "ITEM_Y")
     private int itemY;
+    @ColumnInfo(name = "ITEM_FONT_TYPE")
     private int itemFontType;
+    @ColumnInfo(name = "ITEM_FONT_SIZE")
     private int itemFontSize;
+    @ColumnInfo(name = "PRC_X")
     private int prcX;
+    @ColumnInfo(name = "PRC_Y")
     private int prcY;
+    @ColumnInfo(name = "PRC_FONT_TYPE")
     private int prcFontType;
+    @ColumnInfo(name = "PRC_FONT_SIZE")
     private int prcFontSize;
+    @ColumnInfo(name = "BARCODE_TYPE")
     private int barcodeType;
+    @ColumnInfo(name = "BARCODE_BN")
     private int barcodeBn;
+    @ColumnInfo(name = "COMP_NAME")
     private String CompName;
+    @ColumnInfo(name = "COMP_NM_X")
     private String CompNMX;
+    @ColumnInfo(name = "COMP_NM_Y")
     private String CompNMY;
+    @ColumnInfo(name = "DEV_ID")
     private String devID;
 
 

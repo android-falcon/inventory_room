@@ -28,6 +28,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.example.user54.InventoryApp.Model.AssestItem;
+import com.example.user54.InventoryApp.Model.AssestItem_info;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemSwitch;
 import com.example.user54.InventoryApp.Model.ItemUnit;
@@ -35,7 +37,9 @@ import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.Password;
 import com.example.user54.InventoryApp.R;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
 import com.example.user54.InventoryApp.ROOM.UserDaoSwitch;
 import com.example.user54.InventoryApp.ROOM.UserDaoUnit;
 
@@ -58,7 +62,7 @@ import java.util.Locale;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 //WORK
 public class MainActivity2 extends AppCompatActivity {
-//    Button exit, collecting, item, setting, report,send;
+    //    Button exit, collecting, item, setting, report,send;
     LinearLayout  collecting, item, report,send;
     Button exit,  setting;
     EditText passwordEt;
@@ -66,8 +70,8 @@ public class MainActivity2 extends AppCompatActivity {
     Button okBtn;
     Animation animFadein;
     private ScaleAnimation scale;
-//    LinearLayout master;
-    InventoryDatabase InventoryDb;
+    //    LinearLayout master;
+//    InventoryDatabase InventoryDb;
     String QrUse="0";
     String today,fromDateString="",ToDateString="";
     Date currentTimeAndDate;
@@ -88,12 +92,12 @@ public class MainActivity2 extends AppCompatActivity {
         controll co=new controll();
         int dataNo= Integer.parseInt(co.readFromFile(MainActivity2.this));
 
-        InventoryDb=new InventoryDatabase(MainActivity2.this,dataNo);
+//        InventoryDb=new InventoryDatabase(MainActivity2.this,dataNo);
         myCalendar = Calendar.getInstance();
         db=AppDatabase.getInstanceDatabase(MainActivity2.this);
 
         currentTimeAndDate = Calendar.getInstance().getTime();
-         df = new SimpleDateFormat("dd/MM/yyyy");
+        df = new SimpleDateFormat("dd/MM/yyyy");
         today = df.format(currentTimeAndDate);
 
 
@@ -130,7 +134,7 @@ public class MainActivity2 extends AppCompatActivity {
 
 //
 //         master=(LinearLayout)findViewById(R.id.master);
-       
+
         item = (LinearLayout) findViewById(R.id.item);
         setting = (Button) findViewById(R.id.setting);
         report = (LinearLayout) findViewById(R.id.report);
@@ -180,7 +184,7 @@ public class MainActivity2 extends AppCompatActivity {
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                               String password=editText.getText().toString();
+                                String password=editText.getText().toString();
                                 textView.setText("");
                                 if(!password.equals("")){
 
@@ -255,7 +259,7 @@ public class MainActivity2 extends AppCompatActivity {
 //
 //                                            Log.e("error1234",""+e.getMessage().toString());
 //                                        }
-                                       // textView.setText(getResources().getString(R.string.NotCorrectPassword));
+                                        // textView.setText(getResources().getString(R.string.NotCorrectPassword));
                                     }
 
                                 }
@@ -448,14 +452,16 @@ public class MainActivity2 extends AppCompatActivity {
 //                      importJson sendCloud = new importJson(MainActivity2.this,"");
 //                      sendCloud.startSending("ItemCard");
 //                     sendCloud.startSending("ItemSwitch");
-                    List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
+//                    List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
+                    List<MainSetting> mainSetting=getAllMainSetting();
+
                     if(mainSetting.size()!=0) {
                         DateDialog(1, 2,mainSetting.get(0).getIsAssest());
-                       // alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "", mainSetting.get(0).getIsAssest());
+                        // alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "", mainSetting.get(0).getIsAssest());
                     }else{
 
                         new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.WARNING_TYPE)
-                                 .setTitleText(getResources().getString(R.string.mainSetting) + "!")
+                                .setTitleText(getResources().getString(R.string.mainSetting) + "!")
                                 .setContentText(getResources().getString(R.string.nomainSetting))
                                 .setConfirmText(getResources().getString(R.string.cancel))
                                 .showCancelButton(false)
@@ -487,7 +493,8 @@ public class MainActivity2 extends AppCompatActivity {
         final Button itemQr = new Button(this);
         final Button itemDelete = new Button(this);
 
-        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+//        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+        List<MainSetting> mainSettings = getAllMainSetting();
         if (mainSettings.size() != 0) {
 //            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
 //            StkNo = mainSettings.get(0).getStorNo();
@@ -537,13 +544,13 @@ public class MainActivity2 extends AppCompatActivity {
 
                 final SweetAlertDialog dialog2 = new SweetAlertDialog(MainActivity2.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
                         .setTitleText("Delete All Table")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        deleteAll();
-                                        sweetAlertDialog.dismissWithAnimation();
-                                    }
-                                });
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                deleteAll();
+                                sweetAlertDialog.dismissWithAnimation();
+                            }
+                        });
 
 
 
@@ -610,12 +617,13 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     void messages(int y){
-        List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
+//        List<MainSetting> mainSetting=InventoryDb.getAllMainSetting();
+        List<MainSetting> mainSetting=getAllMainSetting();
         if(mainSetting.size()!=0) {
             if(y==2||y==3||y==5 ) {
                 DateDialog(2, y,"");
             }else {
-            alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), y, "", "");
+                alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), y, "", "");
             }
 
         }else{
@@ -699,13 +707,13 @@ public class MainActivity2 extends AppCompatActivity {
                                 break;
                             case 2:
 
-                                   sDialog.setTitleText(getResources().getString(R.string.cancel) + "!")
-                                           .setContentText(getResources().getString(R.string.cancelImport))
-                                           .setConfirmText(getResources().getString(R.string.ok))
-                                           .showCancelButton(false)
-                                           .setCancelClickListener(null)
-                                           .setConfirmClickListener(null)
-                                           .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                sDialog.setTitleText(getResources().getString(R.string.cancel) + "!")
+                                        .setContentText(getResources().getString(R.string.cancelImport))
+                                        .setConfirmText(getResources().getString(R.string.ok))
+                                        .showCancelButton(false)
+                                        .setCancelClickListener(null)
+                                        .setConfirmClickListener(null)
+                                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
 
                                 break;
                             case 3:
@@ -926,8 +934,9 @@ public class MainActivity2 extends AppCompatActivity {
         calendar.setTime(Calendar.getInstance().getTime());
         calendar.add(Calendar.DAY_OF_YEAR, -2);
 
-      String  isOnlinePrice="0";
-        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+        String  isOnlinePrice="0";
+//        List<MainSetting> mainSettings = InventoryDb.getAllMainSetting();
+        List<MainSetting> mainSettings =getAllMainSetting();
         if (mainSettings.size() != 0) {
 
             isOnlinePrice=mainSettings.get(0).getONlINEshlf();
@@ -939,54 +948,55 @@ public class MainActivity2 extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         String date = sdf.format(newDate);
         if(isOnlinePrice.equals("1"))
-           fromDate.setText(convertToEnglish(date));//5555555555
+            fromDate.setText(convertToEnglish(date));//5555555555
 
         toDate.setText(convertToEnglish(today));
         fromDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                passwordDialog = new Dialog(MainActivity2.this);
-                passwordDialog.setCancelable(true);
-                passwordDialog.setContentView(R.layout.passworddailog);
-                passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                passwordDialog = new Dialog(MainActivity2.this);
+//                passwordDialog.setCancelable(true);
+//                passwordDialog.setContentView(R.layout.passworddailog);
+//                passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
+//
+//                passwordEt = passwordDialog.findViewById(R.id.passwordd);
+//                okBtn = passwordDialog.findViewById(R.id.done);
+//                passwordDialog.show();
+//
+//
+//                okBtn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        if (passwordEt.getText().toString().trim().equals("")) {
+//
+//                            passwordEt.requestFocus();
+//                            passwordEt.setError(getString(R.string.required));
+//
+//                        } else {
+//
+//                            if (passwordEt.getText().toString().trim().equals("2023000")) {
+//
+//                                DateClick(fromDate);
+//
+//                                passwordDialog.dismiss();
+//
+//                            } else {
+//
+//                                passwordEt.setError("");
+//
+//                            }
+//
+//
+//                        }
+//
+//                    }
+//                });
 
 
-                passwordEt = passwordDialog.findViewById(R.id.passwordd);
-                okBtn = passwordDialog.findViewById(R.id.done);
-                passwordDialog.show();
 
-
-                okBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (passwordEt.getText().toString().trim().equals("")) {
-
-                            passwordEt.requestFocus();
-                            passwordEt.setError(getString(R.string.required));
-
-                        } else {
-
-                            if (passwordEt.getText().toString().trim().equals("2023000")) {
-
-                                DateClick(fromDate);
-
-                                passwordDialog.dismiss();
-
-                            } else {
-
-                                passwordEt.setError("");
-
-                            }
-
-
-                        }
-
-                    }
-                });
-
-
-
+                DateClick(fromDate);
 
 
             }
@@ -1013,7 +1023,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                     switch (cases){
                         case 1:
-                             alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "",isAssest);
+                            alertMessageDialog(getResources().getString(R.string.importData), getResources().getString(R.string.importDataMessage), 2, "",isAssest);
 
                             break;
                         case 2:
@@ -1021,7 +1031,7 @@ public class MainActivity2 extends AppCompatActivity {
                             break;
                     }
 
-                        dialog.dismissWithAnimation();
+                    dialog.dismissWithAnimation();
 
 
 
@@ -1078,9 +1088,25 @@ public class MainActivity2 extends AppCompatActivity {
 
         UserDaoCard userDao = db.itemCard();
 
-       // userDao.deleteAll();
+        // userDao.deleteAll();
 //        try {
-            userDao.insertAll(list);
+        userDao.insertAll(list);
+//        }catch (Exception e){}
+//
+        // List<UserModel> users = userDao.getAll();
+
+
+    }
+
+    public void AddAssest(List<AssestItem>list){
+//        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                AppDatabase.class, "InventoryDBase") .fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        // userDao.deleteAll();
+//        try {
+        userDao.insertAllAssassest(list);
 //        }catch (Exception e){}
 //
         // List<UserModel> users = userDao.getAll();
@@ -1094,7 +1120,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         UserDaoSwitch userDao = db.itemSwitch();
 
-      //  userDao.deleteAll();
+        //  userDao.deleteAll();
         userDao.insertAll(list);
 
         // List<UserModel> users = userDao.getAll();
@@ -1122,7 +1148,7 @@ public class MainActivity2 extends AppCompatActivity {
         UserDaoCard usercard = db.itemCard();
         UserDaoSwitch userswitch = db.itemSwitch();
         UserDaoUnit userDao = db.itemUnit();
-          usercard.deleteAll();
+        usercard.deleteAll();
         userswitch.deleteAll();
         userDao.deleteAll();
         Toast.makeText(this, "Successful Delete", Toast.LENGTH_SHORT).show();
@@ -1186,7 +1212,7 @@ public class MainActivity2 extends AppCompatActivity {
 
                     if (passwordEt.getText().toString().trim().equals("2023000")) {
 
-                       Intent tools = new Intent(MainActivity2.this, Tools.class);
+                        Intent tools = new Intent(MainActivity2.this, Tools.class);
                         startActivity(tools);
 
                         passwordDialog.dismiss();
@@ -1205,6 +1231,15 @@ public class MainActivity2 extends AppCompatActivity {
 
 
 
+
+    }
+
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
 
     }
 }

@@ -2,18 +2,36 @@ package com.example.user54.InventoryApp.Model;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Entity(tableName = "TRANSFER_ITEMS_INFO")
 public class TransferItemsInfo {
 
+
+
+    @ColumnInfo(name = "ITEM_CODE")
     private String itemCode ;
+    @ColumnInfo(name = "ITEM_NAME")
     private String itemName;
+    @ColumnInfo(name = "ITEM_QTY")
     private float itemQty;
+    @ColumnInfo(name = "FRM_STR")
     private String fromStr;
+    @ColumnInfo(name = "TO_STR")
     private String toStr;
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "ROW_INDEX")
     private float rowIndex;
+    @ColumnInfo(name = "VHF_NO")
     private int VhfNo;
+    @ColumnInfo(name = "ISEXPORT")
     private String isExport;
     private String TotalQty;
 

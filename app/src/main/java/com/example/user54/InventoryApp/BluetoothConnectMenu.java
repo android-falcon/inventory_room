@@ -41,6 +41,9 @@ import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Port.AlertView;
 import com.example.user54.InventoryApp.Model.ItemCard;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
+import com.example.user54.InventoryApp.ROOM.UserDaoStk;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -96,6 +99,7 @@ public class BluetoothConnectMenu extends Activity {
     private EditText btAddrBox;
     private Button connectButton;
     private Button searchButton;
+    AppDatabase db;
 
     LinearLayout item;
     private ListView list;
@@ -219,6 +223,7 @@ public class BluetoothConnectMenu extends Activity {
         this.chkDisconnect = (CheckBox) this.findViewById(R.id.check_disconnect);
         this.chkDisconnect.setChecked(true);
         this.context = this;
+        db=AppDatabase.getInstanceDatabase(context);
         item = this.findViewById(R.id.item);
 //        obj = new DatabaseHandler(BluetoothConnectMenu.this);
         long_listItems = new ArrayList<Item>();
@@ -518,8 +523,9 @@ public class BluetoothConnectMenu extends Activity {
                         controll co=new controll();
                         int dataNo= Integer.parseInt(co.readFromFile(BluetoothConnectMenu.this));
 
-                        InventoryDatabase InventDB = new InventoryDatabase(context,dataNo);
-                        final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+//                        InventoryDatabase InventDB = new InventoryDatabase(context,dataNo);
+//                        final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+                        final List<MainSetting> mainSettings =getAllMainSetting();
 
                         if (mainSettings.size() != 0) {
                             PrintType = mainSettings.get(0).getPrinterType();
@@ -631,7 +637,7 @@ public class BluetoothConnectMenu extends Activity {
                             for (int i = 0; i < Item.barcodeListForPrint.size(); i++) {
                                 Bitmap bitmaps=null;
                                 if(companyNo==0) {
-                                     bitmaps = convertLayoutToImage_Barcode_qastas(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(),Item.itemCardForPrint.getIsName());
+                                     bitmaps = convertLayoutToImage_Barcode_max(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(),Item.itemCardForPrint.getIsName());
                                 }else if (companyNo==1){
                                      bitmaps = convertLayoutToImage_Barcode_athouab(Item.barcodeListForPrint.get(i), Item.itemCardForPrint.getOrgPrice(), Item.itemCardForPrint.getIsName());
 
@@ -1977,6 +1983,16 @@ public class BluetoothConnectMenu extends Activity {
     public String convertToEnglish(String value) {
         String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫", "."));
         return newValue;
+    }
+
+
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
+
     }
 
 //    public String convertToEnglish(String value) {

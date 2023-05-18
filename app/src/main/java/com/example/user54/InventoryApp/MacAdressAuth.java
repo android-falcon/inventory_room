@@ -21,7 +21,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class MacAdressAuth extends AppCompatActivity {
     TextView MacAddress;
 //    Button ActivateButton;
-    InventoryDatabase inventoryDatabase;
+//    InventoryDatabase inventoryDatabase;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -29,14 +29,14 @@ public class MacAdressAuth extends AppCompatActivity {
         controll co=new controll();
         int data=86;
         try {
-             data = Integer.parseInt(co.readFromFile(MacAdressAuth.this));
+            data = Integer.parseInt(co.readFromFile(MacAdressAuth.this));
 
         }catch (Exception e){
             data=86;
             co.WriteBtn(MacAdressAuth.this,data+"");
 
         }
-        inventoryDatabase = new InventoryDatabase(MacAdressAuth.this,data);
+//        inventoryDatabase = new InventoryDatabase(MacAdressAuth.this,data);
 //        String ac=inventoryDatabase.getActivate();
 //        if(!ac.equals("")){
 //            if(ac.equals("11A")){
@@ -53,32 +53,32 @@ public class MacAdressAuth extends AppCompatActivity {
 //0:10:20:98:eb:9b
         //14:9f:e8:1:49:2f
         if(false){
-        if (getMacAddr().equals("48:3f:e9:86:ce:90") ||
-                getMacAddr().equals("0:10:20:98:ed:3b") ||
-                getMacAddr().equals("0:10:20:98:ec:29") ||
-                getMacAddr().equals("0:10:20:98:ec:67") ||
-                getMacAddr().equals("0:10:20:98:ec:ed") ||
-                getMacAddr().equals("0:10:20:98:eb:9b") ||
-                getMacAddr().equals("c4:9f:4c:96:d5:dd")) {//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
+            if (getMacAddr().equals("48:3f:e9:86:ce:90") ||
+                    getMacAddr().equals("0:10:20:98:ed:3b") ||
+                    getMacAddr().equals("0:10:20:98:ec:29") ||
+                    getMacAddr().equals("0:10:20:98:ec:67") ||
+                    getMacAddr().equals("0:10:20:98:ec:ed") ||
+                    getMacAddr().equals("0:10:20:98:eb:9b") ||
+                    getMacAddr().equals("c4:9f:4c:96:d5:dd")) {//        if(getMacAddr().toUpperCase().equals("0:10:20:98:eb:96".toUpperCase())){
 
-            Intent logIntent = new Intent(MacAdressAuth.this, LogIn.class);
-            startActivity(logIntent);
-            finish();
-        } else {
-            setContentView(R.layout.mac_adreass_activity_yellow);
-            Toast.makeText(this, "Not Activate", Toast.LENGTH_SHORT).show();
-            MacAddress = findViewById(R.id.MacAddress);
+                Intent logIntent = new Intent(MacAdressAuth.this, LogIn.class);
+                startActivity(logIntent);
+                finish();
+            } else {
+                setContentView(R.layout.mac_adreass_activity_yellow);
+                Toast.makeText(this, "Not Activate", Toast.LENGTH_SHORT).show();
+                MacAddress = findViewById(R.id.MacAddress);
 //        ActivateButton=findViewById(R.id.ActivateButton);
 
-            MacAddress.setTextIsSelectable(true);
-            MacAddress.setText("" + getMacAddr());
-        }
+                MacAddress.setTextIsSelectable(true);
+                MacAddress.setText("" + getMacAddr());
+            }
 
-    }else {
+        }else {
 
-        Intent logIntent=new Intent(MacAdressAuth.this,LogIn.class);
-        startActivity(logIntent);
-        finish();
+            Intent logIntent=new Intent(MacAdressAuth.this,LogIn.class);
+            startActivity(logIntent);
+            finish();
 
         }
 

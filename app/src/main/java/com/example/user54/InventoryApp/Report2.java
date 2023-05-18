@@ -22,7 +22,7 @@ public class Report2 extends AppCompatActivity {
     Dialog dialog;
 
     String today;
-    InventoryDatabase InventDB;
+    //    InventoryDatabase InventDB;
     LinearLayout menue ;
 
     @Override
@@ -60,7 +60,7 @@ public class Report2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                           }
+            }
         });
 
 
@@ -298,7 +298,7 @@ public class Report2 extends AppCompatActivity {
         exportExpDate.setOnClickListener(showDialogOnClick);
         ExportAlternative.setOnClickListener(showDialogOnClick);
 
-         Clickable();
+        Clickable();
 
     }
 

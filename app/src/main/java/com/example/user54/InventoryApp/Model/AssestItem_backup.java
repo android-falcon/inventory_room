@@ -11,65 +11,69 @@ import androidx.room.PrimaryKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "ASSEST_TABLE")
-public class AssestItem {
+@Entity(tableName = "ASSEST_TABLE_INFO_BACKUP")
+public class AssestItem_backup {
+
+//    private static final String ASSEST_TABLE_INFO_BACKUP = "ASSEST_TABLE_INFO_BACKUP";
+//
+//    private static final String ASSESST_CODE_INFO_BACKUP = "ASSESST_CODE_BACKUP";
+//    private static final String ASSESST_NAME_INFO_BACKUP= "ASSESST_NAME_BACKUP";
+//    private static final String ASSESST_TYPE_INFO_BACKUP = "ASSESST_TYPE_BACKUP";
+//    private static final String ASSESST_NO_INFO_BACKUP = "ASSESST_NO_BACKUP";
+//    private static final String ASSESST_MAINMNG_INFO_BACKUP= "ASSESST_MAINMNG_BACKUP";
+//    private static final String ASSESST_DEPARTMENT_INFO_BACKUP = "ASSESST_DEPARTMENT_BACKUP";
+//    private static final String ASSESST_SECTION_INFO_BACKUP = "ASSESST_SECTION_BACKUP";
+//    private static final String ASSESST_AREANAME_INFO_BACKUP = "ASSESST_AREANAME_BACKUP";
+//    private static final String ASSESST_QTY_INFO_BACKUP = "ASSESST_QTY_INFO_BACKUP";
+//    private static final String ASSESST_DATE_INFO_BACKUP = "ASSESST_DATE_INFO_BACKUP";
+//    private static final String ASSESST_ISEXPORT_INFO_BACKUP = "ASSESST_ISEXPORT_INFO_BACKUP";
+//    private static final String ASSESST_BARCODE_INFO_BACKUP = "ASSESST_BARCODE_INFO_BACKUP";
+//    private static final String ASSESST_SERIAL_INFO_BACKUP = "ASSESST_SERIAL_INFO_BACKUP";
 
 
-    //  private static final String ASSEST_TABLE = "ASSEST_TABLE";
-    //
-    //    private static final String ASSESST_CODE = "ASSESST_CODE";
-    //    private static final String ASSESST_NAME = "ASSESST_NAME";
-    //    private static final String ASSESST_TYPE = "ASSESST_TYPE";
-    //    private static final String ASSESST_NO = "ASSESST_NO";
-    //    private static final String ASSESST_MAINMNG = "ASSESST_MAINMNG";
-    //    private static final String ASSESST_DEPARTMENT = "ASSESST_DEPARTMENT";
-    //    private static final String ASSESST_SECTION = "ASSESST_SECTION";
-    //    private static final String ASSESST_AREANAME = "ASSESST_AREANAME";
-    //    private static final String ASSESST_BARCODE = "ASSESST_BARCODE";
-
-    @NonNull
-    @PrimaryKey
-    @ColumnInfo(name = "ASSESST_CODE")
+    @ColumnInfo(name = "ASSESST_CODE_BACKUP")
     private String assesstCode;
-    @ColumnInfo(name = "ASSESST_NAME")
+    @ColumnInfo(name = "ASSESST_NAME_BACKUP")
     private String assesstName;
-    @ColumnInfo(name = "ASSESST_NO")
+    @ColumnInfo(name = "ASSESST_NO_BACKUP")
     private String assesstNo;
-    @ColumnInfo(name = "ASSESST_TYPE")
+    @ColumnInfo(name = "ASSESST_TYPE_BACKUP")
     private String assesstType;
 //    @ColumnInfo(name = "ASSESST_CODE")
     @Ignore
     private boolean isCheck;
 //    @ColumnInfo(name = "ASSESST_CODE")
-@Ignore
-private String count;
+    @Ignore
+    private String count;
 //    @ColumnInfo(name = "ASSESST_CODE")
-@Ignore
-private String price;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    private String price;
+    @ColumnInfo(name = "ASSESST_QTY_INFO_BACKUP")
     private String assesstQty;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @ColumnInfo(name = "ASSESST_DATE_INFO_BACKUP")
     private String assesstDate;
-    @ColumnInfo(name = "ASSESST_MAINMNG")
+    @ColumnInfo(name = "ASSESST_MAINMNG_BACKUP")
     private String assesstMangment;
-    @ColumnInfo(name = "ASSESST_DEPARTMENT")
+    @ColumnInfo(name = "ASSESST_DEPARTMENT_BACKUP")
     private String assesstDEPARTMENT;
-    @ColumnInfo(name = "ASSESST_SECTION")
+    @ColumnInfo(name = "ASSESST_SECTION_BACKUP")
     private String assesstSECTION;
-    @ColumnInfo(name = "ASSESST_AREANAME")
+    @ColumnInfo(name = "ASSESST_AREANAME_BACKUP")
     private String assesstAREANAME;
     @ColumnInfo(name = "ASSESST_BARCODE")
     private String assesstBarcode;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @ColumnInfo(name = "ASSESST_ISEXPORT_INFO_BACKUP")
     private String isExport;
-//    @ColumnInfo(name = "ASSESST_CODE")
+
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "ASSESST_SERIAL_INFO_BACKUP")
     private String serial;
 
 
-    public AssestItem() {
+    public AssestItem_backup() {
     }
 
-    public AssestItem(String assesstCode, String assesstName, String assesstNo, String assesstType, boolean isCheck, String count, String price, String assesstQty, String assesstDate, String assesstMangment, String assesstDEPARTMENT, String assesstSECTION, String assesstAREANAME, String assesstBarcode, String isExport) {
+    public AssestItem_backup(String assesstCode, String assesstName, String assesstNo, String assesstType, boolean isCheck, String count, String price, String assesstQty, String assesstDate, String assesstMangment, String assesstDEPARTMENT, String assesstSECTION, String assesstAREANAME, String assesstBarcode, String isExport) {
         this.assesstCode = assesstCode;
         this.assesstName = assesstName;
         this.assesstNo = assesstNo;

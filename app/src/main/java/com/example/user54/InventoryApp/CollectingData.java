@@ -1,12 +1,10 @@
 package com.example.user54.InventoryApp;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -53,11 +51,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
-import com.example.user54.InventoryApp.InventoryDatabase;
+//import com.example.user54.InventoryApp.InventoryDatabase;
 import com.example.user54.InventoryApp.Model.AssestItem;
+import com.example.user54.InventoryApp.Model.AssestItem_info;
 import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.ItemCard;
+import com.example.user54.InventoryApp.Model.ItemInfoBackUp;
 import com.example.user54.InventoryApp.Model.ItemInfoExp;
+import com.example.user54.InventoryApp.Model.ItemInfoExpRec;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
@@ -66,7 +67,16 @@ import com.example.user54.InventoryApp.Model.TransferItemsInfo;
 import com.example.user54.InventoryApp.Model.TransferVhfSerial;
 import com.example.user54.InventoryApp.R;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_info;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoInfoExp;
+import com.example.user54.InventoryApp.ROOM.UserDaoItemInfo;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
+import com.example.user54.InventoryApp.ROOM.UserDaoQR;
+import com.example.user54.InventoryApp.ROOM.UserDaoStk;
+import com.example.user54.InventoryApp.ROOM.UserDaoTrancferSerial;
+import com.example.user54.InventoryApp.ROOM.UserDaoUnit;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nightonke.boommenu.BoomButtons.BoomButton;
@@ -104,15 +114,15 @@ public class CollectingData extends AppCompatActivity {
     boolean open = false, collDOpen = false, collExOpen = false, openAssesst=false,collReceipt = false, collTransfer = false, collUpdate = false, collAssetsOpen = false, collAddAssetsOpen = false,collTranseOpen = false;
     String today;
     List<AssestItem>itemAssetsCa;
-    InventoryDatabase InventDB;
+    //    InventoryDatabase InventDB;
     List<AssestItem> assestItemsList;
     EditText editText;
     AppDatabase db;
     List<String> managList, areaList, depList, secList;
-    ArrayList<ItemInfo> itemUpdate = new ArrayList<>();
-    ArrayList<ItemInfoExp> itemUpdateExp = new ArrayList<>();
-    ArrayList<ItemInfoExp> itemUpdateExpRec = new ArrayList<>();
-    ArrayList<TransferItemsInfo> itemUpdateTransfer = new ArrayList<>();
+    List<ItemInfo> itemUpdate = new ArrayList<>();
+    List<ItemInfoExp> itemUpdateExp = new ArrayList<>();
+    List<ItemInfoExpRec> itemUpdateExpRec = new ArrayList<>();
+    List<TransferItemsInfo> itemUpdateTransfer = new ArrayList<>();
     boolean updateOpen = false, openSearch = false, openSave = false, openBarCode = false, openColUp = false;
     int textId = 0;
     List<ItemCard> itemCardsList = new ArrayList<ItemCard>();
@@ -144,7 +154,7 @@ public class CollectingData extends AppCompatActivity {
 
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(CollectingData.this));
-        InventDB = new InventoryDatabase(CollectingData.this,data);
+//        InventDB = new InventoryDatabase(CollectingData.this,data);
         db=AppDatabase.getInstanceDatabase(CollectingData.this);
 
         initialization();
@@ -168,7 +178,8 @@ public class CollectingData extends AppCompatActivity {
             }
         });
 
-        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+//        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+        final List<MainSetting> mainSetting = getAllMainSetting();
         if (mainSetting.size() != 0) {
             companyNo=mainSetting.get(0).getCoName();
         }
@@ -395,10 +406,13 @@ public class CollectingData extends AppCompatActivity {
         itemName = dialogBarCode.findViewById(R.id.itemName);
         itemCode = (EditText) dialogBarCode.findViewById(R.id.itemCode);
         int companyNo=0;
-        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+//        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+        final List<MainSetting> mainSetting = getAllMainSetting();
+
         if (mainSetting.size() != 0) {
             StorNo.setText("" + mainSetting.get(0).getStorNo());
-            StorName.setText(InventDB.getStkName(mainSetting.get(0).getStorNo()));
+//            StorName.setText(InventDB.getStkName(mainSetting.get(0).getStorNo()));
+            StorName.setText(getStkName(mainSetting.get(0).getStorNo()));
             companyNo=mainSetting.get(0).getCoName();
         }
 
@@ -489,7 +503,7 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
- //&& !oldQty.getText().toString().equals("") && !itemName.getText().toString().equals("")
+                //&& !oldQty.getText().toString().equals("") && !itemName.getText().toString().equals("")
                 if (!itemCode.getText().toString().equals("") && !NewQty.getText().toString().equals("")) {
                     String Kind = "500";
                     if (minus.isChecked()) {
@@ -933,14 +947,14 @@ public class CollectingData extends AppCompatActivity {
 //                        List <ItemQR> QRList=findQRCode(itemCode);
 
 
-                        List<String> itemUnite = findUnite(itemCode);
+                        List<ItemUnit> itemUnite = findUnite(itemCode);
                         int uQty = 1;
 
 
                         if (itemUnite.size() != 0) {
 
-                            itemCode = itemUnite.get(0);
-                            uQty = Integer.parseInt(itemUnite.get(2));
+                            itemCode = itemUnite.get(0).getItemOCode();
+                            uQty = Integer.parseInt(String.valueOf(itemUnite.get(0).getCalcQty()));
 
 
                         } else {
@@ -1016,7 +1030,9 @@ public class CollectingData extends AppCompatActivity {
                     itemCard.setIsExport("0");
                     itemCard.setIsNew("1");
                     itemCard.setItemM("0");
-                    InventDB.addItemcardTable(itemCard);
+
+//                    InventDB.addItemcardTable(itemCard);
+                    insertItemCard(itemCard);
                     prograseSave();
                     itemCodeNew.setText("");
                     itemNameNew.setText("");
@@ -1288,11 +1304,13 @@ public class CollectingData extends AppCompatActivity {
 
         final int[] count = {0};
         final ArrayList<ItemInfo> itemPreviousScan = new ArrayList<>();
-        ArrayList<ItemInfo> itemLastScan = new ArrayList<>();
+        List<ItemInfo> itemLastScan = new ArrayList<>();
         final String[] oldQty = {"0"};
 
-        itemLastScan = InventDB.getAllItemInfo();
-        List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+//        itemLastScan = InventDB.getAllItemInfo();
+        itemLastScan=getAllItemInfo();
+//        List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+        List<MainSetting> mainSettings = getAllMainSetting();
 
 
         final boolean[] noEnterData = {true};
@@ -1328,8 +1346,8 @@ public class CollectingData extends AppCompatActivity {
         locations = dialog.findViewById(R.id.locations);
         salePrice = (EditText) dialog.findViewById(R.id.salePrice);
         isOnlinePrice=mainSettings.get(0).getONlINEshlf();
-       if(isOnlinePrice.equals("1"))
-        salePrice.setEnabled(false);
+        if(isOnlinePrice.equals("1"))
+            salePrice.setEnabled(false);
         itemName = (TextView) dialog.findViewById(R.id.item_name);
         itemNameBefore = (TextView) dialog.findViewById(R.id.itemNameB);
         itemCodeBefore = (TextView) dialog.findViewById(R.id.itemCodeB);
@@ -1342,7 +1360,8 @@ public class CollectingData extends AppCompatActivity {
             itemNameBefore.setText(itemLastScan.get(qtyItem - 1).getItemName());
             itemLQtyBefore.setText("" + itemLastScan.get(qtyItem - 1).getItemQty());
             itemCodeBefore.setText(itemLastScan.get(qtyItem - 1).getItemCode());
-            itemAQtyBefore.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEMS_INFO"));
+//            itemAQtyBefore.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEMS_INFO"));
+            itemAQtyBefore.setText(db.itemInfo().getTotal(itemLastScan.get(qtyItem - 1).getItemCode()));
 
         }
 
@@ -1357,7 +1376,8 @@ public class CollectingData extends AppCompatActivity {
         String StkName = "";
         min.setVisibility(View.VISIBLE);
         if (mainSettings.size() != 0) {
-            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
+//            StkName = InventDB.getStkName(mainSettings.get(0).getStorNo());
+            StkName = getStkName(mainSettings.get(0).getStorNo());
             StkNo = mainSettings.get(0).getStorNo();
             QrUse = mainSettings.get(0).getIsQr();
             settingCOName=mainSettings.get(0).getCoName();
@@ -1376,17 +1396,17 @@ public class CollectingData extends AppCompatActivity {
 //                    editText.setSelection(editText.getText().length());
                     if(itemCodeText.getText().toString().equals("")){
                         itemCodeText.setFocusable(true);
-                      //  itemCodeText.requestFocus();
+                        //  itemCodeText.requestFocus();
                         new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    itemCodeText.requestFocus();
-                                }
-                            });
+                            @Override
+                            public void run() {
+                                itemCodeText.requestFocus();
+                            }
+                        });
                     }
-                    }
-
                 }
+
+            }
         });
 
 //
@@ -1452,7 +1472,7 @@ public class CollectingData extends AppCompatActivity {
             }
             rawQrLot.setVisibility(View.GONE);
             rawQr.setVisibility(View.GONE);
-           // min.setVisibility(View.VISIBLE);
+            // min.setVisibility(View.VISIBLE);
         }
 
         salePrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1508,7 +1528,8 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 collDOpen = false;
-                itemUpdate = InventDB.getAllItemInfo();
+//                itemUpdate = InventDB.getAllItemInfo();
+                itemUpdate =getAllItemInfo();
                 updateOpen = true;
                 upDateDialog(itemCodeBefore, 0, itemCodeText, itemAQtyBefore);
 
@@ -1529,7 +1550,8 @@ public class CollectingData extends AppCompatActivity {
         salePrice.setText("");
         if(isOnlinePrice.equals("1"))
             salePrice.setEnabled(false);
-        final int[] serialInfo = {InventDB.getAllItemInfo().size()};
+//        final int[] serialInfo = {InventDB.getAllItemInfo().size()};
+        final int[] serialInfo = {getAllItemInfo().size()};
 
         clear.setOnClickListener(new View.OnClickListener() {
 
@@ -1547,7 +1569,7 @@ public class CollectingData extends AppCompatActivity {
                 _qty.setText("1");
                 salePrice.setText("");
                 if(isOnlinePrice.equals("1"))
-                salePrice.setEnabled(false);
+                    salePrice.setEnabled(false);
                 qrCode.setText("0");
                 lotNo.setText("0");
 //                if (!itemPreviousScan.isEmpty()) {
@@ -1688,18 +1710,18 @@ public class CollectingData extends AppCompatActivity {
 
 
 
-                            List<String> itemUnite = findUnite(itemCode);
+                            List<ItemUnit> itemUnite = findUnite(itemCode);
 
                             if (itemUnite.size() != 0) {
 
-                                itemCode = itemUnite.get(0);
-                                uQty[0] = Integer.parseInt(itemUnite.get(2));
+                                itemCode = itemUnite.get(0).getItemOCode();
+                                uQty[0] = Integer.parseInt(String.valueOf(itemUnite.get(0).getCalcQty()));
                                 Log.e("itemUnite", "" + itemCode + "  \n " + itemUnite.get(0));
 
-                                _qty.setText("" + convertToEnglish("" + Integer.parseInt(itemUnite.get(2))));
-                                salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(itemUnite.get(1)))));
+                                _qty.setText("" + convertToEnglish("" + Integer.parseInt(String.valueOf(itemUnite.get(0).getCalcQty()))));
+                                salePrice.setText("" + convertToEnglish(numberFormat.format(Double.parseDouble(String.valueOf(itemUnite.get(0).getSalePrice())))));
                                 if(isOnlinePrice.equals("1"))
-                                salePrice.setEnabled(false);
+                                    salePrice.setEnabled(false);
                                 isSaleFromUnit = true;
                             } else {
                                 itemSwitch = findSwitch(itemCode);
@@ -1717,7 +1739,8 @@ public class CollectingData extends AppCompatActivity {
                         }
 
                         try {
-                            String OldQty = InventDB.getTotal(itemCode, "ITEMS_INFO");
+//                            String OldQty = InventDB.getTotal(itemCode, "ITEMS_INFO");
+                            String OldQty = db.itemInfo().getTotal(itemCode);
                             oldQtys.setText(""+OldQty);
                         }catch (Exception e){
                             oldQtys.setText("---");
@@ -1823,7 +1846,8 @@ public class CollectingData extends AppCompatActivity {
                             } else {
 //                            Toast.makeText(CollectingData.this, "save auto", Toast.LENGTH_SHORT).show();
                                 if(itemQty.getText().toString().length()<=5){
-                                oldQty[0] = InventDB.getTotal(itemCode, "ITEMS_INFO");
+//                                    oldQty[0] = InventDB.getTotal(itemCode, "ITEMS_INFO");
+                                    oldQty[0] = db.itemInfo().getTotal(itemCode);
 //
                                 save.setClickable(false);
                                 itemCodeText.setEnabled(false);
@@ -1833,109 +1857,114 @@ public class CollectingData extends AppCompatActivity {
 
                                 String Lo = "";
 
-                                List<MainSetting> mainSettings = InventDB.getAllMainSetting();
-                                if (mainSettings.size() != 0) {
-                                    Lo = mainSettings.get(0).getStorNo();
-                                }
+//                                List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+                                    List<MainSetting> mainSettings = getAllMainSetting();
 
-                                item.setItemCode(itemCode);
-                                item.setItemName(itemName.getText().toString());
-                                String Qty = "";
-                                if (!itemQty.getText().toString().equals("")) {
+                                    if (mainSettings.size() != 0) {
+                                        Lo = mainSettings.get(0).getStorNo();
+                                    }
 
-                                    Qty = "" + (Double.parseDouble(itemQty.getText().toString()) * Double.parseDouble(_qty.getText().toString()));
-                                } else {
-                                    Qty = "" + (1 * Double.parseDouble(_qty.getText().toString()));
+                                    item.setItemCode(itemCode);
+                                    item.setItemName(itemName.getText().toString());
+                                    String Qty = "";
+                                    if (!itemQty.getText().toString().equals("")) {
 
-                                }
+                                        Qty = "" + (Double.parseDouble(itemQty.getText().toString()) * Double.parseDouble(_qty.getText().toString()));
+                                    } else {
+                                        Qty = "" + (1 * Double.parseDouble(_qty.getText().toString()));
 
-                                itemQty.setText(Qty);
+                                    }
 
-                                if (min.isChecked()) {
-                                    item.setItemQty(-1 * Float.parseFloat(itemQty.getText().toString()));
+                                    itemQty.setText(Qty);
 
-                                } else {
-                                    item.setItemQty(Float.parseFloat(itemQty.getText().toString()));
-                                }
-                                item.setItemLocation(Lo);
-                                item.setRowIndex(Float.parseFloat("0.0"));
-                                item.setSerialNo(serialInfo[0]++);
-                                item.setExpDate(itemDate.getText().toString());
-                                item.setIsExport("0");
-                                item.setLocation("" + locations.getText().toString());
+                                    if (min.isChecked()) {
+                                        item.setItemQty(-1 * Float.parseFloat(itemQty.getText().toString()));
+
+                                    } else {
+                                        item.setItemQty(Float.parseFloat(itemQty.getText().toString()));
+                                    }
+                                    item.setItemLocation(Lo);
+                                    item.setRowIndex(Float.parseFloat("0.0"));
+                                    item.setSerialNo(serialInfo[0]++);
+                                    item.setExpDate(itemDate.getText().toString());
+                                    item.setIsExport("0");
+                                    item.setLocation("" + locations.getText().toString());
 //                                if (ExpClick[0]) {
 //                                    item.setExpDate(itemDate.getText().toString());
 //                                } else {
 //                                    item.setExpDate(today);
 //                                }
-                                if (!salePrice.getText().toString().equals("")) {
-                                    item.setSalePrice(Float.parseFloat(convertToEnglish(numberFormat.format(Double.parseDouble(salePrice.getText().toString())))));
-                                } else {
-                                    item.setSalePrice(0);
-                                }
-                                item.setTrnDate(convertToEnglish(today));
-                                if (QrUse.equals(1)) {
-                                    item.setLotNo(lotNo.getText().toString());
-                                    item.setQRCode(qrCode.getText().toString());
-                                } else {
-                                    item.setLotNo("0");
-                                    item.setQRCode("0");
-                                }
+                                    if (!salePrice.getText().toString().equals("")) {
+                                        item.setSalePrice(Float.parseFloat(convertToEnglish(numberFormat.format(Double.parseDouble(salePrice.getText().toString())))));
+                                    } else {
+                                        item.setSalePrice(0);
+                                    }
+                                    item.setTrnDate(convertToEnglish(today));
+                                    if (QrUse.equals(1)) {
+                                        item.setLotNo(lotNo.getText().toString());
+                                        item.setQRCode(qrCode.getText().toString());
+                                    } else {
+                                        item.setLotNo("0");
+                                        item.setQRCode("0");
+                                    }
 
 
-                                InventDB.addItemcard(item);
-                                item.setIsDelete("0");
-                                InventDB.addItemInfoBackup(item);
+//                                InventDB.addItemcard(item);
+//                                InventDB. addItemcard(item);
+                                    addInfo(item);
+                                    item.setIsDelete("0");
+//                                    InventDB.addItemInfoBackup(item);
+                                    addInfoBackup(item);
 
 
-                                item.setItemLocation(oldQty[0]);
-                                Log.e("ol12", "===>" + oldQty[0]);
-                                itemPreviousScan.add(item);
+                                    item.setItemLocation(oldQty[0]);
+                                    Log.e("ol12", "===>" + oldQty[0]);
+                                    itemPreviousScan.add(item);
 //                            Toast.makeText(CollectingData.this, "Saved Successfully ", Toast.LENGTH_SHORT).show();
-                                count[0]++;
+                                    count[0]++;
 
-                                progressDialog();
+                                    progressDialog();
 
 ////////////////////////////////CLEAR ////////
 
 
-                                new Handler().post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        itemCodeText.requestFocus();
-                                    }
-                                });
+                                    new Handler().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            itemCodeText.requestFocus();
+                                        }
+                                    });
 
 
-                                itemQty.setEnabled(true);
-                                itemCodeText.setEnabled(true);
+                                    itemQty.setEnabled(true);
+                                    itemCodeText.setEnabled(true);
 
                                     oldQtys.setText("0");
-                                save.setClickable(true);
-                                itemCodeText.setText("");
-                                itemQty.setText("1");
-                                salePrice.setText("");
-                                itemName.setText("");
-                                _qty.setText("1");
-                                qrCode.setText("0");
-                                lotNo.setText("0");
+                                    save.setClickable(true);
+                                    itemCodeText.setText("");
+                                    itemQty.setText("1");
+                                    salePrice.setText("");
+                                    itemName.setText("");
+                                    _qty.setText("1");
+                                    qrCode.setText("0");
+                                    lotNo.setText("0");
 //                                itemLocation.setText("");
 
-                                if (!itemPreviousScan.isEmpty()) {
-                                    itemNameBefore.setText(itemPreviousScan.get(count[0] - 1).getItemName());
-                                    itemCodeBefore.setText(itemPreviousScan.get(count[0] - 1).getItemCode());
-                                    itemLQtyBefore.setText("" + itemPreviousScan.get(count[0] - 1).getItemQty());
+                                    if (!itemPreviousScan.isEmpty()) {
+                                        itemNameBefore.setText(itemPreviousScan.get(count[0] - 1).getItemName());
+                                        itemCodeBefore.setText(itemPreviousScan.get(count[0] - 1).getItemCode());
+                                        itemLQtyBefore.setText("" + itemPreviousScan.get(count[0] - 1).getItemQty());
 
-                                    float AllQty = Float.parseFloat(itemPreviousScan.get(count[0] - 1).getItemLocation()) + itemPreviousScan.get(count[0] - 1).getItemQty();
-                                    itemAQtyBefore.setText("" + AllQty);
+                                        float AllQty = Float.parseFloat(itemPreviousScan.get(count[0] - 1).getItemLocation()) + itemPreviousScan.get(count[0] - 1).getItemQty();
+                                        itemAQtyBefore.setText("" + AllQty);
 
 
-                                }
+                                    }
 
-                            }else {
+                                }else {
                                     itemQty.setError(CollectingData.this.getResources().getString(R.string.maxNo));
                                     TostMesage(CollectingData.this.getResources().getString(R.string.maxNo));
-                            }
+                                }
                             }
 
 
@@ -2159,14 +2188,14 @@ public class CollectingData extends AppCompatActivity {
                 Log.e("itemCode2_",""+itemCode);
 
 
-                List<String> itemUnite = findUnite(itemCode);
+                List<ItemUnit> itemUnite = findUnite(itemCode);
                 int uQty = 1;
 
 
                 if (itemUnite.size() != 0) {
 
-                    itemCode = itemUnite.get(0);
-                    uQty = Integer.parseInt(itemUnite.get(2));
+                    itemCode = itemUnite.get(0).getItemOCode();
+                    uQty = Integer.parseInt(String.valueOf(itemUnite.get(0).getCalcQty()));
 
                 } else {
                     itemSwitch = findSwitch(itemCode);
@@ -2178,101 +2207,106 @@ public class CollectingData extends AppCompatActivity {
                 }
 
 
-                oldQty[0] = InventDB.getTotal(itemCode, "ITEMS_INFO");
+//                oldQty[0] = InventDB.getTotal(itemCode, "ITEMS_INFO");
+                oldQty[0] = db.itemInfo().getTotal(itemCode);
 
                 if (!itemQty.getText().toString().equals("") && !itemCode.equals("") && !salePrice.getText().toString().equals("") && isFound[0]) {
 
                     if(itemQty.getText().toString().length()<=5){
 
-                    ItemInfo item = new ItemInfo();
+                        ItemInfo item = new ItemInfo();
 
-                    String Lo = "";
-                    item.setItemCode(itemCode);
-                    item.setItemName(itemName.getText().toString());
+                        String Lo = "";
+                        item.setItemCode(itemCode);
+                        item.setItemName(itemName.getText().toString());
 
-                    String Qty = "";
-                    if (!itemQty.getText().toString().equals("")) {
+                        String Qty = "";
+                        if (!itemQty.getText().toString().equals("")) {
 
-                        Qty = "" + (Double.parseDouble(itemQty.getText().toString()) * Double.parseDouble(_qty.getText().toString()));
-                    } else {
-                        Qty = "" + (1 * Double.parseDouble(_qty.getText().toString()));
+                            Qty = "" + (Double.parseDouble(itemQty.getText().toString()) * Double.parseDouble(_qty.getText().toString()));
+                        } else {
+                            Qty = "" + (1 * Double.parseDouble(_qty.getText().toString()));
 
-                    }
+                        }
 
-                    itemQty.setText(Qty);
+                        itemQty.setText(Qty);
 
-                    if (min.isChecked()) {
-                        item.setItemQty(-1 * Float.parseFloat(itemQty.getText().toString()));
+                        if (min.isChecked()) {
+                            item.setItemQty(-1 * Float.parseFloat(itemQty.getText().toString()));
 
-                    } else {
-                        item.setItemQty(Float.parseFloat(itemQty.getText().toString()));
-                    }
+                        } else {
+                            item.setItemQty(Float.parseFloat(itemQty.getText().toString()));
+                        }
 
-                    List<MainSetting> mainSettings = InventDB.getAllMainSetting();
-                    if (mainSettings.size() != 0) {
-                        Lo = mainSettings.get(0).getStorNo();
-                    }
-                    item.setItemLocation(Lo);
-                    item.setRowIndex(Float.parseFloat("0.0"));
-                    item.setSerialNo(serialInfo[0]++);
-                    item.setExpDate(itemDate.getText().toString());
+//                    List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+                        List<MainSetting> mainSettings = getAllMainSetting();
+
+                        if (mainSettings.size() != 0) {
+                            Lo = mainSettings.get(0).getStorNo();
+                        }
+                        item.setItemLocation(Lo);
+                        item.setRowIndex(Float.parseFloat("0.0"));
+                        item.setSerialNo(serialInfo[0]++);
+                        item.setExpDate(itemDate.getText().toString());
 //                    if (ExpClick[0]) {
 //                        item.setExpDate(itemDate.getText().toString());
 //                    } else {
 //                        item.setExpDate(today);
 //                    }
-                    item.setSalePrice(Float.parseFloat(convertToEnglish(numberFormat.format(Double.parseDouble(salePrice.getText().toString())))));
+                        item.setSalePrice(Float.parseFloat(convertToEnglish(numberFormat.format(Double.parseDouble(salePrice.getText().toString())))));
                         if(isOnlinePrice.equals("1"))
                             salePrice.setEnabled(false);
-                    item.setTrnDate(convertToEnglish(today));
-                    item.setIsExport("0");
-                    item.setLocation("" + locations.getText().toString());
-                    item.setLotNo(lotNo.getText().toString());
-                    item.setQRCode(qrCode.getText().toString());
+                        item.setTrnDate(convertToEnglish(today));
+                        item.setIsExport("0");
+                        item.setLocation("" + locations.getText().toString());
+                        item.setLotNo(lotNo.getText().toString());
+                        item.setQRCode(qrCode.getText().toString());
 
-                    InventDB.addItemcard(item);
-                    item.setIsDelete("0");
-                    InventDB.addItemInfoBackup(item);
+//                    InventDB.addItemcard(item);
+                        addInfo(item);
+                        item.setIsDelete("0");
+//                        InventDB.addItemInfoBackup(item);
+                        addInfoBackup(item);
 
-                    item.setItemLocation(oldQty[0]);
-                    itemPreviousScan.add(item);
-                    count[0]++;
+                        item.setItemLocation(oldQty[0]);
+                        itemPreviousScan.add(item);
+                        count[0]++;
 
-                    progressDialog();
-                    ////////CLEAR ///
+                        progressDialog();
+                        ////////CLEAR ///
 
-                 //   itemCodeText.requestFocus();
+                        //   itemCodeText.requestFocus();
                         new Handler().post(new Runnable() {
                             @Override
                             public void run() {
                                 itemCodeText.requestFocus();
                             }
                         });
-                    itemQty.setEnabled(true);
-                    itemCodeText.setEnabled(true);
+                        itemQty.setEnabled(true);
+                        itemCodeText.setEnabled(true);
 
-                    save.setClickable(true);
-                    itemCodeText.setText("");
-                    itemQty.setText("1");
-                    itemName.setText("");
-                    salePrice.setText("");
-                    if(isOnlinePrice.equals("1"))
-                    salePrice.setEnabled(false);
-                    _qty.setText("1");
-                    qrCode.setText("0");
-                    lotNo.setText("0");
+                        save.setClickable(true);
+                        itemCodeText.setText("");
+                        itemQty.setText("1");
+                        itemName.setText("");
+                        salePrice.setText("");
+                        if(isOnlinePrice.equals("1"))
+                            salePrice.setEnabled(false);
+                        _qty.setText("1");
+                        qrCode.setText("0");
+                        lotNo.setText("0");
 //                    itemLocation.setText("");
 
-                    if (!itemPreviousScan.isEmpty()) {
-                        itemNameBefore.setText(itemPreviousScan.get(count[0] - 1).getItemName());
-                        itemCodeBefore.setText(itemPreviousScan.get(count[0] - 1).getItemCode());
-                        itemLQtyBefore.setText("" + itemPreviousScan.get(count[0] - 1).getItemQty());
-                        float AllQty = Float.parseFloat(itemPreviousScan.get(count[0] - 1).getItemLocation()) + itemPreviousScan.get(count[0] - 1).getItemQty();
-                        itemAQtyBefore.setText("" + AllQty);
+                        if (!itemPreviousScan.isEmpty()) {
+                            itemNameBefore.setText(itemPreviousScan.get(count[0] - 1).getItemName());
+                            itemCodeBefore.setText(itemPreviousScan.get(count[0] - 1).getItemCode());
+                            itemLQtyBefore.setText("" + itemPreviousScan.get(count[0] - 1).getItemQty());
+                            float AllQty = Float.parseFloat(itemPreviousScan.get(count[0] - 1).getItemLocation()) + itemPreviousScan.get(count[0] - 1).getItemQty();
+                            itemAQtyBefore.setText("" + AllQty);
 
 
-                    }
-                }else{
+                        }
+                    }else{
 
                         itemQty.setError(CollectingData.this.getResources().getString(R.string.maxNo));
                         TostMesage(CollectingData.this.getResources().getString(R.string.maxNo));
@@ -2374,11 +2408,14 @@ public class CollectingData extends AppCompatActivity {
         depList = new ArrayList<>();
         secList = new ArrayList<>();
 
-
-        managList = InventDB.getAllAssesstMang();
-        depList = InventDB.getAllAssesstDepart();
-        secList = InventDB.getAllAssesstSec();
-        areaList = InventDB.getAllAssesstArea();
+//        depList = InventDB.getAllAssesstDepart();
+//        secList = InventDB.getAllAssesstSec();
+//        areaList = InventDB.getAllAssesstArea();
+//        managList = InventDB.getAllAssesstMang();//sql
+        managList = findAsseatManager();//room
+        depList = findAsseatDepartment();
+        secList = findAsseatSection();
+        areaList = findAsseatAreaName();
         assestItemsList = new ArrayList<>();
 
         ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, managList);
@@ -2506,7 +2543,7 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 if (assestItemsList.size() != 0) {
                     if (!itemCodeText.getText().toString().equals("") && !itemName.getText().toString().equals("") && !itemQty.getText().toString().equals("")) {
-                        AssestItem assestItem = new AssestItem();
+                        AssestItem_info assestItem = new AssestItem_info();
                         String manageString = "", depString = "", secString = "", areaString = "";
                         if (managList.size() != 0) {
                             manageString = managList.get(mangment.getSelectedItemPosition());
@@ -2539,7 +2576,7 @@ public class CollectingData extends AppCompatActivity {
                         }
 
 
-                        serial=InventDB.getMaxSerialAss();
+                        //serial=InventDB.getMaxSerialAss();
                         assestItem.setAssesstMangment(manageString);
                         assestItem.setAssesstDEPARTMENT(depString);
                         assestItem.setAssesstSECTION(secString);
@@ -2554,9 +2591,10 @@ public class CollectingData extends AppCompatActivity {
                         assestItem.setAssesstDate(convertToEnglish(today));
                         assestItem.setAssesstCode(assestItemsList.get(0).getAssesstCode());
                         assestItem.setIsExport("0");
-                        assestItem.setSerial(""+(serial+1));
+                        //assestItem.setSerial(""+(serial+1));
 
-                        InventDB.addAssetsItemInfo(assestItem);
+//                        InventDB.addAssetsItemInfo(assestItem);
+                        addAsseatInfoItem(assestItem);
                         progressDialog();
 
                         itemCodeText.requestFocus();
@@ -2634,7 +2672,7 @@ public class CollectingData extends AppCompatActivity {
         area = dialog.findViewById(R.id.AreaSpin);
 
         itemCodeText = (EditText) dialog.findViewById(R.id.itemCode);
-      //  itemQty = (EditText) dialog.findViewById(R.id.item_qty);
+        //  itemQty = (EditText) dialog.findViewById(R.id.item_qty);
         itemName =  dialog.findViewById(R.id.item_name);
 
 
@@ -2649,11 +2687,14 @@ public class CollectingData extends AppCompatActivity {
         depList = new ArrayList<>();
         secList = new ArrayList<>();
 
-
-        managList = InventDB.getAllAssesstMang();
-        depList = InventDB.getAllAssesstDepart();
-        secList = InventDB.getAllAssesstSec();
-        areaList = InventDB.getAllAssesstArea();
+//        depList = InventDB.getAllAssesstDepart();
+//        secList = InventDB.getAllAssesstSec();
+//        areaList = InventDB.getAllAssesstArea();
+//        managList = InventDB.getAllAssesstMang();//db
+        managList = findAsseatManager();//room
+        depList =findAsseatDepartment();
+        secList = findAsseatSection();
+        areaList = findAsseatAreaName();
         assestItemsList = new ArrayList<>();
 
 //        managList.add("test");
@@ -2685,7 +2726,7 @@ public class CollectingData extends AppCompatActivity {
         });
 
         itemCodeText.requestFocus();
-       // itemQty.setEnabled(true);
+        // itemQty.setEnabled(true);
         itemCodeText.setEnabled(true);
 
         save.setClickable(true);
@@ -2699,12 +2740,12 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
 
                 itemCodeText.requestFocus();
-          //      itemQty.setEnabled(true);
+                //      itemQty.setEnabled(true);
                 itemCodeText.setEnabled(true);
 
                 save.setClickable(true);
                 itemCodeText.setText("");
-            //    itemQty.setText("1");
+                //    itemQty.setText("1");
                 itemName.setText("");
             }
         });
@@ -2750,7 +2791,7 @@ public class CollectingData extends AppCompatActivity {
 
 
                             showAlertDialog(getResources().getString(R.string.itemFoundAlert));
-                         //   itemName.setText("" + assestItemsList.get(0).getAssesstName());
+                            //   itemName.setText("" + assestItemsList.get(0).getAssesstName());
                             //itemQty.setSelectAllOnFocus(true);
                             //itemQty.requestFocus();
 
@@ -2760,7 +2801,7 @@ public class CollectingData extends AppCompatActivity {
 
 
 //                            Toast.makeText(CollectingData.this, "Not Found", Toast.LENGTH_SHORT).show();
-                           // showAlertDialog(getResources().getString(R.string.thisitemnotfound));
+                            // showAlertDialog(getResources().getString(R.string.thisitemnotfound));
 //                            itemCodeText.setSelectAllOnFocus(true);
 //                            new Handler().post(new Runnable() {
 //                                @Override
@@ -2818,7 +2859,7 @@ public class CollectingData extends AppCompatActivity {
                         }
 
 
-                       // serial=InventDB.getMaxSerialAss();
+                        // serial=InventDB.getMaxSerialAss();
                         assestItem.setAssesstMangment(manageString);
                         assestItem.setAssesstDEPARTMENT(depString);
                         assestItem.setAssesstSECTION(secString);
@@ -2833,9 +2874,11 @@ public class CollectingData extends AppCompatActivity {
                         assestItem.setAssesstDate(convertToEnglish(today));
                         assestItem.setAssesstCode(itemCodeText.getText().toString());
                         assestItem.setIsExport("0");
-                       // assestItem.setSerial(""+(serial+1));
+                        // assestItem.setSerial(""+(serial+1));
 
-                        InventDB.addAssetsItem(assestItem);
+//                        InventDB.addAssetsItem(assestItem); // add in sql
+                        addAsseatItem(assestItem);//add in room
+
                         progressDialog();
 
                         itemCodeText.requestFocus();
@@ -2845,7 +2888,7 @@ public class CollectingData extends AppCompatActivity {
 
                         save.setClickable(true);
                         itemCodeText.setText("");
-                       // itemQty.setText("1");
+                        // itemQty.setText("1");
                         itemName.setText("");
                         isEnter[0] = false;
 
@@ -2925,10 +2968,14 @@ public class CollectingData extends AppCompatActivity {
         secList = new ArrayList<>();
 
 
-        managList = InventDB.getAllAssesstMang();
-        depList = InventDB.getAllAssesstDepart();
-        secList = InventDB.getAllAssesstSec();
-        areaList = InventDB.getAllAssesstArea();
+//        depList = InventDB.getAllAssesstDepart();
+//        secList = InventDB.getAllAssesstSec();
+//        areaList = InventDB.getAllAssesstArea();
+//        managList = InventDB.getAllAssesstMang();//db
+        managList = findAsseatManager();//room
+        depList = findAsseatDepartment();
+        secList = findAsseatSection();
+        areaList =findAsseatAreaName();
         assestItemsList = new ArrayList<>();
 
         ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, managList);
@@ -3046,7 +3093,7 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 if (assestItemsList.size() != 0) {
                     if (!itemCodeText.getText().toString().equals("") && !itemName.getText().toString().equals("") && !itemQty.getText().toString().equals("")) {
-                        AssestItem assestItem = new AssestItem();
+                        AssestItem_info assestItem = new AssestItem_info();
                         String manageString = "", depString = "", secString = "", areaString = "";
                         if (managList.size() != 0) {
                             manageString = managList.get(mangment.getSelectedItemPosition());
@@ -3094,7 +3141,8 @@ public class CollectingData extends AppCompatActivity {
                         assestItem.setAssesstCode(assestItemsList.get(0).getAssesstCode());
                         assestItem.setIsExport("0");
 
-                        InventDB.addAssetsItemInfo(assestItem);
+//                        InventDB.addAssetsItemInfo(assestItem);
+                        addAsseatInfoItem(assestItem);
                         progressDialog();
 
                         itemCodeText.requestFocus();
@@ -3202,7 +3250,7 @@ public class CollectingData extends AppCompatActivity {
         final Button exit, save, clear, update, newButton, search, barcode;
         final CheckBox upDateQty = (CheckBox) dialog1.findViewById(R.id.upDateQyt);//batch
         final CheckBox BatchNo = (CheckBox) dialog1.findViewById(R.id.batch);
-        ArrayList<ItemInfoExp> itemLastScan = new ArrayList<>();
+        List<ItemInfoExp> itemLastScan = new ArrayList<>();
 //        ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
         final EditText batchText, itemCodeText1, itemQty;
         final TextView itemName, itemAvl, itemCodeP, itemSaleP, itemCodeBefor, itemNameBefor,
@@ -3251,7 +3299,8 @@ public class CollectingData extends AppCompatActivity {
             }
         });
 
-        itemLastScan = InventDB.getAllItemInfoExp();
+//        itemLastScan = InventDB.getAllItemInfoExp();
+        itemLastScan=getInfoExp();
         final int[] serialExp = {itemLastScan.size()};
 
         itemCardsList =  getItemCard();
@@ -3281,7 +3330,8 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 collExOpen = false;
-                itemUpdateExp = InventDB.getAllItemInfoExp();
+//                itemUpdateExp = InventDB.getAllItemInfoExp();
+                itemUpdateExp=getInfoExp();
                 updateOpen = true;
                 upDateDialog(itemCodeBefor, 1, itemCodeText1, itemAlBe);
 
@@ -3301,7 +3351,8 @@ public class CollectingData extends AppCompatActivity {
             itemNameBefor.setText(itemLastScan.get(qtyItem - 1).getItemName());
             itemLastBe.setText("" + itemLastScan.get(qtyItem - 1).getItemQty());
             itemCodeBefor.setText(itemLastScan.get(qtyItem - 1).getItemCode());
-            itemAlBe.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEM_INFO_EXP"));
+//            itemAlBe.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEM_INFO_EXP"));
+            itemAlBe.setText(db.itemInfoExp().getTotal(itemLastScan.get(qtyItem - 1).getItemCode()));
         }
 
 //        final ArrayList<ItemCard> itemCardsList = itemCardsList;
@@ -3374,7 +3425,8 @@ public class CollectingData extends AppCompatActivity {
 //                            Toast.makeText(CollectingData.this, "save no auto", Toast.LENGTH_SHORT).show();
                         } else {
 //                            Toast.makeText(CollectingData.this, "save auto", Toast.LENGTH_SHORT).show();
-                            oldQty[0] = InventDB.getTotal(itemCode, "ITEM_INFO_EXP");
+//                            oldQty[0] = InventDB.getTotal(itemCode, "ITEM_INFO_EXP");
+                            oldQty[0] = db.itemInfoExp().getTotal(itemCode);
                             itemQty.setText("1");
                             save.setClickable(false);
                             itemCodeText1.setEnabled(false);
@@ -3478,7 +3530,8 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                oldQty[0] = InventDB.getTotal(itemCodeText1.getText().toString(), "ITEM_INFO_EXP");
+//                oldQty[0] = InventDB.getTotal(itemCodeText1.getText().toString(), "ITEM_INFO_EXP");
+                oldQty[0] = db.itemInfoExp().getTotal(itemCodeText1.getText().toString());
 
                 if (!itemQty.getText().toString().equals("") && !itemCodeText1.getText().toString().equals("") && isFoundExp[0]) {
                     if (BatchNo.isChecked()) {
@@ -3714,7 +3767,8 @@ public class CollectingData extends AppCompatActivity {
                 collReceipt = false;
                 String itemCode = itemCodeBefore.getText().toString();
 
-                itemUpdateExpRec = InventDB.getAllItemInfoExpRec();
+//                itemUpdateExpRec = InventDB.getAllItemInfoExpRec();
+                itemUpdateExpRec=getExpRec();
                 updateOpen = true;
                 upDateDialog(itemCodeBefore, 2, itemCodeTextReceipt, allQty);
 
@@ -3727,10 +3781,11 @@ public class CollectingData extends AppCompatActivity {
         batchCheck = (CheckBox) dialog.findViewById(R.id.batchBox);
 
 
-        ArrayList<ItemInfoExp> itemLastScan = new ArrayList<ItemInfoExp>();
+        List<ItemInfoExpRec> itemLastScan = new ArrayList<ItemInfoExpRec>();
 //        ArrayList<ItemCard> itemCardsList = new ArrayList<ItemCard>();
 
-        itemLastScan = InventDB.getAllItemInfoExpRec();
+//        itemLastScan = InventDB.getAllItemInfoExpRec();
+        itemLastScan=getExpRec();
         final int[] serialRec = {itemLastScan.size()};
 
         itemCodeTextReceipt.setEnabled(true);
@@ -3757,7 +3812,8 @@ public class CollectingData extends AppCompatActivity {
             itemNameBefore.setText(itemLastScan.get(qtyItem - 1).getItemName());
             lastQty.setText("" + itemLastScan.get(qtyItem - 1).getItemQty());
             itemCodeBefore.setText(itemLastScan.get(qtyItem - 1).getItemCode());
-            allQty.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEM_INFO_EXP_REC"));
+//            allQty.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "ITEM_INFO_EXP_REC"));
+            allQty.setText(db.itemInfoExpRec().getTotal(itemLastScan.get(qtyItem - 1).getItemCode()));
         }
 
 
@@ -3808,7 +3864,8 @@ public class CollectingData extends AppCompatActivity {
                             });
 
                         } else {
-                            oldQty[0] = InventDB.getTotal(itemCode, "ITEM_INFO_EXP_REC");
+//                            oldQty[0] = InventDB.getTotal(itemCode, "ITEM_INFO_EXP_REC");
+                            oldQty[0] = db.itemInfoExpRec().getTotal(itemCode);
                             itemQty.setText("1");
                             save.setClickable(false);
                             itemCodeTextReceipt.setEnabled(false);
@@ -3887,7 +3944,8 @@ public class CollectingData extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oldQty[0] = InventDB.getTotal(itemCodeTextReceipt.getText().toString(), "ITEM_INFO_EXP_REC");
+//                oldQty[0] = InventDB.getTotal(itemCodeTextReceipt.getText().toString(), "ITEM_INFO_EXP_REC");
+                oldQty[0] = db.itemInfoExpRec().getTotal(itemCodeTextReceipt.getText().toString());
 
                 if (!itemQty.getText().toString().equals("") && !itemCodeTextReceipt.getText().toString().equals("") && isFoundRec[0]) {
                     if (batchCheck.isChecked()) {
@@ -3953,13 +4011,16 @@ public class CollectingData extends AppCompatActivity {
 
 
         itemCardsList = getItemCard();
-        String VHF = InventDB.getVhf();
+//        String VHF = InventDB.getVhf();
+        String VHF = getTrancferSerial();
         int VHF_no = 0;
         if (!VHF.equals("")) {
             VHF_no = Integer.parseInt(VHF);
         } else {
             VHF_no = 1;
-            InventDB.addVhf(new TransferVhfSerial(1));
+//            InventDB.addVhf(new TransferVhfSerial(1));
+            addTrancferSerial(new TransferVhfSerial(1));
+
         }
 
         final double[] uQty = {1};
@@ -3968,7 +4029,8 @@ public class CollectingData extends AppCompatActivity {
 //
         final ArrayList<TransferItemsInfo> itemPreviousScan = new ArrayList<>();
 
-        final int[] serialInfo = {InventDB.getAllTransferItemInfo().size() + 1};
+//        final int[] serialInfo = {InventDB.getAllTransferItemInfo().size() + 1};
+        final int[] serialInfo = {getTrancferItem().size() + 1};
 
 
         final String[] oldQty = {"0"};
@@ -4032,16 +4094,18 @@ public class CollectingData extends AppCompatActivity {
         endVHFt.setText("" + (VHF_no));
 
 
-        ArrayList<TransferItemsInfo> itemLastScan = new ArrayList<>();
+        List<TransferItemsInfo> itemLastScan = new ArrayList<>();
 
-        itemLastScan = InventDB.getAllTransferItemInfo();
+//        itemLastScan = InventDB.getAllTransferItemInfo();
+        itemLastScan = getTrancferItem();
 
         if (!itemLastScan.isEmpty()) {
             int qtyItem = itemLastScan.size();
             ItemNameBefor.setText(itemLastScan.get(qtyItem - 1).getItemName());
             LastQ.setText("" + itemLastScan.get(qtyItem - 1).getItemQty());
             ItemCodeBefor.setText(itemLastScan.get(qtyItem - 1).getItemCode());
-            LastAll.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "TRANSFER_ITEMS_INFO"));
+//            LastAll.setText(InventDB.getTotal(itemLastScan.get(qtyItem - 1).getItemCode(), "TRANSFER_ITEMS_INFO"));
+            LastAll.setText(db.trancfer().getTotal(itemLastScan.get(qtyItem - 1).getItemCode()));
 
         }
 
@@ -4050,7 +4114,9 @@ public class CollectingData extends AppCompatActivity {
         final String[] fromStore = new String[1];
         final String[] ToStore = new String[1];
 
-        final List<Stk> STKList = InventDB.getAllStk();
+//        final List<Stk> STKList = InventDB.getAllStk();
+        final List<Stk> STKList = getStk();
+
         final List<String> StokNo = new ArrayList<>();
         ArrayAdapter<String> StkAdapter;
         if (STKList.size() != 0) {
@@ -4121,19 +4187,24 @@ public class CollectingData extends AppCompatActivity {
 //                int i= finalVHF_no1 +1;
 
                 int i = 0;
-                String VHF = InventDB.getVhf();
-                int VHF_no = InventDB.getMax();
+//                String VHF = InventDB.getVhf();
+                String VHF = getTrancferSerial();
+//                int VHF_no = InventDB.getMax();
+                int VHF_no =db.trancfer().getMax();
                 if (!VHF.equals("")) {
                     if (Integer.parseInt(VHF) == VHF_no) {
                         i = VHF_no + 1;
-                        InventDB.updateVhfNo("" + i);
+//                        InventDB.updateVhfNo("" + i);
+                        updateSerial("" + i);
                     } else if (Integer.parseInt(VHF) >= VHF_no) {
                         i = Integer.parseInt(VHF);
                     }
 
                 } else {
 
-                    InventDB.addVhf(new TransferVhfSerial(VHF_no));
+//                    InventDB.addVhf(new TransferVhfSerial(VHF_no));
+                    addTrancferSerial(new TransferVhfSerial(VHF_no));
+
                 }
 
                 endVHFt.setText("" + i);
@@ -4204,7 +4275,8 @@ public class CollectingData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 collTransfer = false;
-                itemUpdateTransfer = InventDB.getAllTransferItemInfo();
+//                itemUpdateTransfer = InventDB.getAllTransferItemInfo();
+                itemUpdateTransfer = getTrancferItem();
                 updateOpen = true;
                 upDateDialog(ItemCodeBefor, 3, ItemCode, LastAll);
 
@@ -4251,14 +4323,14 @@ public class CollectingData extends AppCompatActivity {
 
                             Log.e("itemCardsList.size()", "-->" + itemCardsList.size());
 
-                            List<String> itemUnite = findUnite(itemCode);
+                            List<ItemUnit> itemUnite = findUnite(itemCode);
 
 
                             if (itemUnite.size() != 0) {
 
-                                itemCode = itemUnite.get(0);
-                                uQty[0] = Double.parseDouble(itemUnite.get(2));
-                                _qty.setText("" + convertToEnglish("" + Double.parseDouble(itemUnite.get(2))));
+                                itemCode = itemUnite.get(0).getItemOCode();
+                                uQty[0] = Double.parseDouble(String.valueOf(itemUnite.get(0).getCalcQty()));
+                                _qty.setText("" + convertToEnglish("" + Double.parseDouble(String.valueOf(itemUnite.get(0).getCalcQty()))));
 
                             } else {
                                 itemSwitch = findSwitch(itemCode);
@@ -4334,7 +4406,8 @@ public class CollectingData extends AppCompatActivity {
 //                            Toast.makeText(CollectingData.this, "save no auto", Toast.LENGTH_SHORT).show();
                                 } else {
 //                            Toast.makeText(CollectingData.this, "save auto", Toast.LENGTH_SHORT).show();
-                                    oldQty[0] = InventDB.getTotal(itemCode, "TRANSFER_ITEMS_INFO");
+//                                    oldQty[0] = InventDB.getTotal(itemCode, "TRANSFER_ITEMS_INFO");
+                                    oldQty[0] = db.trancfer().getTotal(itemCode);
 //                                Qty.setText("1");
                                     save.setClickable(false);
                                     ItemCode.setEnabled(false);
@@ -4344,7 +4417,9 @@ public class CollectingData extends AppCompatActivity {
 
                                     String Lo = "";
 
-                                    List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+//                                    List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+                                    List<MainSetting> mainSettings = getAllMainSetting();
+
                                     if (mainSettings.size() != 0) {
                                         Lo = mainSettings.get(0).getStorNo();
                                     }
@@ -4375,7 +4450,9 @@ public class CollectingData extends AppCompatActivity {
                                     Log.e("Store", "===>" + fromStore[0] + "--->" + ToStore[0]);
                                     item.setIsExport("0");
 
-                                    InventDB.addItemTransferInfo(item);
+//                                    InventDB.addItemTransferInfo(item);
+
+                                    addTrancferItem(item);
 
 
                                     item.setTotalQty(oldQty[0]);
@@ -4479,14 +4556,14 @@ public class CollectingData extends AppCompatActivity {
             public void onClick(View v) {
                 String itemSwitch;
                 String itemCode = ItemCode.getText().toString();
-                List<String> itemUnite = findUnite(itemCode);
+                List<ItemUnit> itemUnite = findUnite(itemCode);
                 int uQty = 1;
 
 
                 if (itemUnite.size() != 0) {
 
-                    itemCode = itemUnite.get(0);
-                    uQty = Integer.parseInt(itemUnite.get(2));
+                    itemCode = itemUnite.get(0).getItemOCode();
+                    uQty = Integer.parseInt(String.valueOf(itemUnite.get(0).getCalcQty()));
 
                 } else {
                     itemSwitch = findSwitch(itemCode);
@@ -4499,7 +4576,8 @@ public class CollectingData extends AppCompatActivity {
 
 
                 if (!Qty.getText().toString().equals("") && !itemCode.equals("") && isFound[0]) {
-                    oldQty[0] = InventDB.getTotal(itemCode, "TRANSFER_ITEMS_INFO");
+//                    oldQty[0] = InventDB.getTotal(itemCode, "TRANSFER_ITEMS_INFO");
+                    oldQty[0] = db.trancfer().getTotal(itemCode);
                     TransferItemsInfo item = new TransferItemsInfo();
 
                     String Lo = "";
@@ -4528,7 +4606,8 @@ public class CollectingData extends AppCompatActivity {
                     item.setIsExport("0");
                     item.setRowIndex(serialInfo[0]++);
                     item.setVhfNo(Integer.parseInt(endVHFt.getText().toString()));
-                    InventDB.addItemTransferInfo(item);
+//                    InventDB.addItemTransferInfo(item);
+                    addTrancferItem(item);
                     item.setTotalQty(oldQty[0]);
                     itemPreviousScan.add(item);
                     count[0]++;
@@ -4580,6 +4659,7 @@ public class CollectingData extends AppCompatActivity {
 
 
         ItemInfoExp item = new ItemInfoExp();
+        ItemInfoExpRec itemR = new ItemInfoExpRec();
 
 
         item.setItemCode(itemCodeText1.getText().toString());
@@ -4593,16 +4673,34 @@ public class CollectingData extends AppCompatActivity {
         item.setSalePrc(itemSaleP.getText().toString());
         item.setReceiptNo(receiptNo);
 
+
+        //___________________________________________________________-
+
+        itemR.setItemCode(itemCodeText1.getText().toString());
+        itemR.setItemName(itemName.getText().toString());
+        itemR.setItemQty(Float.parseFloat(itemQty.getText().toString()));
+        itemR.setExpDate(itemDate.getText().toString());
+        itemR.setBatchNo(batchText);
+        itemR.setRowIndex(Float.parseFloat("0.0"));
+        itemR.setAVLQTY(itemAvl.getText().toString());
+        itemR.setCostPrc(itemCodeP.getText().toString());
+        itemR.setSalePrc(itemSaleP.getText().toString());
+        itemR.setReceiptNo(receiptNo);
+
         switch (switches) {
             case 1:
 
                 item.setSerialNo(serial);
-                InventDB.addItemInfoExp(item);
+//                InventDB.addItemInfoExp(item);
+                addInfoExp(item);
                 break;
             case 2:
-                serial = InventDB.getAllItemInfoExpRec().size();
-                item.setSerialNo(serial);
-                InventDB.addItemInfoReceipt(item);
+//                serial = InventDB.getAllItemInfoExpRec().size();
+
+                serial = getExpRec().size();
+                itemR.setSerialNo(serial);
+//                InventDB.addItemInfoReceipt(item);
+                addExpRec(itemR);
                 break;
         }
 
@@ -4819,19 +4917,27 @@ public class CollectingData extends AppCompatActivity {
                         itemCode = ItemCode.getText().toString();
                         switch (switches) {
                             case 0:
-                                InventDB.updateExpTable("ITEMS_INFO", newValue, Serial, itemCode);
+//                                InventDB.updateExpTable("ITEMS_INFO", newValue, Serial, itemCode);
+                                db.itemInfo().updateTrance( newValue, Serial, itemCode);
+
 //                                allQty.setText(InventDB.getTotal(itemCode, "ITEMS_INFO"));
                                 break;
                             case 1:
-                                InventDB.updateExpTable("ITEM_INFO_EXP", newValue, Serial, itemCode);
+//                                InventDB.updateExpTable("ITEM_INFO_EXP", newValue, Serial, itemCode);
+                                db.itemInfoExp().updateTrance( newValue, Serial, itemCode);
+
 //                                allQty.setText(InventDB.getTotal(itemCode, "ITEM_INFO_EXP"));
                                 break;
                             case 2:
-                                InventDB.updateExpTable("ITEM_INFO_EXP_REC", newValue, Serial, itemCode);
+//                                InventDB.updateExpTable("ITEM_INFO_EXP_REC", newValue, Serial, itemCode);
+
+                                db.itemInfoExpRec().updateTrance( newValue, Serial, itemCode);
 //                                allQty.setText(InventDB.getTotal(itemCode, "ITEM_INFO_EXP_REC"));
                                 break;
                             case 3:
-                                InventDB.updateTransferTable("TRANSFER_ITEMS_INFO", newValue, Serial, itemCode);
+//                                InventDB.updateTransferTable("TRANSFER_ITEMS_INFO", newValue, Serial, itemCode);
+//
+                                db.trancfer().updateTrance( newValue, Serial, itemCode);
 //                                allQty.setText(InventDB.getTotal(itemCode, "ITEM_INFO_EXP_REC"));
                                 break;
                         }
@@ -4848,25 +4954,29 @@ public class CollectingData extends AppCompatActivity {
                     case 0:
                         collDOpen = true;
                         if (AllTrue) {
-                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEMS_INFO"));
+//                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEMS_INFO"));
+                            AllQty.setText(db.itemInfo().getTotal(edit1.getText().toString()));
                         }
                         break;
                     case 1:
                         collExOpen = true;
                         if (AllTrue) {
-                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEM_INFO_EXP"));
+//                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEM_INFO_EXP"));
+                            AllQty.setText(db.itemInfoExp().getTotal(edit1.getText().toString()));
                         }
                         break;
                     case 2:
                         collReceipt = true;
                         if (AllTrue) {
-                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEM_INFO_EXP_REC"));
+//                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "ITEM_INFO_EXP_REC"));
+                            AllQty.setText(db.itemInfoExpRec().getTotal(edit1.getText().toString()));
                         }
                         break;
                     case 3:
                         collTransfer = true;
                         if (AllTrue) {
-                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "TRANSFER_ITEMS_INFO"));
+//                            AllQty.setText(InventDB.getTotal(edit1.getText().toString(), "TRANSFER_ITEMS_INFO"));
+                            AllQty.setText(db.trancfer().getTotal(edit1.getText().toString()));
                         }
                         break;
                 }
@@ -5187,7 +5297,9 @@ public class CollectingData extends AppCompatActivity {
 
         itemAssetsCa = new ArrayList<>();
 
-        itemAssetsCa = InventDB.getAllAssesstItem();
+//        itemAssetsCa = InventDB.getAllAssesstItem();//for sql
+
+        itemAssetsCa = getAllAsseat();//for room
 
         ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(CollectingData.this,itemAssetsCa,companyNo);
         tabeSearch.setAdapter(listAdapterSearch);
@@ -5297,8 +5409,8 @@ public class CollectingData extends AppCompatActivity {
                 openSearch = false;
                 switch (swSearch) {
                     case 5:
-                    openAssesst=true;
-                    break;
+                        openAssesst=true;
+                        break;
 
                 }
                 itemCodeText.requestFocus();
@@ -5479,7 +5591,8 @@ public class CollectingData extends AppCompatActivity {
 
                                 break;
                             case 1:
-                                InventDB.deleteAllItem("ITEM_CARD");
+//                                InventDB.deleteAllItem("ITEM_CARD");
+                                db.itemCard().deleteAll();
 
                                 Toast.makeText(CollectingData.this, CollectingData.this.getResources().getString(R.string.allItemDelete), Toast.LENGTH_SHORT).show();
 //                             progressDialog();
@@ -5487,7 +5600,8 @@ public class CollectingData extends AppCompatActivity {
 
                                 break;
                             case 2:
-                                InventDB.delete(ItemCode, itemName);
+//                                InventDB.delete(ItemCode, itemName);
+                                deleteItemCard(ItemCode, itemName);
                                 sDialog.dismissWithAnimation();
 
                                 break;
@@ -5712,17 +5826,25 @@ public class CollectingData extends AppCompatActivity {
 
     public String findSwitch(String Item) {
 
-        String itemOCode = InventDB.getItemSwitch(Item);
+//        String itemOCode = InventDB.getItemSwitch(Item);
+        String itemOCode = findByNCode(Item);
+        if(itemOCode==null){
+            return "";
+        }else {
+            return itemOCode;
+        }
 
-        return itemOCode;
     }
 
     public List<ItemQR> findQRCode(String ItemQR, String strNo, boolean eqQR) {
         List<ItemQR> itemOCode = new ArrayList<>();
         if (!eqQR) {
-            itemOCode = InventDB.getAllQRItem(ItemQR, strNo);
+//            itemOCode = InventDB.getAllQRItem(ItemQR, strNo);
+            itemOCode = getQR(ItemQR);
         } else {
-            itemOCode = InventDB.getAllQRItemEqQr(ItemQR, strNo);
+//            itemOCode = InventDB.getAllQRItemEqQr(ItemQR, strNo);
+            itemOCode=db.itemQR().getAllQr(ItemQR);
+
         }
 
 
@@ -5731,21 +5853,27 @@ public class CollectingData extends AppCompatActivity {
 
     public String findQRCodeSale(String ItemCode, String strNo) {
 
-        String Sales = InventDB.getSalesQRItem(ItemCode, strNo);
+//        String Sales = InventDB.getSalesQRItem(ItemCode, strNo);
+        String Sales =db.itemQR().getQrcodePrice(ItemCode);
 
         return Sales;
     }
 
-    public List<String> findUnite(String Item) {
+    public List<ItemUnit> findUnite(String Item) {
 
-        List<String> itemOCode = InventDB.getItemUnite(Item);
+//        List<String> itemOCode = InventDB.getItemUnite(Item);
+        List<ItemUnit> itemOCode =findUnites(Item);
 
         return itemOCode;
     }
 
+
+
     public List<AssestItem> findAssest(String Item) {
 
-        List<AssestItem> itemOCode = InventDB.getItemAssets(Item);
+//        List<AssestItem> itemOCode = InventDB.getItemAssets(Item);//by sql
+
+        List<AssestItem> itemOCode = findAsseatByBarcode(Item); //by room
 
         return itemOCode;
     }
@@ -5843,7 +5971,10 @@ public class CollectingData extends AppCompatActivity {
         linearLayout.addView(spinnerLocation);
 //        linearLayout.addView(textView);
 
-        final List<String>locationList=InventDB.getAllLocation();
+//        final List<String>locationList=InventDB.getAllLocation();
+        final List<String>locationList=getAllLocation();
+
+
         //locationList.add(0,"All");
         ArrayAdapter MangAdapter = new ArrayAdapter<String>(CollectingData.this, R.layout.spinner_style, locationList);
         spinnerLocation.setAdapter(MangAdapter);
@@ -6096,6 +6227,181 @@ public class CollectingData extends AppCompatActivity {
 //    }
 
 
+    public void  deleteItemCard(String itemCard,String ItemN){
+
+        UserDaoCard userDao = db.itemCard();
+
+        userDao.deleteByItemCdeName(itemCard,ItemN);
+
+
+
+    }
+
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
+
+    }
+
+
+    public void  addInfoExp(ItemInfoExp itemInfoExp){
+
+        UserDaoInfoExp userDao = db.itemInfoExp();
+
+        userDao.insertUsers(itemInfoExp);
+
+
+
+    }
+
+    public List<ItemInfoExp>  getInfoExp(){
+
+        UserDaoInfoExp userDao = db.itemInfoExp();
+
+        return userDao.getAll();
+
+
+
+    }
+
+    public String  getTrancferSerial(){
+
+        UserDaoTrancferSerial userDao = db.trancferSerial();
+
+        return userDao.getAll()+"";
+
+
+
+    }
+
+    public void  addTrancferSerial(TransferVhfSerial transferVhfSerial){
+
+        UserDaoTrancferSerial userDao = db.trancferSerial();
+
+        userDao.insertUsers(transferVhfSerial);
+
+
+
+    }
+
+    public List<AssestItem> getAllAsseat(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<AssestItem>list=userDao.getAllAssest();
+
+        return list;
+
+    }
+    public void addAsseatItem(AssestItem list){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        userDao.insertAssest(list);
+
+
+    }
+
+
+    public List<ItemInfo> getAllItemInfo(){
+
+        UserDaoItemInfo userDao = db.itemInfo();
+
+        return userDao.getAll();
+
+
+    }
+
+    public void addAsseatInfoItem(AssestItem_info list){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        userDao.insertAssest(list);
+
+
+    }
+
+    public List<String> getAllLocation(){
+
+
+        return  db.itemInfo().getAllItemLocation();
+
+
+    }
+
+    public List<AssestItem> findAsseatByBarcode(String code){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<AssestItem>list= userDao.getItemAssetsByBarcode(code);
+
+        return list;
+
+    }
+
+
+    public List<ItemUnit> findUnites(String code){
+
+        UserDaoUnit userDao = db.itemUnit();
+
+        return  userDao.findUnite(code);
+
+    }
+
+
+    public List<String> findAsseatManager(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<String>list= userDao.getItemAssetsManager();
+
+        return list;
+
+    }
+
+    public List<String> findAsseatDepartment(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<String>list= userDao.getItemAssetsDep();
+
+        return list;
+
+    }
+    public void addInfo(ItemInfo itemInfo){
+
+        UserDaoItemInfo userDao = db.itemInfo();
+        userDao.insertUsers(itemInfo);
+
+    }
+
+    public List<String> findAsseatSection(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<String>list= userDao.getItemAssetsSection();
+
+        return list;
+
+    }
+
+
+
+    public List<String> findAsseatAreaName(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<String>list= userDao.getItemAssetsAreaName();
+
+        return list;
+
+    }
+
+
+
     public List<ItemCard> getItemCard(){
 
         // UserDaoCard userDao = db.itemCard();
@@ -6105,6 +6411,116 @@ public class CollectingData extends AppCompatActivity {
 
     }
 
+    public void addTrancferItem(TransferItemsInfo trancfer){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        db.trancfer().insertUsers(trancfer);
+
+
+    }
+    public List<TransferItemsInfo> getTrancferItem(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.trancfer().getAll();
+
+
+    }
+
+
+    public List<ItemInfoExpRec> getExpRec(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemInfoExpRec().getAll();
+
+
+    }
+
+    public void addExpRec(ItemInfoExpRec itemInfoExpRec){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        db.itemInfoExpRec().insertUsers(itemInfoExpRec);
+
+
+    }
+
+    public List<ItemInfoExpRec> getItemInfoRec(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemInfoExpRec().getAll();
+
+
+    }
+
+
+
+    public String findByNCode(String NcODE){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemSwitch().findByCodeN(NcODE);
+
+
+    }
+
+    public List<Stk> getStk(){
+
+        UserDaoStk userDao = db.stk();
+
+
+        return userDao.getAll();
+
+    }
+
+    public String getStkName(String stkNo){
+
+        UserDaoStk userDao = db.stk();
+
+
+        return userDao.getStkName(stkNo);
+
+    }
+
+
+    public void insertItemCard(ItemCard itemCard){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        db.itemCard().insertUsers(itemCard);
+
+
+    }
+
+
+    public void updateSerial(String  serial){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        db.trancferSerial().updateSerial(serial);
+
+
+    }
+    public void addInfoBackup(ItemInfo itemInfoBackUp){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        db.itemInfoBackUp().insertUsers(itemInfoBackUp);
+
+
+    }
+
+    public List<ItemQR> getQR(String code){
+
+        UserDaoQR userDao = db.itemQR();
+
+
+        return userDao.loadAllByIds(code);
+
+    }
     private String readFromFile(Context context) {
 
         String ret = "";

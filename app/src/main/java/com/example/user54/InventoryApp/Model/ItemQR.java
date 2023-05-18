@@ -1,11 +1,25 @@
 package com.example.user54.InventoryApp.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "ITEM_QR_CODE_TABLE")
 public class ItemQR {
+    @ColumnInfo(name = "STR_NO")
     private String storeNo;
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "ITEM_CODE")
     private String itemCode;
+    @ColumnInfo(name = "ITEM_NAME")
     private String itemNmae;
+    @ColumnInfo(name = "PRICE")
     private String salesPrice;
+    @ColumnInfo(name = "QR_CODE")
     private String qrCode;
+    @ColumnInfo(name = "LOT_NUMBER")
     private String lotNo;
 
     public ItemQR() {

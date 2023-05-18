@@ -10,8 +10,8 @@ import androidx.room.PrimaryKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "ITEMS_INFO")
-public class ItemInfo  {
+@Entity(tableName = "ITEMS_INFO_BACKUP")
+public class ItemInfoBackUp {
 
 //    @NonNull
 //    @PrimaryKey
@@ -45,15 +45,16 @@ public class ItemInfo  {
     @ColumnInfo(name = "LOT_NO")
     private String LotNo;
 
+    @ColumnInfo(name = "IS_DELETE")
     private String IsDelete;
 
     private double Summation;
 
-    public ItemInfo() {
+    public ItemInfoBackUp() {
 
     }
 
-    public ItemInfo(String itemCode, String itemName, float itemQty, float rowIndex, String itemLocation, int serialNo, String expDate, float salePrice, String trnDate, String isExport, String location, String QRCode, String lotNo) {
+    public ItemInfoBackUp(String itemCode, String itemName, float itemQty, float rowIndex, String itemLocation, int serialNo, String expDate, float salePrice, String trnDate, String isExport, String location, String QRCode, String lotNo) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.itemQty = itemQty;

@@ -35,9 +35,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
+import com.example.user54.InventoryApp.Model.AssestItem_backup;
+import com.example.user54.InventoryApp.Model.AssestItem_info;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.R;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_info;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_infoBackup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +56,9 @@ public class Report extends AppCompatActivity {
     Dialog dialog;
     TextView home,sumText;
     String today;
-    InventoryDatabase InventDB;
-    
+    //    InventoryDatabase InventDB;
+    AppDatabase db;
+
     public static List<ItemInfo> ItemInfoListForPrint;
     List<ItemInfo> itemInfos;
     List<ItemCard> itemCard;
@@ -60,10 +66,10 @@ public class Report extends AppCompatActivity {
     List<ItemInfo> itemInfosAcu;
     Animation animFadein;
 
-    List<AssestItem> assestItemList;
-    List<AssestItem> assestItemListBackUp;
-List<String>locationList;
-String location="1";
+    List<AssestItem_info> assestItemList;
+    List<AssestItem_backup> assestItemListBackUp;
+    List<String>locationList;
+    String location="1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +82,11 @@ String location="1";
 
 
         initialization();
+        db=AppDatabase.getInstanceDatabase(Report.this);
+
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(Report.this));
-        InventDB=new InventoryDatabase(Report.this,data);
+//        InventDB=new InventoryDatabase(Report.this,data);
         itemInfos=new ArrayList<>();
         itemInfosAcu=new ArrayList<>();
         assestItemList=new ArrayList<>();
@@ -93,7 +101,7 @@ String location="1";
             @Override
             public void onClick(View v) {
                 finish();
-                           }
+            }
         });
 
         ExportAlternative.setVisibility(View.GONE);
@@ -130,7 +138,8 @@ String location="1";
 
                 case R.id.showAssast:
                     showAssast.setClickable(false);
-                    assestItemListBackUp=InventDB.getAllAssesstItemInfoBackup();
+//                    assestItemListBackUp=InventDB.getAllAssesstItemInfoBackup();
+                    assestItemListBackUp=getAsseatbackupItem();
                     if(assestItemListBackUp.size()!=0){
 
                         showAssestExportToTextDialog();
@@ -147,23 +156,101 @@ String location="1";
 
     void backUpAdd(){
         Log.e("masterBack","jjj");
-        assestItemList=InventDB.getAllAssesstItemInfo();
+//        assestItemList=InventDB.getAllAssesstItemInfo();
+        assestItemList=getAsseatInfoItem();
         for(int i=0;i<assestItemList.size();i++){
 
-            InventDB.addAssetsItemInfoBackup(assestItemList.get(i));
+            AssestItem_backup asOB=new AssestItem_backup();
+            asOB.setAssesstBarcode(assestItemList.get(i).getAssesstBarcode());
+            asOB.setAssesstAREANAME(assestItemList.get(i).getAssesstAREANAME());
+            asOB.setAssesstCode(assestItemList.get(i).getAssesstCode());
+            asOB.setAssesstDate(assestItemList.get(i).getAssesstDate());
+            asOB.setAssesstDEPARTMENT(assestItemList.get(i).getAssesstDEPARTMENT());
+            asOB.setAssesstMangment(assestItemList.get(i).getAssesstMangment());
+            asOB.setAssesstName(assestItemList.get(i).getAssesstName());
+            asOB.setAssesstNo(assestItemList.get(i).getAssesstNo());
+            asOB.setAssesstQty(assestItemList.get(i).getAssesstQty());
+            asOB.setAssesstSECTION(assestItemList.get(i).getAssesstSECTION());
+            asOB.setCheck(assestItemList.get(i).getCheck());
+
+            asOB.setCount(assestItemList.get(i).getCount());
+            asOB.setPrice(assestItemList.get(i).getPrice());
+            asOB.setIsExport(assestItemList.get(i).getIsExport());
+            asOB.setAssesstType(assestItemList.get(i).getAssesstType());
+            asOB.setSerial(assestItemList.get(i).getSerial());
+
+//            InventDB.addAssetsItemInfoBackup(assestItemList.get(i));
+
+            insertAssestInfoBackupItem(asOB);
 
         }
 
-        InventDB.deleteAllItem("ASSEST_TABLE_INFO");
-        int serial=InventDB.getMaxSerialAss();
+//        InventDB.deleteAllItem("ASSEST_TABLE_INFO");
+        deleteAllAsseatInfoItem();
+        // int serial=InventDB.getMaxSerialAss();
         for(int i=0;i<assestItemList.size();i++){
 
-            assestItemList.get(i).setSerial(""+(serial++));
-            InventDB.addAssetsItemInfo(assestItemList.get(i));
+            //assestItemList.get(i).setSerial(""+(serial++));
+            // InventDB.addAssetsItemInfo(assestItemList.get(i));
+            addAsseatInfoItem(assestItemList.get(i));
 
         }
 
         showAssestExportToTextDialog();
+
+    }
+
+    public void addAsseatInfoItem(AssestItem_info list){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        userDao.insertAssest(list);
+
+
+    }
+
+    public List<AssestItem_backup> getAsseatbackupItem(){
+
+        UserDaoAssesst_infoBackup userDao = db.itemAssestInfoBackup();
+
+        List<AssestItem_backup> itemInfos=userDao.getAllAssestInfoBackUp();
+
+        return  itemInfos;
+    }
+
+
+    public List<AssestItem_info> getAsseatInfoItem(){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        List<AssestItem_info> itemInfos=userDao.getAllAssest();
+
+        return  itemInfos;
+    }
+
+    public void deleteAllAsseatInfoItem(){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        userDao.deleteAllAssest();
+
+    }
+
+    public void deleteAssestInfoItem(String code,String serial){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        userDao.deleteAssestInfoBySerial(code,serial);
+
+
+    }
+
+    public void insertAssestInfoBackupItem(AssestItem_backup list){
+
+        UserDaoAssesst_infoBackup userDao = db.itemAssestInfoBackup();
+
+        userDao.insertAssestInfoBackUp(list);
+
 
     }
 
@@ -213,9 +300,9 @@ String location="1";
 
         dialog.setCanceledOnTouchOutside(false);
 
-       final Spinner locationSpinner=dialog.findViewById(R.id.locationSpinner);
-       LinearLayout delByLoc=dialog.findViewById(R.id.delByLoc);
-       final TextView sum=dialog.findViewById(R.id.sum);
+        final Spinner locationSpinner=dialog.findViewById(R.id.locationSpinner);
+        LinearLayout delByLoc=dialog.findViewById(R.id.delByLoc);
+        final TextView sum=dialog.findViewById(R.id.sum);
         sumText=dialog.findViewById(R.id.sum);
         final CheckBox AccumCheckBox =(CheckBox)dialog.findViewById(R.id.AccumCheckBox);;
         Button exit,export;
@@ -231,7 +318,9 @@ String location="1";
 
 
         locationList=new ArrayList<>();
-        locationList=InventDB.getAllLocation();
+//        locationList=InventDB.getAllLocation();
+        locationList=getAllLocation();
+
         locationList.add(0,"All");
         ArrayAdapter MangAdapter = new ArrayAdapter<String>(Report.this, R.layout.spinner_style, locationList);
         locationSpinner.setAdapter(MangAdapter);
@@ -252,14 +341,18 @@ String location="1";
 //                                InventDB.updateIsDeleteItemInfoBackup();
 
 
-                                InventDB.deleteItemFromItemInfoByLocation(location);
+//                                InventDB.deleteItemFromItemInfoByLocation(location);
+                                deleteByLoc(location);
                                 if(AccumCheckBox.isChecked()) {
                                     for (int i = 0; i < itemInfosAcu.size(); i++) {
-                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfosAcu.get(i).getItemCode(), "" + itemInfosAcu.get(i).getSerialNo());
+//                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfosAcu.get(i).getItemCode(), "" + itemInfosAcu.get(i).getSerialNo());
+                                        UpdateBackUpWhere(itemInfosAcu.get(i).getItemCode(), "" + itemInfosAcu.get(i).getSerialNo());
+
                                     }
                                 }else {
                                     for (int i = 0; i < itemInfos.size(); i++) {
-                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(i).getItemCode(), "" + itemInfos.get(i).getSerialNo());
+//                                        InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(i).getItemCode(), "" + itemInfos.get(i).getSerialNo());
+                                        UpdateBackUpWhere(itemInfos.get(i).getItemCode(), "" + itemInfos.get(i).getSerialNo());
                                     }
                                 }
 
@@ -284,7 +377,9 @@ String location="1";
                                     }
                                 }
 
-                                locationList=InventDB.getAllLocation();
+//                                locationList=InventDB.getAllLocation();
+                                locationList=getAllLocation();
+
                                 locationList.add(0,"All");
                                 ArrayAdapter MangAdapter = new ArrayAdapter<String>(Report.this, R.layout.spinner_style, locationList);
                                 locationSpinner.setAdapter(MangAdapter);
@@ -317,10 +412,11 @@ String location="1";
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 tableReport.removeAllViews();
                 location=locationList.get(i);
-                itemInfosAcu=InventDB.getAllItemInfoSum(location);
+//                itemInfosAcu=InventDB.getAllItemInfoSum(location);
+                itemInfosAcu=getItemInfo();
 
-                itemInfos=InventDB.getAllItemInfo_Report(location);
-
+//                itemInfos=InventDB.getAllItemInfo_Report(location);
+                itemInfos=getItemInfoNotSum();
 
 
                 if(AccumCheckBox.isChecked()){
@@ -427,8 +523,10 @@ String location="1";
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                 InventDB.deleteAllItem("ITEMS_INFO");
-                                InventDB.updateIsDeleteItemInfoBackup();
+//                                InventDB.deleteAllItem("ITEMS_INFO");
+                                deleteAll();
+//                                InventDB.updateIsDeleteItemInfoBackup();
+                                UpdateBackUp();
 
 //                                itemInfosAcu=InventDB.getAllItemInfoSum();
 //
@@ -528,19 +626,21 @@ String location="1";
         });
 
         tableReport.removeAllViews();
-        itemInfosAcu=InventDB.getAllItemInfoSum(location);
+//        itemInfosAcu=InventDB.getAllItemInfoSum(location);
+        itemInfosAcu=getItemInfo();
 
-        itemInfos=InventDB.getAllItemInfo_Report(location);
+//        itemInfos=InventDB.getAllItemInfo_Report(location);
+        itemInfos=getItemInfoNotSum();
 
 
 
         if(AccumCheckBox.isChecked()){
-           fillTableRows(tableReport,itemInfosAcu);
-           try {
-               sum.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
-           }catch (Exception e){
+            fillTableRows(tableReport,itemInfosAcu);
+            try {
+                sum.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
+            }catch (Exception e){
 
-           }
+            }
         }else{
             fillTableRows(tableReport,itemInfos);
             try {
@@ -660,8 +760,9 @@ String location="1";
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                                InventDB.deleteAllItem("ASSEST_TABLE_INFO");
-                               // InventDB.updateIsDeleteItemInfoBackup();
+//                                InventDB.deleteAllItem("ASSEST_TABLE_INFO");
+                                db.itemAssestInfo().deleteAllAssest();
+                                // InventDB.updateIsDeleteItemInfoBackup();
 
 //                                itemInfosAcu=InventDB.getAllItemInfoSum();
 //
@@ -753,8 +854,8 @@ String location="1";
         tableReport.removeAllViews();
 
 
-        assestItemList=InventDB.getAllAssesstItemInfo();
-
+//        assestItemList=InventDB.getAllAssesstItemInfo();
+        assestItemList=getAsseatInfoItem();
 
 //        if(AccumCheckBox.isChecked()){
 //            fillTableRows(tableReport,itemInfosAcu);
@@ -796,7 +897,8 @@ String location="1";
 
         itemCard=new ArrayList<>();
         tableReport.removeAllViews();
-        itemCard=InventDB.getAllItemCardNew();
+//        itemCard=InventDB.getAllItemCardNew();
+        itemCard=getItemCardIsNew();
         fillTableRowsItemCard(tableReport,itemCard);
 
         tableReport.setOnTouchListener(new View.OnTouchListener() {//2 list
@@ -993,39 +1095,39 @@ String location="1";
 //            row.setBackground(getResources().getDrawable(R.drawable.no_thing));
             row.setLayoutParams(lp);
             row.setTag(i+"");
-        for (int k = 0; k < 4; k++) {
-            final TextView textView = new TextView(Report.this);
-            switch (k) {
-                case 0:
-                    textView.setText(itemInfos.get(i).getItemCode());
-                    break;
-                case 1:
-                    textView.setText(itemInfos.get(i).getItemName());
-                    break;
-                case 2:
-                    textView.setText(""+itemInfos.get(i).getItemQty());
-                    break;
-                case 3:
-                    textView.setText(""+itemInfos.get(i).getSalePrice());
-                    break;
+            for (int k = 0; k < 4; k++) {
+                final TextView textView = new TextView(Report.this);
+                switch (k) {
+                    case 0:
+                        textView.setText(itemInfos.get(i).getItemCode());
+                        break;
+                    case 1:
+                        textView.setText(itemInfos.get(i).getItemName());
+                        break;
+                    case 2:
+                        textView.setText(""+itemInfos.get(i).getItemQty());
+                        break;
+                    case 3:
+                        textView.setText(""+itemInfos.get(i).getSalePrice());
+                        break;
 //                case 4:
 //                    textView.setText(Exp);
 //                    break;
 
 
-            }
+                }
 
-            textView.setTextColor(ContextCompat.getColor(Report.this, R.color.white));
-            textView.setGravity(Gravity.CENTER);
-            textView.setTextSize(14);
+                textView.setTextColor(ContextCompat.getColor(Report.this, R.color.white));
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextSize(14);
 //                textView.setId(Integer.parseInt(textId + "" + i));
 
-            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-            textView.setLayoutParams(lp2);
+                TableRow.LayoutParams lp2 = new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                textView.setLayoutParams(lp2);
 
-            row.addView(textView);
+                row.addView(textView);
 
-        }
+            }
 
 
 
@@ -1151,18 +1253,23 @@ String location="1";
                                             public void onClick(SweetAlertDialog sDialog) {
 
 
-                                                InventDB.deleteItemFromItemInfo(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
+//                                                InventDB.deleteItemFromItemInfo(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
 
-                                                InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
-                                                        itemInfosAcu=InventDB.getAllItemInfoSum(location);
-                                                        tableLayout.removeAllViews();
-                                                        itemInfos.remove(index);
-                                                        fillTableRows(tableLayout,itemInfos);
-                                                        try {
-                                                            sumText.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
-                                                        }catch (Exception e){
+                                                deleteByCodeNo(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
 
-                                                        }
+
+//                                                InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
+                                                UpdateBackUpWhere(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
+//                                                        itemInfosAcu=InventDB.getAllItemInfoSum(location);
+                                                itemInfosAcu=getItemInfo();
+                                                tableLayout.removeAllViews();
+                                                itemInfos.remove(index);
+                                                fillTableRows(tableLayout,itemInfos);
+                                                try {
+                                                    sumText.setText("" + itemInfosAcu.get(itemInfosAcu.size() - 1).getSummation());
+                                                }catch (Exception e){
+
+                                                }
                                                 sDialog.setTitleText(getResources().getString(R.string.delete))
                                                         .setContentText(getResources().getString(R.string.rowdelete))
                                                         .setConfirmText(getResources().getString(R.string.ok))
@@ -1243,12 +1350,12 @@ String location="1";
 //        });
 
 
-        tableLayout.addView(row);
-    }
+            tableLayout.addView(row);
+        }
 
     }
     @SuppressLint("SetTextI18n")
-    void fillTableRowsAssest(final TableLayout tableLayout, final List<AssestItem> itemInfos) {
+    void fillTableRowsAssest(final TableLayout tableLayout, final List<AssestItem_info> itemInfos) {
 
         for(int i=0;i<itemInfos.size();i++){
             TableRow row = new TableRow(Report.this);
@@ -1351,96 +1458,97 @@ String location="1";
 
 
 
-                        final Button editText = new Button(Report.this);
-                        final Button checkBox = new Button(Report.this);
-                        editText.setText(getResources().getString(R.string.update));
+                    final Button editText = new Button(Report.this);
+                    final Button checkBox = new Button(Report.this);
+                    editText.setText(getResources().getString(R.string.update));
 
-                        checkBox.setText(getResources().getString(R.string.delete));
+                    checkBox.setText(getResources().getString(R.string.delete));
 
-                        if (SweetAlertDialog.DARK_STYLE) {
-                            editText.setTextColor(Color.WHITE);
-                            checkBox.setTextColor(Color.WHITE);
-                        }
+                    if (SweetAlertDialog.DARK_STYLE) {
+                        editText.setTextColor(Color.WHITE);
+                        checkBox.setTextColor(Color.WHITE);
+                    }
 
-                        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
-                        linearLayout.setOrientation(LinearLayout.VERTICAL);
-                        linearLayout.addView(editText);
-                        linearLayout.addView(checkBox);
+                    LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    linearLayout.addView(editText);
+                    linearLayout.addView(checkBox);
 
-                        final SweetAlertDialog dialog = new SweetAlertDialog(Report.this, SweetAlertDialog.NORMAL_TYPE)
-                                .setTitleText(getResources().getString(R.string.choess))
-                                .hideConfirmButton();
-
-
-                        editText.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                AssestItem assestItem=assestItemList.get(Integer.parseInt(v.getTag().toString()));
+                    final SweetAlertDialog dialog = new SweetAlertDialog(Report.this, SweetAlertDialog.NORMAL_TYPE)
+                            .setTitleText(getResources().getString(R.string.choess))
+                            .hideConfirmButton();
 
 
-                                updateQtyDialogAss(assestItem, Integer.parseInt(v.getTag().toString()),tableLayout);
+                    editText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            AssestItem_info assestItem=assestItemList.get(Integer.parseInt(v.getTag().toString()));
+
+
+                            updateQtyDialogAss(assestItem, Integer.parseInt(v.getTag().toString()),tableLayout);
 
 //                                        Toast.makeText(Report.this,  getResources().getString(R.string.update), Toast.LENGTH_SHORT).show();
-                                TostMesage( getResources().getString(R.string.update));
-                                dialog.dismissWithAnimation();
-                            }
-                        });
+                            TostMesage( getResources().getString(R.string.update));
+                            dialog.dismissWithAnimation();
+                        }
+                    });
 
 
-                        checkBox.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                final int index =Integer.parseInt(v.getTag().toString());
-                                new SweetAlertDialog(Report.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText(getResources().getString(R.string.aresure))
-                                        .setContentText(getResources().getString(R.string.deletethisitem)+"\n "+ getResources().getString(R.string.item_name)+itemInfos.get(index).getAssesstName()+"\n"+  getResources().getString(R.string.item_qty)+itemInfos.get(index).getAssesstQty()+"?")
-                                        .setCancelText(getResources().getString(R.string.cancel))
-                                        .setConfirmText(getResources().getString(R.string.delete))
-                                        .showCancelButton(true)
-                                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sDialog) {
-                                                // reuse previous dialog instance, keep widget user state, reset them if you need
+                    checkBox.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final int index =Integer.parseInt(v.getTag().toString());
+                            new SweetAlertDialog(Report.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.aresure))
+                                    .setContentText(getResources().getString(R.string.deletethisitem)+"\n "+ getResources().getString(R.string.item_name)+itemInfos.get(index).getAssesstName()+"\n"+  getResources().getString(R.string.item_qty)+itemInfos.get(index).getAssesstQty()+"?")
+                                    .setCancelText(getResources().getString(R.string.cancel))
+                                    .setConfirmText(getResources().getString(R.string.delete))
+                                    .showCancelButton(true)
+                                    .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            // reuse previous dialog instance, keep widget user state, reset them if you need
 
-                                                sDialog.setTitleText(getResources().getString(R.string.cancel)+"!")
-                                                        .setContentText(getResources().getString(R.string.canceldelete))
-                                                        .setConfirmText(getResources().getString(R.string.ok))
-                                                        .showCancelButton(false)
-                                                        .setCancelClickListener(null)
-                                                        .setConfirmClickListener(null)
-                                                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                            sDialog.setTitleText(getResources().getString(R.string.cancel)+"!")
+                                                    .setContentText(getResources().getString(R.string.canceldelete))
+                                                    .setConfirmText(getResources().getString(R.string.ok))
+                                                    .showCancelButton(false)
+                                                    .setCancelClickListener(null)
+                                                    .setConfirmClickListener(null)
+                                                    .changeAlertType(SweetAlertDialog.ERROR_TYPE);
 
-                                            }
-                                        })
-                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sDialog) {
+                                        }
+                                    })
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
 
 
-                                                InventDB.deleteItemFromItemInfoAssest(itemInfos.get(index).getAssesstCode(), String.valueOf(itemInfos.get(index).getSerial()));
+//                                                InventDB.deleteItemFromItemInfoAssest(itemInfos.get(index).getAssesstCode(), String.valueOf(itemInfos.get(index).getSerial()));
+                                            deleteAssestInfoItem(itemInfos.get(index).getAssesstCode(), String.valueOf(itemInfos.get(index).getSerial()));
 
-                                               // InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
-                                               // itemInfosAcu=InventDB.getAllItemInfoSum();
-                                                tableLayout.removeAllViews();
-                                                itemInfos.remove(index);
-                                                fillTableRowsAssest(tableLayout,itemInfos);
+                                            // InventDB.updateIsDeleteItemInfoBackupByItem(itemInfos.get(index).getItemCode(), String.valueOf(itemInfos.get(index).getSerialNo()));
+                                            // itemInfosAcu=InventDB.getAllItemInfoSum();
+                                            tableLayout.removeAllViews();
+                                            itemInfos.remove(index);
+                                            fillTableRowsAssest(tableLayout,itemInfos);
 
-                                                sDialog.setTitleText(getResources().getString(R.string.delete))
-                                                        .setContentText(getResources().getString(R.string.rowdelete))
-                                                        .setConfirmText(getResources().getString(R.string.ok))
-                                                        .showCancelButton(false)
-                                                        .setCancelClickListener(null)
-                                                        .setConfirmClickListener(null)
-                                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                            }
-                                        })
-                                        .show();
-                                dialog.dismissWithAnimation();
-                            }
-                        });
+                                            sDialog.setTitleText(getResources().getString(R.string.delete))
+                                                    .setContentText(getResources().getString(R.string.rowdelete))
+                                                    .setConfirmText(getResources().getString(R.string.ok))
+                                                    .showCancelButton(false)
+                                                    .setCancelClickListener(null)
+                                                    .setConfirmClickListener(null)
+                                                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                        }
+                                    })
+                                    .show();
+                            dialog.dismissWithAnimation();
+                        }
+                    });
 
-                        dialog.setCustomView(linearLayout);
-                        dialog.show();
+                    dialog.setCustomView(linearLayout);
+                    dialog.show();
 
 
 
@@ -1841,12 +1949,15 @@ String location="1";
             public void onClick(View v) {
                 if(!NewQty.getText().toString().equals("")) {
                     if(Double.parseDouble(NewQty.getText().toString())!=0) {
-                        InventDB.updateExpTable("ITEMS_INFO", NewQty.getText().toString(), String.valueOf(itemInfo.getSerialNo()), itemInfo.getItemCode());
+//                        InventDB.updateExpTable("ITEMS_INFO", NewQty.getText().toString(), String.valueOf(itemInfo.getSerialNo()), itemInfo.getItemCode());
+                        db.itemInfo().updateTrance( NewQty.getText().toString(), String.valueOf(itemInfo.getSerialNo()), itemInfo.getItemCode());
+
                         itemInfos.get(index).setItemQty(Float.parseFloat(NewQty.getText().toString()));
                         tableLayout.removeAllViews();
                         fillTableRows(tableLayout, itemInfos);
                         itemInfosAcu.clear();
-                        itemInfosAcu = InventDB.getAllItemInfoSum(location);
+//                        itemInfosAcu = InventDB.getAllItemInfoSum(location);
+                        itemInfosAcu=getItemInfo();
                         try{
 
                             sumText.setText(""+itemInfosAcu.get(itemInfosAcu.size()-1).getSummation());
@@ -1875,7 +1986,7 @@ String location="1";
 
     }
 
-    void updateQtyDialogAss(final AssestItem itemInfos, final int index, final TableLayout tableLayout){
+    void updateQtyDialogAss(final AssestItem_info itemInfos, final int index, final TableLayout tableLayout){
 
         final Dialog updateDialog=new Dialog(Report.this);
         updateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1912,7 +2023,8 @@ String location="1";
             public void onClick(View v) {
                 if(!NewQty.getText().toString().equals("")) {
                     if(Double.parseDouble(NewQty.getText().toString())!=0) {
-                        InventDB.updateExpTableAss("ASSEST_TABLE_INFO", NewQty.getText().toString(), String.valueOf(itemInfos.getSerial()), itemInfos.getAssesstCode());
+//                        InventDB.updateExpTableAss("ASSEST_TABLE_INFO", NewQty.getText().toString(), String.valueOf(itemInfos.getSerial()), itemInfos.getAssesstCode());
+                        db.itemAssestInfo().updateQtyTable( NewQty.getText().toString(), String.valueOf(itemInfos.getSerial()), itemInfos.getAssesstCode());
                         assestItemList.get(index).setAssesstQty(NewQty.getText().toString());
                         tableLayout.removeAllViews();
                         fillTableRowsAssest(tableLayout, assestItemList);
@@ -2079,10 +2191,105 @@ String location="1";
         ExportAlternative.setOnClickListener(showDialogOnClick);
         showAssast.setOnClickListener(showDialogOnClick);
 
-         Clickable();
+        Clickable();
 
     }
 
 
+
+    public List<ItemCard> getItemCardIsNew(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemCard().loadNewItem();
+
+
+    }
+
+
+    public List<ItemInfo> getItemInfo(){
+
+        List<ItemInfo>list=new ArrayList<>();
+        double sum=0;
+
+        if(location.equals("All")) {
+            list= db.itemInfo().getWithOutLoc();
+        }else {
+            list= db.itemInfo().getWithLoc(location);
+        }
+
+        for(int i=0;i<list.size();i++){
+            sum+=list.get(i).getItemQty();
+            list.get(i).setSummation(sum);
+
+        }
+
+        return list;
+
+    }
+
+    public List<ItemInfo> getItemInfoNotSum(){
+
+        List<ItemInfo>list=new ArrayList<>();
+        double sum=0;
+
+        if(location.equals("All")) {
+            list= db.itemInfo().getAll();
+        }else {
+            list= db.itemInfo().loadAllByLoc(location);
+        }
+
+
+        return list;
+
+    }
+
+    public List<String> getAllLocation(){
+
+
+        return  db.itemInfo().getAllItemLocation();
+
+
+    }
+
+    public void  deleteByCodeNo(String code,String serialNo){
+
+
+        db.itemInfo().deleteByItemCdeNo(code,serialNo);
+
+
+    }
+
+    public void  deleteByLoc(String loc){
+
+
+        db.itemInfo().deleteByLoc(loc);
+
+
+    }
+
+    public void  deleteAll(){
+
+
+        db.itemInfo().deleteAll();
+
+
+    }
+    public void  UpdateBackUp(){
+
+
+        db.itemInfoBackUp().updateIsDelete();
+
+
+    }
+
+
+    public void  UpdateBackUpWhere(String code,String serial){
+
+
+        db.itemInfoBackUp().updateIsDeleteWhere(serial,code);
+
+
+    }
 
 }

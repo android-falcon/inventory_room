@@ -20,9 +20,16 @@ public interface UserDaoUnit {
     @Query("SELECT * FROM ITEM_UNITS ")
     List<ItemUnit> loadAllByIds();
 
+    @Query("SELECT IFNULL (MAX(datetime(substr(IN_DATE, 7, 4) || '-' || substr(IN_DATE, 4, 2) || '-' || substr(IN_DATE, 1, 2))),'2020-03-05') FROM ITEM_UNITS")
+    String getMaxInDate();
+
+
 //    @Query("SELECT * FROM UserModel WHERE first_name LIKE :first AND " +
 //            "last_name LIKE :last LIMIT 1")
 //    UserModel findByName(String first, String last);
+//ITEM_O_CODE , SALE_PRICE , CALC_QTY , ITEM_U
+    @Query("SELECT *  FROM  ITEM_UNITS  where ITEM_BARCODE like :ITEM_BARCODE")
+    List<ItemUnit> findUnite(String ITEM_BARCODE);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
   //  @Insert

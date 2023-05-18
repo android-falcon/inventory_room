@@ -8,7 +8,16 @@ import android.service.controls.Control;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.user54.InventoryApp.Model.AssestItem_info;
+import com.example.user54.InventoryApp.Model.ItemInfo;
 import com.example.user54.InventoryApp.Model.MainSetting;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_info;
+import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoItemInfo;
+import com.example.user54.InventoryApp.ROOM.UserDaoItemInfoBackUp;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
+import com.example.user54.InventoryApp.ROOM.UserDaoTrancfer;
 
 import org.json.JSONObject;
 
@@ -33,7 +42,9 @@ public class ExportJeson {
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialogSave;
     private JSONObject obj;
-    InventoryDatabase dbHandler;
+//    InventoryDatabase dbHandler;
+    AppDatabase db;
+
 
 
     public ExportJeson(Context context,JSONObject object) {//, JSONObject obj
@@ -43,7 +54,7 @@ public class ExportJeson {
 
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(context));
-        dbHandler = new InventoryDatabase(context,data);
+//        dbHandler = new InventoryDatabase(context,data);
 //        progressDialog = new ProgressDialog(context,R.style.MyTheme);
 //        progressDialog.setCancelable(false);
 //        progressDialog.setMessage("Loading...");
@@ -51,6 +62,7 @@ public class ExportJeson {
 //        progressDialog.setProgress(0);
 
 
+        db=AppDatabase.getInstanceDatabase(context);
 
 
 
@@ -106,7 +118,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
-                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -174,7 +188,8 @@ public class ExportJeson {
 
             if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
                 Log.e("ExportData", "****Success");
-                dbHandler.updateIsExport();
+//                dbHandler.updateIsExport();
+                updateIsExport();
                 pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
                 pdItem.setTitleText(context.getResources().getString(R.string.exportriteminfosuc));
                 if(pdItem!=null){
@@ -236,7 +251,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
-                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -304,7 +321,9 @@ public class ExportJeson {
 
             if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
                 Log.e("ExportData", "****Success");
-                dbHandler.updateIsExportBackupInfoTable();
+//                dbHandler.updateIsExportBackupInfoTable();
+                updateIsExportBackup();
+
                 pdItem.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
                 pdItem.setTitleText(context.getResources().getString(R.string.exportriteminfosuc));
                 if(pdItem!=null){
@@ -360,7 +379,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
-                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -428,7 +449,8 @@ public class ExportJeson {
 
             if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
                 Log.e("ExportData", "****Success");
-                dbHandler.updateIsExportTransfer();
+//                dbHandler.updateIsExportTransfer();
+                updateIsExportTransfer();
 
                 if(TransferDialog !=null){
                     TransferDialog.dismissWithAnimation();
@@ -488,7 +510,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {
             try {
-                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting>mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -624,7 +648,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
-                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -690,8 +716,8 @@ public class ExportJeson {
 
             if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
                 Log.e("ExportData", "****Success");
-                dbHandler.updateIsExportAssets();
-
+//                dbHandler.updateIsExportAssets();
+                updateAsseatInfoItem();
                 if(AssetsDialog !=null){
                     AssetsDialog.dismissWithAnimation();
 
@@ -744,7 +770,9 @@ public class ExportJeson {
         @Override
         protected String doInBackground(String... params) {///GetModifer?compno=736&compyear=2019
             try {
-                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+//                final List<MainSetting> mainSettings=dbHandler.getAllMainSetting();
+                final List<MainSetting> mainSettings=getAllMainSetting();
+
                 String ip="",CompanyNo="290";
                 if(mainSettings.size()!=0) {
                     ip= mainSettings.get(0).getIP();
@@ -812,8 +840,8 @@ public class ExportJeson {
 
             if (JsonResponse != null && JsonResponse.contains("Saved Successfully")) {
                 Log.e("ExportData", "****Success");
-                dbHandler.updateIsExportItemCard();
-
+//                dbHandler.updateIsExportItemCard();
+                updateItemCardExport();
                 if(ItemCardDialog !=null){
                     ItemCardDialog.dismissWithAnimation();
 
@@ -842,6 +870,61 @@ public class ExportJeson {
         }
 
 
+
+    }
+
+    public void updateAsseatInfoItem(){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        userDao.updateExportTable();
+
+
+    }
+
+
+    public void updateItemCardExport(){
+
+        UserDaoCard userDao = db.itemCard();
+
+        userDao.updateExport();
+
+    }
+
+    public void updateIsExport(){
+
+        UserDaoItemInfo userDao = db.itemInfo();
+
+        userDao.updateExport();
+
+
+    }
+    public void updateIsExportTransfer(){
+
+        UserDaoTrancfer userDao = db.trancfer();
+
+        userDao.updateExport();
+
+
+    }
+
+
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
+
+    }
+
+
+    public void updateIsExportBackup(){
+
+        UserDaoItemInfoBackUp userDao = db.itemInfoBackUp();
+
+
+         userDao.updateExport();
 
     }
 

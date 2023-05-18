@@ -51,11 +51,17 @@ import com.example.user54.InventoryApp.Model.AssestItem;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemQR;
 import com.example.user54.InventoryApp.Model.ItemQty;
+import com.example.user54.InventoryApp.Model.ItemUnit;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.OnlineItems;
 import com.example.user54.InventoryApp.Model.UnitName;
 import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_info;
 import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
+import com.example.user54.InventoryApp.ROOM.UserDaoQR;
+import com.example.user54.InventoryApp.ROOM.UserDaoUnit;
 import com.example.user54.InventoryApp.adapters.Cash_detail_adapter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -90,21 +96,21 @@ public class Item extends AppCompatActivity {
     private static final int READ_REQUEST_CODE = 42;
     public static int PrintDateFlag  =0;
     public static List<ItemQty> listItemUnitQty=new ArrayList<>();
-     EditText BarcodetextView;
-     TextView itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode,textView41_;
-     ImageView barcodeShelfPrintParcode;
+    EditText BarcodetextView;
+    TextView itemNamePrintBarcode,barcodeTextBarcode,pricePrintBarcode,textView41_;
+    ImageView barcodeShelfPrintParcode;
     ImageView barcodeShelfPrint,barcodeShelfPrint2,barcodeShelfPrint3,barcodeShelfPrint4;
-     TextView ItemNameEditTextTag,PriceEditTextTag,countText,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,startEditTextTag,
-             pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,
-             pricePrint3,printEditTextTag,salesPriceEditTextTag;
+    TextView ItemNameEditTextTag,PriceEditTextTag,countText,ExpEditTextTag,itemNamePrint,ItemUnitEditTextTag,startEditTextTag,
+            pricePrint,pricePrint4,exp,itemNamePrint2,pricePrint2,exp2,itemText,itemNamePrint4,itemNamePrint3,
+            pricePrint3,printEditTextTag,salesPriceEditTextTag;
     ListView list;
-     ListAdapter adapter;
+    ListAdapter adapter;
     ListView listAssest;
     ListAdapterAssesst adapterAssest;
     boolean updateOpen = false, openSearch = false, openSave = false, openShelfTag =false,openBarcode = false,openPrice=false,openAssesst=false,openUpdateQty=false,openCost=false;
     int textId = 0;
     String today;
-    InventoryDatabase InventDB;
+    //    InventoryDatabase InventDB;
     List<ItemCard> itemCardsList = new ArrayList<ItemCard>();
     Dialog dialog;
     Animation animFadein;
@@ -128,7 +134,7 @@ public class Item extends AppCompatActivity {
     public static List<AssestItem> itemListAssest;
     List<ItemCard> itemCodeCard ;
     public static  TextView  texetrespone;
-    ArrayList<AssestItem> itemAssetsCa ;
+    List<AssestItem> itemAssetsCa ;
     public static EditText ItemCodeEditTextTag,prinS,prinSa;
     int companyNo=0;
     @Override
@@ -143,7 +149,7 @@ public class Item extends AppCompatActivity {
 
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(Item.this));
-        InventDB = new InventoryDatabase(Item.this,data);
+//        InventDB = new InventoryDatabase(Item.this,data);
         db=AppDatabase.getInstanceDatabase(Item.this);
 
         initialization();
@@ -165,7 +171,9 @@ public class Item extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         today = df.format(currentTimeAndDate);
 
-        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+//        final List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+        final List<MainSetting> mainSetting=getAllMainSetting();
+
         if (mainSetting.size() != 0) {
             companyNo=mainSetting.get(0).getCoName();
         }
@@ -179,7 +187,7 @@ public class Item extends AppCompatActivity {
 
 
     }
-TextView barCodTextTemp;
+    TextView barCodTextTemp;
     String StkNo="",isOnlinePrice="0";
 
     boolean openBarCodeRedar =false;
@@ -269,7 +277,7 @@ TextView barCodTextTemp;
 
     @SuppressLint("ClickableViewAccessibility")
     void showPrintBarcodeDialog() {
-       final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        final Dialog dialogBarCode = new Dialog(Item.this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         dialogBarCode.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogBarCode.setCancelable(false);
         if(controll.isYellow){
@@ -293,7 +301,7 @@ TextView barCodTextTemp;
 //        final TableLayout listOfItemPrint;
 
         final LinearLayout priceLinerPrint;
-         list=dialogBarCode.findViewById(R.id.list);
+        list=dialogBarCode.findViewById(R.id.list);
 
         priceLinerPrint=(LinearLayout) dialogBarCode.findViewById(R.id.priceLinerPrint);
         searchButton= (Button) dialogBarCode.findViewById(R.id.searchButton);
@@ -319,7 +327,7 @@ TextView barCodTextTemp;
 
 
         itemList=new ArrayList<>();
-         itemList=getItemCard();
+        itemList=getItemCard();
         for(int i=0;i<itemList.size();i++){
 //            fillTableRows(listOfItemPrint,itemList.get(i).getItemCode(),itemList.get(i).getItemName(),itemList.get(i).getOrgPrice(),i);
             itemList.get(i).setCheck(false);
@@ -520,7 +528,7 @@ TextView barCodTextTemp;
 
                     }
 
-                     ListAdapter adapter = new ListAdapter(Item.this, itemList);
+                    ListAdapter adapter = new ListAdapter(Item.this, itemList);
                     list.setAdapter(adapter);
 
                 }
@@ -591,7 +599,7 @@ TextView barCodTextTemp;
                     countTBarcode.setText("" + count1[0]);
                 } else
 //                    Toast.makeText(Item.this, "Copy Not Less Than 1", Toast.LENGTH_SHORT).show();
-                TostMesage(getResources().getString(R.string.notless));
+                    TostMesage(getResources().getString(R.string.notless));
             }
         });
 
@@ -626,12 +634,12 @@ TextView barCodTextTemp;
             public void onClick(View v) {
                 if (!BarcodetextView.getText().toString().equals("")){
                     itemCardForPrint = new ItemCard();
-                itemCardForPrint.setCostPrc(countTBarcode.getText().toString());
-                if (PriceCheckBox.isChecked()) {
-                    itemCardForPrint.setOrgPrice("");
-                } else {
-                    itemCardForPrint.setOrgPrice("**");
-                }
+                    itemCardForPrint.setCostPrc(countTBarcode.getText().toString());
+                    if (PriceCheckBox.isChecked()) {
+                        itemCardForPrint.setOrgPrice("");
+                    } else {
+                        itemCardForPrint.setOrgPrice("**");
+                    }
 
                     if (nameCheckBoxTag.isChecked()) {
                         itemCardForPrint.setIsName("");
@@ -639,22 +647,22 @@ TextView barCodTextTemp;
                         itemCardForPrint.setIsName("**");
                     }
 
-                barcodeListForPrint.clear();
-                for (int i = 0; i < itemList.size(); i++) {
+                    barcodeListForPrint.clear();
+                    for (int i = 0; i < itemList.size(); i++) {
 
-                    if (itemList.get(i).getCheck()) {
-                        ItemCard itemCard = itemList.get(i);
-                        barcodeListForPrint.add(itemCard);
+                        if (itemList.get(i).getCheck()) {
+                            ItemCard itemCard = itemList.get(i);
+                            barcodeListForPrint.add(itemCard);
+                        }
+
                     }
-
-                }
 
 
 //                    boolean Permission= isStoragePermissionGranted();
 //                    if(Permission) {
-                        Intent intentBarcode = new Intent(Item.this, BluetoothConnectMenu.class);
-                        intentBarcode.putExtra("printKey", "1");
-                        startActivity(intentBarcode);
+                    Intent intentBarcode = new Intent(Item.this, BluetoothConnectMenu.class);
+                    intentBarcode.putExtra("printKey", "1");
+                    startActivity(intentBarcode);
 //                    }else{
 //                        TostMesage(getResources().getString(R.string.Permission));
 //
@@ -662,9 +670,9 @@ TextView barCodTextTemp;
 
 
 
-            }else{
+                }else{
                     TostMesage(getResources().getString(R.string.insertData));
-            }
+                }
 
 //                openBarcode = true;
 
@@ -695,13 +703,13 @@ TextView barCodTextTemp;
             Log.e("itemCode2_",""+itemCode);
 
 
-            List<String>itemUnite=findUnite(itemCode);
+            List<ItemUnit>itemUnite=findUnite(itemCode);
             int uQty=1;
 
             if(itemUnite.size()!=0){
 
-                itemCode=itemUnite.get(0);
-                uQty=Integer.parseInt(itemUnite.get(2));
+                itemCode=itemUnite.get(0).getItemOCode();
+                uQty= (int) itemUnite.get(2).getCalcQty();
 
             }else{
                 itemSwitch=findSwitch(itemCode);
@@ -791,7 +799,7 @@ TextView barCodTextTemp;
 //        final EditText BarcodetextView;
 //        final ImageView barcodeShelfPrintParcode;
         final LinearLayout priceLinerPrint;
-      listAssest=dialogBarCodeAssesst.findViewById(R.id.list);
+        listAssest=dialogBarCodeAssesst.findViewById(R.id.list);
 
         priceLinerPrint=(LinearLayout) dialogBarCodeAssesst.findViewById(R.id.priceLinerPrint);
         searchButton= (Button) dialogBarCodeAssesst.findViewById(R.id.searchButton);
@@ -818,7 +826,9 @@ TextView barCodTextTemp;
         PriceCheckBox.setVisibility(View.INVISIBLE);
 
         itemListAssest=new ArrayList<>();
-        itemListAssest=InventDB.getAllAssesstItem();
+//        itemListAssest=InventDB.getAllAssesstItem();//for sql
+        itemListAssest=getAllAsseat();//for room
+
         for(int i=0;i<itemListAssest.size();i++){
 //            fillTableRows(listOfItemPrint,itemList.get(i).getItemCode(),itemList.get(i).getItemName(),itemList.get(i).getOrgPrice(),i);
             itemListAssest.get(i).setCheck(false);
@@ -1179,14 +1189,14 @@ TextView barCodTextTemp;
             Log.e("itemCode2_",""+itemCode);
 
 
-            List<String>itemUnite=findUnite(itemCode);
+            List<ItemUnit>itemUnite=findUnite(itemCode);
             int uQty=1;
 
 
             if(itemUnite.size()!=0){
 
-                itemCode=itemUnite.get(0);
-                uQty=Integer.parseInt(itemUnite.get(2));
+                itemCode=itemUnite.get(0).getItemOCode();
+                uQty=Integer.parseInt(String.valueOf(itemUnite.get(2).getCalcQty()));
 
             }else{
                 itemSwitch=findSwitch(itemCode);
@@ -1347,7 +1357,7 @@ TextView barCodTextTemp;
 //                   if( listItemUnitQty.size()==0)
                     textViewFd=salesPrice;
                     if(textViewFd!=null)
-                    textViewFd.setText(controll.F_D);
+                        textViewFd.setText(controll.F_D);
 //                    Log.e("aya2",printEditTextTag.getText().toString());
 
                 }
@@ -1392,42 +1402,44 @@ TextView barCodTextTemp;
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL  ) {
 //                    if (isEnter[0]) {
-                        if(!itemCode.getText().toString().equals("")&& openPrice ){
+                    if(!itemCode.getText().toString().equals("")&& openPrice ){
 //                            textView=salesPrice;
-                            textViewFd=salesPrice;
-                            textItemName= itemName;
-                            textQty=qty_text_value;
-                            List<MainSetting> mainSetting=InventDB.getAllMainSetting();
-                            if(mainSetting.size()!=0) {
+                        textViewFd=salesPrice;
+                        textItemName= itemName;
+                        textQty=qty_text_value;
+//                            List<MainSetting> mainSetting=InventDB.getAllMainSetting();
+                        final List<MainSetting> mainSetting=getAllMainSetting();
 
-                                importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0,"","");
-                                sendCloud.startSending("ItemPrice");
+                        if(mainSetting.size()!=0) {
+
+                            importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0,"","");
+                            sendCloud.startSending("ItemPrice");
 //                          isEnter[0]=false;
-                                itemCode.setSelectAllOnFocus(true);
-                                new Handler().post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        itemCode.requestFocus();
+                            itemCode.setSelectAllOnFocus(true);
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemCode.requestFocus();
 
 
-                                    }
-                                });
-                            }else{
+                                }
+                            });
+                        }else{
 
-                                new SweetAlertDialog(Item.this, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText(getResources().getString(R.string.mainSetting) + "!")
-                                        .setContentText(getResources().getString(R.string.nomainSetting))
-                                        .setConfirmText(getResources().getString(R.string.cancel))
-                                        .showCancelButton(false)
-                                        .setCancelClickListener(null)
-                                        .setConfirmClickListener(null).show();
-
-
-                            }
-
+                            new SweetAlertDialog(Item.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText(getResources().getString(R.string.mainSetting) + "!")
+                                    .setContentText(getResources().getString(R.string.nomainSetting))
+                                    .setConfirmText(getResources().getString(R.string.cancel))
+                                    .showCancelButton(false)
+                                    .setCancelClickListener(null)
+                                    .setConfirmClickListener(null).show();
 
 
                         }
+
+
+
+                    }
 
 //                    }
 
@@ -1595,7 +1607,9 @@ TextView barCodTextTemp;
                     if(!itemCode.getText().toString().equals("")&& openCost ){
                         textView=salesPrice;
                         textItemName= itemName;
-                        List<MainSetting> mainSetting=InventDB.getAllMainSetting();
+//                        List<MainSetting> mainSetting=InventDB.getAllMainSetting();
+                        final List<MainSetting> mainSetting=getAllMainSetting();
+
                         if(mainSetting.size()!=0) {
 
                             importJson sendCloud = new importJson(Item.this,itemCode.getText().toString(),0,"","");
@@ -1708,7 +1722,7 @@ TextView barCodTextTemp;
         Button SearchButtonTag;
         ImageButton upCount, downCount;
         ImageView shelfTagLinerTest;
-EditText prinS1,prinSa1;
+        EditText prinS1,prinSa1;
 
         final CheckBox PriceCheckBoxTag,ExpCheckBoxTag,startCheckBoxTag,nameCheckBoxTag,PrintCheckBoxTag;
         final LinearLayout priceLinerPrint,ExpLinerTag,priceLinerPrint_;
@@ -1718,7 +1732,7 @@ EditText prinS1,prinSa1;
         printEditTextTag=dialog.findViewById(R.id.printEditTextTag);
 
         startEditTextTag.setText(""+today);
-       // pri_LinerTag=(LinearLayout) dialog.findViewById(R.id.pri_LinerTag);
+        // pri_LinerTag=(LinearLayout) dialog.findViewById(R.id.pri_LinerTag);
         ExpLinerTag=(LinearLayout) dialog.findViewById(R.id.ExpLinerTag);
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
         priceLinerPrint_=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint_);
@@ -1773,13 +1787,13 @@ EditText prinS1,prinSa1;
         shelfTagLinerTest=dialog.findViewById(R.id.shelfTagLinerTest);
         shelfTagLinerTests=shelfTagLinerTest;
         Spinner designSpinner= dialog.findViewById(R.id.spinnerDesign);
-         uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
+        uniteSpinner=dialog.findViewById(R.id.uniteSpinner);
         final CheckBox uniteCheckBoxTag=dialog.findViewById(R.id.uniteCheckBoxTag);
         upCount = (ImageButton) dialog.findViewById(R.id.up);
         downCount = (ImageButton) dialog.findViewById(R.id.down);
         ExpEditTextTag.setText(convertToEnglish(today));
 
-printEditTextTag.setText(convertToEnglish(today));
+        printEditTextTag.setText(convertToEnglish(today));
 
         shelfTagLiner1.setVisibility(View.GONE);
         shelfTagLiner.setVisibility(View.VISIBLE);
@@ -1793,14 +1807,18 @@ printEditTextTag.setText(convertToEnglish(today));
         designList.add(getResources().getString(R.string.des_4));
         designList.add(getResources().getString(R.string.des_5));
 
-        List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+//        List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+        List<MainSetting> mainSettings=getAllMainSetting();
+
         if (mainSettings.size() != 0) {
             StkNo=mainSettings.get(0).getStorNo();
             isOnlinePrice=mainSettings.get(0).getOnlinePrice();
             OnlineItems=mainSettings.get(0).getONlINEshlf();
         }
 
-      uniteList = InventDB.getAllUnite();
+//      uniteList = InventDB.getAllUnite();
+        uniteList = db.unitName().getAll();
+
         final List<String> listOfUnite=new ArrayList<>();
 
         for (int i=0;i<uniteList.size();i++){
@@ -1881,7 +1899,7 @@ printEditTextTag.setText(convertToEnglish(today));
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(!OnlineItems.equals("1"))
-                uniteNames=listOfUnite.get(position);
+                    uniteNames=listOfUnite.get(position);
 
 
             }
@@ -1966,7 +1984,7 @@ printEditTextTag.setText(convertToEnglish(today));
             @Override
             public void onClick(View v) {
                 if(OnlineItems.equals("0"))
-                onEditorKeyPadChange();
+                    onEditorKeyPadChange();
                 if(PriceCheckBoxTag.isChecked()){
                     priceLinerPrint.setVisibility(View.VISIBLE);
                 }else{
@@ -1978,8 +1996,8 @@ printEditTextTag.setText(convertToEnglish(today));
         SalesPriceCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   if(OnlineItems.equals("0"))
-                onEditorKeyPadChange();
+                if(OnlineItems.equals("0"))
+                    onEditorKeyPadChange();
 
                 if(SalesPriceCheckBoxTag.isChecked()){
                     priceLinerPrint.setVisibility(View.VISIBLE);
@@ -1990,20 +2008,20 @@ printEditTextTag.setText(convertToEnglish(today));
             }
         });
 
-         PrintCheckBoxTag.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
+        PrintCheckBoxTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                 if(PrintCheckBoxTag.isChecked()){
-                     ExpLinerTag.setVisibility(View.VISIBLE);
+                if(PrintCheckBoxTag.isChecked()){
+                    ExpLinerTag.setVisibility(View.VISIBLE);
 
 //                     textView41_.setText("PRI:");
-                 }else{
-                     ExpLinerTag.setVisibility(View.INVISIBLE);
-          //           textView41_.setText("EXP:");
-                 }
-             }
-         });
+                }else{
+                    ExpLinerTag.setVisibility(View.INVISIBLE);
+                    //           textView41_.setText("EXP:");
+                }
+            }
+        });
 
         ExpCheckBoxTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -2056,7 +2074,7 @@ printEditTextTag.setText(convertToEnglish(today));
                         PriceEditTextTag.setText("");
                         salesPriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
-                  //      ItemUnitEditTextTag.setText("");
+                        //      ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     }
                     else if (PriceEditTextTag.getText().toString().equals("-1")) {
@@ -2071,7 +2089,7 @@ printEditTextTag.setText(convertToEnglish(today));
                         PriceEditTextTag.setText("");
                         salesPriceEditTextTag.setText("");
                         ItemNameEditTextTag.setText("");
-                    //    ItemUnitEditTextTag.setText("");
+                        //    ItemUnitEditTextTag.setText("");
                         pricePrint.setText("");
                     } else
                     {
@@ -2129,9 +2147,9 @@ printEditTextTag.setText(convertToEnglish(today));
 
             @Override
             public void afterTextChanged(Editable editable) {
-          if(editable.length()!=0){
-              onEditorKeyPadChange2();
-          }
+                if(editable.length()!=0){
+                    onEditorKeyPadChange2();
+                }
             }
         });
         ItemCodeEditTextTag.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -2140,7 +2158,7 @@ printEditTextTag.setText(convertToEnglish(today));
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
                     if(OnlineItems.equals("0"))
-                    onEditorKeyPadChange();
+                        onEditorKeyPadChange();
                     else
                     {     importJson json=new importJson(Item.this,"",0,"","");
                         json .getItems(ItemCodeEditTextTag.getText().toString());
@@ -2610,7 +2628,7 @@ printEditTextTag.setText(convertToEnglish(today));
                     countText.setText("" + count1[0]);
                 } else
 //                    Toast.makeText(Item.this, getResources().getString(R.string.notless), Toast.LENGTH_SHORT).show();
-                TostMesage(getResources().getString(R.string.notless));
+                    TostMesage(getResources().getString(R.string.notless));
             }
         });
 
@@ -2629,11 +2647,11 @@ printEditTextTag.setText(convertToEnglish(today));
                 if(!(ItemCodeEditTextTag.getText().toString().equals(""))&!(ItemNameEditTextTag.getText().toString().equals(""))) {
                     itemCardForPrint.setItemCode(ItemCodeEditTextTag.getText().toString());
                     itemCardForPrint.setItemName(ItemNameEditTextTag.getText().toString());
-                  //  itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
+                    //  itemCardForPrint.setItemUnit(ItemUnitEditTextTag.getText().toString());
                     itemCardForPrint.setCostPrc(countText.getText().toString());
                     if(ExpCheckBoxTag.isChecked()){
-                      //  PrintDateFlag  =0;
-                            itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
+                        //  PrintDateFlag  =0;
+                        itemCardForPrint.setDepartmentId("" + ExpEditTextTag.getText().toString());
 
                     }else{
                         itemCardForPrint.setDepartmentId("**" );
@@ -2658,7 +2676,7 @@ printEditTextTag.setText(convertToEnglish(today));
                             itemCardForPrint.setFDPRC(convertToEnglish(numberFormat.format(Double.parseDouble(salesPriceEditTextTag.getText().toString()))));
 
                         }else
-                        itemCardForPrint.setSalePrc("**");
+                            itemCardForPrint.setSalePrc("**");
                     }
 
 
@@ -2687,9 +2705,9 @@ printEditTextTag.setText(convertToEnglish(today));
 
 //                   boolean Permission= isStoragePermissionGranted();
 //                    if(Permission) {
-                        Intent i = new Intent(Item.this, BluetoothConnectMenu.class);
-                        i.putExtra("printKey", "0");
-                        startActivity(i);
+                    Intent i = new Intent(Item.this, BluetoothConnectMenu.class);
+                    i.putExtra("printKey", "0");
+                    startActivity(i);
 
 //                   Bitmap bitmap= convertLayoutToImage_shelfTag_Design3(itemCardForPrint);
 //                    SendSocket sendSocket=new SendSocket(Item.this);
@@ -2794,16 +2812,16 @@ printEditTextTag.setText(convertToEnglish(today));
 
 
 
-                    List<String> itemUnite = findUnite(itemCode);
+                    List<ItemUnit> itemUnite = findUnite(itemCode);
                     int uQty = 1;
 
 
                     if (itemUnite.size() != 0) {
 
-                        itemCode = itemUnite.get(0);
-                        uQty = Integer.parseInt(itemUnite.get(2));
-                        Price = itemUnite.get(1);
-                        itemUnit=itemUnite.get(3);
+                        itemCode = itemUnite.get(0).getItemOCode();
+                        uQty = Integer.parseInt(String.valueOf(itemUnite.get(2).getCalcQty()));
+                        Price = String.valueOf(itemUnite.get(1).getSalePrice());
+                        itemUnit=itemUnite.get(3).getItemU();
                         isPriceUnite = true;
 
                     } else {
@@ -2817,7 +2835,11 @@ printEditTextTag.setText(convertToEnglish(today));
                 }
 
 
-                ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+//                ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
+
+                ItemCard itemCard =getItemByCode(itemCode);
+
+
                 String it = itemCard.getItemCode();
                 Log.e("itemcard_oo", "" + it);
 //                        for (int i = 0; i < itemCardsList.size(); i++) {
@@ -2997,7 +3019,7 @@ printEditTextTag.setText(convertToEnglish(today));
 //                }
             boolean isPriceUnite = false;
 
-                ItemCard itemCards = new ItemCard();
+            ItemCard itemCards = new ItemCard();
             itemCards.setItemCode(importJson.onlineItems.get(0).getItemOCode());
             itemCards.setItemName(importJson.onlineItems.get(0).getItemNameA());
             itemCards.setCostPrc(importJson.onlineItems.get(0).getF_D());
@@ -3022,80 +3044,80 @@ printEditTextTag.setText(convertToEnglish(today));
             itemCards.setItemUnit(importJson.onlineItems.get(0).getITEMU());
             uniteNames=importJson.onlineItems.get(0).getITEMU();
 
-                String it = itemCards.getItemCode();
-                Log.e("itemcard_oo", "" + it);
+            String it = itemCards.getItemCode();
+            Log.e("itemcard_oo", "" + it);
 //                        for (int i = 0; i < itemCardsList.size(); i++) {
-                if (!TextUtils.isEmpty(it)) {
-                    Log.e("itemcard_oo==", "" + it+"    "+itemCode);
+            if (!TextUtils.isEmpty(it)) {
+                Log.e("itemcard_oo==", "" + it+"    "+itemCode);
 
-                        isItemFound = true;
-                        ItemNameEditTextTag.setText(itemCards.getItemName());
-                        //   ItemUnitEditTextTag.setText(itemUnit);
-                        if (!isPriceUnite) {
-                            String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC())));
-                            if(SalesPriceCheckBoxTag.isChecked())
-                                priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc())));
-
-
-                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc()))));
-
-                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC()))));
-
-                            pricePrint.setText(priceValue+ " JD");
-
-                            pricePrint2.setText(priceValue+ " JD");
-
-                            pricePrint3.setText(priceValue+ " JD");
-
-                            pricePrint4.setText(priceValue+ " JD");
-
-                        } else {
-                            salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
-
-                            PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+                isItemFound = true;
+                ItemNameEditTextTag.setText(itemCards.getItemName());
+                //   ItemUnitEditTextTag.setText(itemUnit);
+                if (!isPriceUnite) {
+                    String priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC())));
+                    if(SalesPriceCheckBoxTag.isChecked())
+                        priceValue=convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc())));
 
 
+                    salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getSalePrc()))));
 
-                            pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                    PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemCards.getFDPRC()))));
 
-                            pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                    pricePrint.setText(priceValue+ " JD");
 
-                            pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
-                            pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                    pricePrint2.setText(priceValue+ " JD");
 
-                        }
+                    pricePrint3.setText(priceValue+ " JD");
+
+                    pricePrint4.setText(priceValue+ " JD");
+
+                } else {
+                    salesPriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+                    PriceEditTextTag.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))));
+
+
+
+                    pricePrint.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                    pricePrint2.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                    pricePrint3.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+                    pricePrint4.setText(convertToEnglish(numberFormat.format(Double.parseDouble(Price))) + " JD");
+
+                }
 //                            ExpEditTextTag.setText(itemCardsList.get(i).g());
-                        itemNamePrint.setText(itemCards.getItemName());
-                        exp.setText(ExpEditTextTag.getText().toString());
+                itemNamePrint.setText(itemCards.getItemName());
+                exp.setText(ExpEditTextTag.getText().toString());
 
-                        itemNamePrint2.setText(itemCards.getItemName());
-                        itemNamePrint3.setText(itemCards.getItemName());
-                        itemNamePrint4.setText(itemCards.getItemName());
-                        exp2.setText(ExpEditTextTag.getText().toString());
-                        itemText.setText(ItemCodeEditTextTag.getText().toString());
-                        final List<String> listOfUnite1=new ArrayList<>();
-                        listOfUnite1.add(itemCards.getItemUnit());
-                        ArrayAdapter   uniteAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, listOfUnite1);
-                        uniteSpinner.setAdapter(uniteAdapter);
+                itemNamePrint2.setText(itemCards.getItemName());
+                itemNamePrint3.setText(itemCards.getItemName());
+                itemNamePrint4.setText(itemCards.getItemName());
+                exp2.setText(ExpEditTextTag.getText().toString());
+                itemText.setText(ItemCodeEditTextTag.getText().toString());
+                final List<String> listOfUnite1=new ArrayList<>();
+                listOfUnite1.add(itemCards.getItemUnit());
+                ArrayAdapter   uniteAdapter = new ArrayAdapter<String>(Item.this, R.layout.spinner_style, listOfUnite1);
+                uniteSpinner.setAdapter(uniteAdapter);
 
-                        if(listOfUnite1.size()!=0)
-                        {
-
-
-                            uniteSpinner.setSelection(0);
-
-                        }
+                if(listOfUnite1.size()!=0)
+                {
 
 
-                        try {
-                            Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
-                            barcodeShelfPrint.setImageBitmap(bitmapBa);
-                            barcodeShelfPrint2.setImageBitmap(bitmapBa);
-                            barcodeShelfPrint3.setImageBitmap(bitmapBa);
-                            barcodeShelfPrint4.setImageBitmap(bitmapBa);
-                        } catch (WriterException e) {
-                            e.printStackTrace();
-                        }
+                    uniteSpinner.setSelection(0);
+
+                }
+
+
+                try {
+                    Bitmap bitmapBa = encodeAsBitmap(ItemCodeEditTextTag.getText().toString(), BarcodeFormat.CODE_128, 350, 100);
+                    barcodeShelfPrint.setImageBitmap(bitmapBa);
+                    barcodeShelfPrint2.setImageBitmap(bitmapBa);
+                    barcodeShelfPrint3.setImageBitmap(bitmapBa);
+                    barcodeShelfPrint4.setImageBitmap(bitmapBa);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
 
 //                                break;
 
@@ -3114,29 +3136,29 @@ printEditTextTag.setText(convertToEnglish(today));
 //                        }
 //////
 
-                    //
+                //
 
-                }
+            }
 
-                if (isItemFound) {
+            if (isItemFound) {
 
-                    //nothing
+                //nothing
 
-                } else {
+            } else {
 //                        save.setClickable(false);
-                    showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
-                    ItemCodeEditTextTag.setText("");
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ItemCodeEditTextTag.requestFocus();
-                        }
-                    });
-                    PriceEditTextTag.setText("");
-                    ItemNameEditTextTag.setText("");
-                    //   ItemUnitEditTextTag.setText("");
-                    pricePrint.setText("");
-                }
+                showAlertDialog(getResources().getString(R.string.itemNotFoundAlert));
+                ItemCodeEditTextTag.setText("");
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ItemCodeEditTextTag.requestFocus();
+                    }
+                });
+                PriceEditTextTag.setText("");
+                ItemNameEditTextTag.setText("");
+                //   ItemUnitEditTextTag.setText("");
+                pricePrint.setText("");
+            }
 
 
 
@@ -3263,14 +3285,14 @@ printEditTextTag.setText(convertToEnglish(today));
 
 
 
-                        List<String>itemUnite=findUnite(itemCode);
+                        List<ItemUnit>itemUnite=findUnite(itemCode);
                         int uQty=1;
 
 
                         if(itemUnite.size()!=0){
 
-                            itemCode=itemUnite.get(0);
-                            uQty=Integer.parseInt(itemUnite.get(2));
+                            itemCode=itemUnite.get(0).getItemOCode();
+                            uQty=Integer.parseInt(String.valueOf(itemUnite.get(2).getCalcQty()));
 
                         }else{
                             itemSwitch=findSwitch(itemCode);
@@ -3619,14 +3641,16 @@ printEditTextTag.setText(convertToEnglish(today));
                                 moveTaskToBack(true);
                                 break;
                             case 1:
-                                InventDB.deleteAllItem("ITEM_CARD");
+//                                InventDB.deleteAllItem("ITEM_CARD");
+                                db.itemCard().deleteAll();
 //                                Toast.makeText(Item.this, getResources().getString(R.string.allItemDelete), Toast.LENGTH_SHORT).show();
                                 TostMesage(getResources().getString(R.string.allItemDelete));
 //
 //                             progressDialog();
                                 break;
                             case 2:
-                                InventDB.delete(ItemCode, itemName);
+//                                InventDB.delete(ItemCode, itemName);
+                                deleteItemCard(ItemCode, itemName);
                                 break;
 
 
@@ -3796,17 +3820,17 @@ printEditTextTag.setText(convertToEnglish(today));
                 ItemCodeCardSearch.clear();
                 if (!itemCodeReader.equals("")) {
                     if (openSearch) {
-                    for (int i = 0; i < itemCodeCard.size(); i++) {
-                        if (itemCodeCard.get(i).getItemCode().contains(itemCodeReader) || itemCodeCard.get(i).getItemName().contains(itemCodeReader)|| itemCodeCard.get(i).getItemL().contains(itemCodeReader)) {
+                        for (int i = 0; i < itemCodeCard.size(); i++) {
+                            if (itemCodeCard.get(i).getItemCode().contains(itemCodeReader) || itemCodeCard.get(i).getItemName().contains(itemCodeReader)|| itemCodeCard.get(i).getItemL().contains(itemCodeReader)) {
 //                            insertRowSearch(finalItemCodeCard.get(i).getItemName(), finalItemCodeCard.get(i).getItemCode(), tabeSearch, dialogSearch, itemCodeText, swSearch);
-                          ItemCard itemCard= itemCodeCard.get(i);
-                            ItemCodeCardSearch.add(itemCard);
+                                ItemCard itemCard= itemCodeCard.get(i);
+                                ItemCodeCardSearch.add(itemCard);
+                            }
                         }
-                    }
                         ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,ItemCodeCardSearch,companyNo);
                         tabeSearch.setAdapter(listAdapterSearch);
-                }
-            }else{
+                    }
+                }else{
                     ListAdapterSearch listAdapterSearch=new ListAdapterSearch(Item.this,itemCodeCard,companyNo);
                     tabeSearch.setAdapter(listAdapterSearch);
                 }
@@ -3972,7 +3996,8 @@ printEditTextTag.setText(convertToEnglish(today));
 
         itemAssetsCa = new ArrayList<>();
 
-        itemAssetsCa = InventDB.getAllAssesstItem();
+//        itemAssetsCa = InventDB.getAllAssesstItem();//forsql
+        itemAssetsCa = getAllAsseat();//for room
 
         ListAdapterSearchAssets listAdapterSearch=new ListAdapterSearchAssets(Item.this,itemAssetsCa,companyNo);
         tabeSearch.setAdapter(listAdapterSearch);
@@ -4436,16 +4461,42 @@ printEditTextTag.setText(convertToEnglish(today));
 
     public String findSwitch(String Item){
 
-        String itemOCode= InventDB.getItemSwitch(Item);
+//        String itemOCode= InventDB.getItemSwitch(Item);
+        String itemOCode= findByNCode(Item);
+        if(itemOCode==null){
+            return "";
+        }else {
+            return itemOCode;
+        }
+    }
 
-        return itemOCode;
+
+    public String findByNCode(String NcODE){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemSwitch().findByCodeN(NcODE);
+
+
     }
 
     public List<ItemQR> findQRCode(String ItemQR,String strNo) {
 
-        List<ItemQR> itemOCode = InventDB.getAllQRItem(ItemQR,strNo);
+//        List<ItemQR> itemOCode = InventDB.getAllQRItem(ItemQR,strNo);
+        List<ItemQR> itemOCode = getQR(ItemQR);
 
         return itemOCode;
+    }
+
+
+
+    public List<ItemQR> getQR(String code){
+
+        UserDaoQR userDao = db.itemQR();
+
+
+        return userDao.loadAllByIds(code);
+
     }
 
     public void readBarCode(TextView itemCodeText, int swBarcode) {
@@ -4528,11 +4579,21 @@ printEditTextTag.setText(convertToEnglish(today));
         }
     }
 
-    public  List<String> findUnite(String Item){
+    public  List<ItemUnit> findUnite(String Item){
 
-        List<String> itemOCode= InventDB.getItemUnite(Item);
+//        List<String> itemOCode= InventDB.getItemUnite(Item);
 
+        List<ItemUnit> itemOCode= findUnites(Item);
         return itemOCode;
+    }
+
+
+    public List<ItemUnit> findUnites(String code){
+
+        UserDaoUnit userDao = db.itemUnit();
+
+        return  userDao.findUnite(code);
+
     }
 
 
@@ -4557,7 +4618,9 @@ printEditTextTag.setText(convertToEnglish(today));
         ItemCost.setOnClickListener(showDialogOnClick);
         Clickable();
         mainSettingsList=new ArrayList<>();
-        mainSettingsList= InventDB.getAllMainSetting();
+//        mainSettingsList= InventDB.getAllMainSetting();
+        mainSettingsList=getAllMainSetting();
+
         if(mainSettingsList.size()!=0){
             settingCOName=mainSettingsList.get(0).getCoName();
         }else {
@@ -4672,11 +4735,48 @@ printEditTextTag.setText(convertToEnglish(today));
 
     public List<ItemCard> getItemCard(){
 
-       // UserDaoCard userDao = db.itemCard();
+        // UserDaoCard userDao = db.itemCard();
 
-       return  db.itemCard().getAll();
+        return  db.itemCard().getAll();
 
 
     }
 
+    public List<AssestItem> getAllAsseat(){
+
+        UserDaoAssesst userDao = db.itemAssest();
+
+        List<AssestItem>list=userDao.getAllAssest();
+
+        return list;
+
+    }
+
+
+    public ItemCard getItemByCode(String itemCard){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.itemCard().findItemCardByCode(itemCard);
+
+
+    }
+
+    public void  deleteItemCard(String itemCard,String ItemN){
+
+        UserDaoCard userDao = db.itemCard();
+
+        userDao.deleteByItemCdeName(itemCard,ItemN);
+
+
+
+    }
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
+
+    }
 }

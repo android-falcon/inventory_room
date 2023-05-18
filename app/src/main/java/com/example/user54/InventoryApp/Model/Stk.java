@@ -1,8 +1,18 @@
 package com.example.user54.InventoryApp.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "STK")
 public class Stk {
 
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "STK_NO")
     private String StkNo;
+    @ColumnInfo(name = "STK_NAME")
     private  String StkName;
 
     public Stk() {

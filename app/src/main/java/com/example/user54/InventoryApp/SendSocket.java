@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import com.example.user54.InventoryApp.InventoryDatabase;
+//import com.example.user54.InventoryApp.InventoryDatabase;
 import com.example.user54.InventoryApp.PrintPic;
 import com.sewoo.jpos.image.ImageLoader;
 import com.sewoo.jpos.image.MobileImageConverter;
@@ -28,8 +28,8 @@ import java.util.List;
 public class SendSocket {
     Context context;
     JSONObject obj1;
-//    List<OrderTransactions> orderTransactions;
-    InventoryDatabase db;
+    //    List<OrderTransactions> orderTransactions;
+//    InventoryDatabase db;
     List<Bitmap> bitmapList;
     LinearLayout lin;
     List<String> IPprinter;
@@ -53,7 +53,7 @@ public class SendSocket {
 //        this.orderTransactions = orderTransactions;
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(context));
-        db = new InventoryDatabase(context,data);
+//        db = new InventoryDatabase(context,data);
 
 
     }
@@ -64,7 +64,7 @@ public class SendSocket {
 //        bitmapList=bitmapListH;
 //        IPprinter= IPprinterH;
 
-                Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -78,7 +78,7 @@ public class SendSocket {
                 if (bitmap != null) {
                     try {
 
-    //                        String ip = kitchenScreens.get(i).getKitchenIP();
+                        //                        String ip = kitchenScreens.get(i).getKitchenIP();
 
 //                        PrintPic printPic = PrintPic.getInstance();
 //                        printPic.init(bitmap);
@@ -99,7 +99,7 @@ public class SendSocket {
 
 //                        output.print("1544422222222222222222222222222222222444444444444442222222222222222222222222222222222222222222");
 //                        output.flush();
-    //
+                        //
 
 //                        ImageLoader imageLoader = new ImageLoader();
 //                        MobileImageConverter mConverter = new MobileImageConverter();
@@ -109,13 +109,13 @@ public class SendSocket {
 //                        out.write(bimg);
 //                        out.flush();
 
-    //                        output.println(LF);
-    //                        output.flush();
-    //
+                        //                        output.println(LF);
+                        //                        output.flush();
+                        //
 
 
-    //                        output.println(ESC_m);
-    //                        output.flush();
+                        //                        output.println(ESC_m);
+                        //                        output.flush();
 
                         output.close();
                         out.close();

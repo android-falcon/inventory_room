@@ -3,15 +3,29 @@ package com.example.user54.InventoryApp.Model;
 
 // private static final String ITEM_INFO_EXP = "ITEM_INFO_EXP";
 
+//  private static final String ITEM_INFO_EXP_REC = "ITEM_INFO_EXP_REC";
+//
+//    private static final String ITEM_CODE2 = "ITEM_CODE";
+//    private static final String ITEM_NAME2 = "ITEM_NAME";
+//    private static final String ITEM_QTY2 = "ITEM_QTY";
+//    private static final String EXP_DATE2 = "EXP_DATE";
+//    private static final String BATCH_NO2 = "BATCH_NO";
+//    private static final String ROW_INDEX2 = "ROW_INDEX";
+//    private static final String AVL_QTY2 = "AVL_QTY";
+//    private static final String COST_PRC2 = "COST_PRC";
+//    private static final String SALE_PRC2 = "SALE_PRC";
+//    private static final String RECEIPT_NO2 = "RECEIPT_NO";
+//    private static final String SERIAL_NO2 = "SERIAL_NO";
+
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "ITEM_INFO_EXP")
+@Entity(tableName = "ITEM_INFO_EXP_REC")
 
-public class ItemInfoExp  {
+public class ItemInfoExpRec {
 
     @NonNull
     @PrimaryKey
@@ -48,13 +62,13 @@ public class ItemInfoExp  {
     private int serialNo;
 
 
-    public ItemInfoExp() {
+    public ItemInfoExpRec() {
 
     }
 
-    public ItemInfoExp(String itemCode, String itemName, float itemQty, String expDate
+    public ItemInfoExpRec(String itemCode, String itemName, float itemQty, String expDate
                         , String batchNo, float rowIndex, String AVLQTY,
-                       String costPrc, String salePrc, String receiptNo, int serialNo) {
+                          String costPrc, String salePrc, String receiptNo, int serialNo) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.itemQty = itemQty;

@@ -11,24 +11,9 @@ import androidx.room.PrimaryKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "ASSEST_TABLE")
-public class AssestItem {
+@Entity(tableName = "ASSEST_TABLE_INFO")
+public class AssestItem_info {
 
-
-    //  private static final String ASSEST_TABLE = "ASSEST_TABLE";
-    //
-    //    private static final String ASSESST_CODE = "ASSESST_CODE";
-    //    private static final String ASSESST_NAME = "ASSESST_NAME";
-    //    private static final String ASSESST_TYPE = "ASSESST_TYPE";
-    //    private static final String ASSESST_NO = "ASSESST_NO";
-    //    private static final String ASSESST_MAINMNG = "ASSESST_MAINMNG";
-    //    private static final String ASSESST_DEPARTMENT = "ASSESST_DEPARTMENT";
-    //    private static final String ASSESST_SECTION = "ASSESST_SECTION";
-    //    private static final String ASSESST_AREANAME = "ASSESST_AREANAME";
-    //    private static final String ASSESST_BARCODE = "ASSESST_BARCODE";
-
-    @NonNull
-    @PrimaryKey
     @ColumnInfo(name = "ASSESST_CODE")
     private String assesstCode;
     @ColumnInfo(name = "ASSESST_NAME")
@@ -41,14 +26,13 @@ public class AssestItem {
     @Ignore
     private boolean isCheck;
 //    @ColumnInfo(name = "ASSESST_CODE")
-@Ignore
-private String count;
+    private String count;
 //    @ColumnInfo(name = "ASSESST_CODE")
-@Ignore
-private String price;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @Ignore
+    private String price;
+    @ColumnInfo(name = "ASSESST_QTY_INFO")
     private String assesstQty;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @ColumnInfo(name = "ASSESST_DATE_INFO")
     private String assesstDate;
     @ColumnInfo(name = "ASSESST_MAINMNG")
     private String assesstMangment;
@@ -58,18 +42,21 @@ private String price;
     private String assesstSECTION;
     @ColumnInfo(name = "ASSESST_AREANAME")
     private String assesstAREANAME;
-    @ColumnInfo(name = "ASSESST_BARCODE")
+    @ColumnInfo(name = "ASSESST_BARCODE_INFO")
     private String assesstBarcode;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @ColumnInfo(name = "ASSESST_ISEXPORT_INFO")
     private String isExport;
-//    @ColumnInfo(name = "ASSESST_CODE")
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "ASSESST_SERIAL_INFO")
     private String serial;
 
 
-    public AssestItem() {
+    public AssestItem_info() {
     }
 
-    public AssestItem(String assesstCode, String assesstName, String assesstNo, String assesstType, boolean isCheck, String count, String price, String assesstQty, String assesstDate, String assesstMangment, String assesstDEPARTMENT, String assesstSECTION, String assesstAREANAME, String assesstBarcode, String isExport) {
+    @Ignore
+    public AssestItem_info(String assesstCode, String assesstName, String assesstNo, String assesstType, boolean isCheck, String count, String price, String assesstQty, String assesstDate, String assesstMangment, String assesstDEPARTMENT, String assesstSECTION, String assesstAREANAME, String assesstBarcode, String isExport) {
         this.assesstCode = assesstCode;
         this.assesstName = assesstName;
         this.assesstNo = assesstNo;

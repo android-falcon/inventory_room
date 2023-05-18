@@ -1,24 +1,50 @@
 package com.example.user54.InventoryApp.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName =  "MAIN_SETTING_TABLE")
 public class MainSetting {
 
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "IP_SETTING")
     private String IP;
+    @ColumnInfo(name = "STORNO")
     private String StorNo;
+    @ColumnInfo(name = "IS_ASSEST")
     private String isAssest;
+    @ColumnInfo(name = "IS_QRJARD")
     private String isQr;
+    @ColumnInfo(name = "ONLINE_PRICE")
     private String onlinePrice;
+    @ColumnInfo(name = "COMPANY_NO")
     private String companyNo;
+    @ColumnInfo(name = "PRINTER_TYPE")
     private String printerType;
+    @ColumnInfo(name = "CURRENCY_TYPE")
     private String currencyType;
+    @ColumnInfo(name = "CO_NAME")
     private int CoName;
+    @ColumnInfo(name = "NUMBER_TYPE")
     private String numberType;
+    @ColumnInfo(name = "ROTATE")
     private String rotate;
+    @ColumnInfo(name = "RESIZE")
     private int reSize;
+    @ColumnInfo(name = "SHELF_TAG_WIDTH")
     private int width;
+    @ColumnInfo(name = "SHELF_TAG_HEIGHT")
     private int height;
+    @ColumnInfo(name = "DATABASE_NO")
     private int dataBaseNo;
+    @ColumnInfo(name = "ROOM_DATABASE_NO")
     private int dataBaseNoRoom;
+    @ColumnInfo(name = "IS_QTY_MINUS")
     private int isMinus;
+    @ColumnInfo(name = "ONlINEshlf")
     private String ONlINEshlf;
 
     public String getONlINEshlf() {

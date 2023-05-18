@@ -36,12 +36,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.user54.InventoryApp.Model.AssestItem;
+import com.example.user54.InventoryApp.Model.AssestItem_info;
+import com.example.user54.InventoryApp.Model.CurrencyName;
 import com.example.user54.InventoryApp.Model.ItemCard;
 import com.example.user54.InventoryApp.Model.ItemInfo;
+import com.example.user54.InventoryApp.Model.ItemInfoBackUp;
 import com.example.user54.InventoryApp.Model.MainSetting;
 import com.example.user54.InventoryApp.Model.Password;
 import com.example.user54.InventoryApp.Model.Stk;
 import com.example.user54.InventoryApp.Model.TransferItemsInfo;
+import com.example.user54.InventoryApp.ROOM.AppDatabase;
+import com.example.user54.InventoryApp.ROOM.UserDaoAssesst_info;
+import com.example.user54.InventoryApp.ROOM.UserDaoCard;
+import com.example.user54.InventoryApp.ROOM.UserDaoItemInfo;
+import com.example.user54.InventoryApp.ROOM.UserDaoItemInfoBackUp;
+import com.example.user54.InventoryApp.ROOM.UserDaoMainSetting;
+import com.example.user54.InventoryApp.ROOM.UserDaoPassword;
+import com.example.user54.InventoryApp.ROOM.UserDaoStk;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,10 +83,10 @@ public class Tools extends AppCompatActivity {
     Dialog passwordDialog;
     Button okBtn;
     Dialog dialog;
-     int W = 200, H = 200;
+    int W = 200, H = 200;
     EditText printerw,printerH;
-    InventoryDatabase InventDB;
-    ArrayList<Password> passImport;
+    //    InventoryDatabase InventDB;
+    List<Password> passImport;
     TextView home;
     Animation animFadein;
     SweetAlertDialog dialogSwite;
@@ -85,6 +96,7 @@ public class Tools extends AppCompatActivity {
     List<String> currencyList = new ArrayList<>();
     ArrayAdapter<String> currencyAdapter = null;
     int CoName = 0;
+    AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +109,10 @@ public class Tools extends AppCompatActivity {
 
         controll co=new controll();
         int data= Integer.parseInt(co.readFromFile(Tools.this));
-        InventDB = new InventoryDatabase(Tools.this,data);
+//        InventDB = new InventoryDatabase(Tools.this,data);
         passImport = new ArrayList<>();
+        db= AppDatabase.getInstanceDatabase(Tools.this);
+
         initialization();
 
 
@@ -138,15 +152,22 @@ public class Tools extends AppCompatActivity {
                 case R.id.sendSer:
 //                    importJson sendCloud = new importJson(Tools.this,"");
 //                    sendCloud.startSending("GetStory");
-                    List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+//                    List<MainSetting> mainSetting = InventDB.getAllMainSetting();
+                    List<MainSetting> mainSetting = getAllMainSetting();
                     if (mainSetting.size() != 0) {
 
-                        List<ItemInfo> itemInfos = InventDB.getAllItemInfo();
-                        List<TransferItemsInfo> itemTransInfos = InventDB.getAllTransferItemInfo();
-                        List<AssestItem> itemTransAssets = InventDB.getAllAssesstItemInfo();
-                        List<ItemCard> itemTransItemCard = InventDB.getAllItemCardNotExport();
+//                        List<ItemInfo> itemInfos = InventDB.getAllItemInfo();
+                        List<ItemInfo> itemInfos =getAllItemInfo();
+//                        List<TransferItemsInfo> itemTransInfos = InventDB.getAllTransferItemInfo();
+                        List<TransferItemsInfo> itemTransInfos = getTrancferItem();
+//                        List<AssestItem> itemTransAssets = InventDB.getAllAssesstItemInfo();
+                        List<AssestItem_info> itemTransAssets =getAsseatInfoItem();
 
-                        List<ItemInfo> itemInfoBackup = InventDB.getAllItemInfoBackUp();
+//                        List<ItemCard> itemTransItemCard = InventDB.getAllItemCardNotExport();
+                        List<ItemCard> itemTransItemCard = getAllNotExportInfoItem();
+
+//                        List<ItemInfo> itemInfoBackup = InventDB.getAllItemInfoBackUp();
+                        List<ItemInfoBackUp> itemInfoBackup = getAllItemInfoBackUp();
 
                         sendToServer(itemInfos, itemTransInfos, itemTransAssets, mainSetting.get(0).getIsAssest(), itemTransItemCard, itemInfoBackup);
 
@@ -309,8 +330,8 @@ public class Tools extends AppCompatActivity {
             public void onClick(View v) {
                 passFound[0] = false;
                 passFoundNew[0] = false;
-                passImport = InventDB.getAllPassword();
-
+//                passImport = InventDB.getAllPassword();
+                passImport = getAllPassword();
                 if (!oldPass.getText().toString().equals("") && !newPass.getText().toString().equals("")) {
 
                     for (int i = 0; i < passImport.size(); i++) {
@@ -335,7 +356,10 @@ public class Tools extends AppCompatActivity {
 
                     if (passFound[0] && !passFoundNew[0]) {
 
-                        InventDB.updatePasswordTable(newPass.getText().toString(), "0", oldPass.getText().toString());
+
+                        UpdatePassword(newPass.getText().toString(), "0", oldPass.getText().toString());
+
+//                        InventDB.updatePasswordTable(newPass.getText().toString(), "0", oldPass.getText().toString());
 //                        Toast.makeText(Tools.this, getResources().getString(R.string.upsucess), Toast.LENGTH_SHORT).show();
                         TostMesage(getResources().getString(R.string.upsucess));
                     } else {
@@ -433,9 +457,9 @@ public class Tools extends AppCompatActivity {
         final TextView dataBase = MainSettingdialog.findViewById(R.id.dataBase);
         TextView room = MainSettingdialog.findViewById(R.id.room);
         final CheckBox resizeCheckBox = MainSettingdialog.findViewById(R.id.resizeCheckBox);
-          printerw = MainSettingdialog.findViewById(R.id.printerw);
-          printerH = MainSettingdialog.findViewById(R.id.printerH);
-          final CheckBox minusQty=MainSettingdialog.findViewById(R.id.minusQty);
+        printerw = MainSettingdialog.findViewById(R.id.printerw);
+        printerH = MainSettingdialog.findViewById(R.id.printerH);
+        final CheckBox minusQty=MainSettingdialog.findViewById(R.id.minusQty);
         final CheckBox OnlinShl=MainSettingdialog.findViewById(R.id.OnlinShl);
 
         final LinearLayout resize = MainSettingdialog.findViewById(R.id.resize);
@@ -449,9 +473,15 @@ public class Tools extends AppCompatActivity {
         ArrayAdapter<String> StkAdapter = null;
 
 
-        final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
-        final List<Stk> STKList = InventDB.getAllStk();
-        currencyList = InventDB.getAllCurrency();
+//        final List<MainSetting> mainSettings = InventDB.getAllMainSetting();
+        final List<MainSetting> mainSettings = getAllMainSetting();
+
+//        final List<Stk> STKList = InventDB.getAllStk();
+
+        final List<Stk> STKList =getStk();
+
+//        currencyList = InventDB.getAllCurrency();
+        currencyList = db.currency().getAll();
 
         resizeCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,7 +525,7 @@ public class Tools extends AppCompatActivity {
                 if(RoomVersion==data){
                     dataBase.setText(""+data);
                 }else{
-                   // dataBase.setText(""+data);
+                    // dataBase.setText(""+data);
                     Toast.makeText(Tools.this, "Data Base Is Same", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -528,7 +558,8 @@ public class Tools extends AppCompatActivity {
 
         if (mainSettings.size() != 0) {
             ipSetting.setText(mainSettings.get(0).getIP());
-            StoreName.setText(InventDB.getStkName(mainSettings.get(0).getStorNo()));
+//            StoreName.setText(InventDB.getStkName(mainSettings.get(0).getStorNo()));
+            StoreName.setText(getStkName(mainSettings.get(0).getStorNo()));
 
             dataBase.setText(""+mainSettings.get(0).getDataBaseNo());//mainSettings.get(0).getDataBaseNo()
             room.setText("" + mainSettings.get(0).getDataBaseNoRoom());
@@ -549,8 +580,8 @@ public class Tools extends AppCompatActivity {
                 OnlinShl.setChecked(false);
             }
 
-           // dataBaseNo = mainSettings.get(0).getDataBaseNo();
-           // RoomVersion = mainSettings.get(0).getDataBaseNoRoom();
+            // dataBaseNo = mainSettings.get(0).getDataBaseNo();
+            // RoomVersion = mainSettings.get(0).getDataBaseNoRoom();
 
 
 
@@ -671,7 +702,8 @@ public class Tools extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!ipSetting.getText().toString().equals("")) {
-                    InventDB.deleteAllItem("MAIN_SETTING_TABLE");
+//                    InventDB.deleteAllItem("MAIN_SETTING_TABLE");
+                    db.mainSetting().deleteAll();
                     String Store = "0";
                     String isAssest = "0";//0->not 1-->assest
                     String isQr = "0";//0->not 1-->QR
@@ -754,10 +786,14 @@ public class Tools extends AppCompatActivity {
                     }
 
                     if (resizeCheckBox.isChecked()) {
-                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString()),isMin,onlinShl+""));
+//                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString()),isMin,onlinShl+""));
+                        addAllMainSettingStk(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt( ""+dataBase.getText().toString()), Integer.parseInt(resz), Integer.parseInt(printerw.getText().toString()), Integer.parseInt(printerH.getText().toString()),isMin,onlinShl+""));
+//
+//
 //                    Toast.makeText(Tools.this, getResources().getString(R.string.saveMainSetting), Toast.LENGTH_SHORT).show();
                     } else {
-                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ,isMin,onlinShl+"" ));
+//                        InventDB.addAllMainSetting(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ,isMin,onlinShl+"" ));
+                        addAllMainSettingStk(new MainSetting(ipSetting.getText().toString(), Store, isAssest, isQr, isOnline, companyNo.getText().toString(), printerType, currency[0], CoName, numberType, rot,Integer.parseInt(""+dataBase.getText().toString()), Integer.parseInt(resz),W ,H ,isMin,onlinShl+"" ));
 
                     }
                     //writeToFile(dataBase.getText().toString(),Tools.this);
@@ -796,10 +832,12 @@ public class Tools extends AppCompatActivity {
             public void onClick(View v) {
                 if (!currencyEdit.getText().toString().equals("")) {
 
-                    InventDB.addCurrencyTable(currencyEdit.getText().toString());
+//                    InventDB.addCurrencyTable(currencyEdit.getText().toString());
+                    db.currency().insertCur(new CurrencyName(currencyEdit.getText().toString()));
                     Toast.makeText(Tools.this, "Save Successful", Toast.LENGTH_SHORT).show();
                     currencyList.clear();
-                    currencyList = InventDB.getAllCurrency();
+//                    currencyList = InventDB.getAllCurrency();
+                    currencyList = db.currency().getAll();
                     if (currencyList.size() != 0) {
 
                         currencyAdapter = new ArrayAdapter<String>(Tools.this, R.layout.spinner_style, currencyList);
@@ -863,7 +901,7 @@ public class Tools extends AppCompatActivity {
 
     }
 
-    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem> AssestItem, String isAssest, List<ItemCard> itemCard, List<ItemInfo> itemInfosBackup) {
+    void sendToServer(List<ItemInfo> itemInfo, List<TransferItemsInfo> transferItemsInfos, List<AssestItem_info> AssestItem, String isAssest, List<ItemCard> itemCard, List<ItemInfoBackUp> itemInfosBackup) {
         if (itemInfo.size() != 0 || transferItemsInfos.size() != 0 || AssestItem.size() != 0 || itemInfosBackup.size() != 0) {
             boolean isExported = false, isExportedTranse = false, isExportItemCard = false, isExportedBackup = false;
             try {
@@ -1166,14 +1204,14 @@ public class Tools extends AppCompatActivity {
     }
     public void showpassworddailog(){
         Log.e("showpassworddailog","showpassworddailog");
-         passwordDialog = new Dialog(Tools.this);
+        passwordDialog = new Dialog(Tools.this);
         passwordDialog.setCancelable(true);
         passwordDialog.setContentView(R.layout.passworddailog);
         passwordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-         passwordEt = passwordDialog.findViewById(R.id.passwordd);
-         okBtn = passwordDialog.findViewById(R.id.done);
+        passwordEt = passwordDialog.findViewById(R.id.passwordd);
+        okBtn = passwordDialog.findViewById(R.id.done);
         passwordDialog.show();
 
 
@@ -1206,6 +1244,105 @@ public class Tools extends AppCompatActivity {
 
 
 
+
+    }
+
+
+    public List<AssestItem_info> getAsseatInfoItem(){
+
+        UserDaoAssesst_info userDao = db.itemAssestInfo();
+
+        List<AssestItem_info> itemInfos=userDao.getAllAssest();
+
+        return  itemInfos;
+    }
+
+
+    public List<ItemCard> getAllNotExportInfoItem(){
+
+        UserDaoCard userDao = db.itemCard();
+
+
+        return  userDao.getAllNotExportedItem();
+    }
+
+    public List<Password> getAllPassword(){
+
+        UserDaoPassword userDao = db.password();
+
+        return userDao.getAll();
+
+
+    }
+
+    public  void  UpdatePassword(String pass,String serialNo,String oldPass){
+
+        UserDaoPassword userDao = db.password();
+
+        userDao.updatePassword(pass,oldPass);
+
+
+    }
+
+    public List<ItemInfo> getAllItemInfo(){
+
+        UserDaoItemInfo userDao = db.itemInfo();
+
+        return userDao.getAll();
+
+
+    }
+    public String getStkName(String stkNo){
+
+        UserDaoStk userDao = db.stk();
+
+
+        return userDao.getStkName(stkNo);
+
+    }
+
+    public List<Stk> getStk(){
+
+        UserDaoStk userDao = db.stk();
+
+
+        return userDao.getAll();
+    }
+
+    public List<TransferItemsInfo> getTrancferItem(){
+
+        // UserDaoCard userDao = db.itemCard();
+
+        return  db.trancfer().getAll();
+
+
+    }
+
+    public void addAllMainSettingStk(MainSetting mainSetting){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        userDao.insertUsers(mainSetting);
+
+    }
+
+
+    public List<MainSetting> getAllMainSetting(){
+
+        UserDaoMainSetting userDao = db.mainSetting();
+
+
+        return userDao.getAll();
+
+    }
+
+    public List<ItemInfoBackUp> getAllItemInfoBackUp(){
+
+        UserDaoItemInfoBackUp userDao = db.itemInfoBackUp();
+
+
+        return userDao.getAll();
 
     }
 }
