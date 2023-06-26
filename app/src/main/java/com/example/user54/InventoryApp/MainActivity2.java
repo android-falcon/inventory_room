@@ -60,6 +60,9 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import com.example.user54.InventoryApp.Model.OfferTable;
+import com.example.user54.InventoryApp.ROOM.UserDaoOffer;
+
 //WORK
 public class MainActivity2 extends AppCompatActivity {
     //    Button exit, collecting, item, setting, report,send;
@@ -1230,6 +1233,14 @@ public class MainActivity2 extends AppCompatActivity {
         });
 
 
+
+    }
+
+    public void SaveOffer(List<OfferTable> item) {
+
+        UserDaoOffer userDao = db.itemOffer();
+        userDao.deleteAll();
+        userDao.insertAll(item);
 
 
     }

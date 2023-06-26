@@ -151,7 +151,7 @@
                             android:id="@+id/nameCheckBoxTag"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-
+                            android:checked="true"
                             android:text="@string/item_name"
                             android:textColor="@color/white"
                             android:textColorHighlight="@color/colorPrimary"
@@ -240,6 +240,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
 
+                            android:checked="true"
 
                             android:text="@string/price"
                             android:textColor="@color/white"
@@ -307,7 +308,7 @@
                             android:id="@+id/ExpCheckBoxTag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="false"
+                            android:checked="true"
                             android:text="@string/with_exp"
                             android:textColor="@color/white"
                             android:textSize="10sp" />
@@ -340,7 +341,7 @@
                             android:id="@+id/startCheckBoxTag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="false"
+                            android:checked="true"
                             android:text="@string/ProData"
                             android:textColor="@color/white"
                             android:textSize="10sp" />
@@ -348,7 +349,7 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-android:visibility="gone"
+                        android:visibility="gone"
                         android:layout_marginBottom="5dp"
                         android:gravity="center|start">
 

@@ -72,6 +72,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,6 +88,9 @@ import pl.droidsonroids.gif.GifImageButton;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.TRANSPARENT;
+import com.example.user54.InventoryApp.Model.OfferTable;
+import com.example.user54.InventoryApp.ROOM.UserDaoOffer;
+import java.util.Locale;
 
 public class Item extends AppCompatActivity {
     CheckBox SalesPriceCheckBoxTag;
@@ -701,7 +705,11 @@ public class Item extends AppCompatActivity {
                 itemCode=BarcodetextView.getText().toString();
             }
             Log.e("itemCode2_",""+itemCode);
+            boolean offer=false;
+            String codeFromText="";
 
+            String price="";
+            codeFromText=itemCode;
 
             List<ItemUnit>itemUnite=findUnite(itemCode);
             int uQty=1;
@@ -720,12 +728,40 @@ public class Item extends AppCompatActivity {
 
             }
 
+
+
+            List<OfferTable> offerTables=findOffer(itemCode);
+            List<OfferTable> offerTablesO=findOffer(codeFromText);
+
+            if(offerTablesO.size()!=0){
+
+                offer=true;
+//                itemCode = offerTables.get(0).getITEMOCODE();
+                price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTablesO.get(0).getF_D())));
+
+
+            }else
+            if (offerTables.size()!=0) {
+                offer=true;
+//                itemCode = offerTables.get(0).getITEMOCODE();
+                price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTables.get(0).getF_D())));
+
+            }
+
+
+
             for(int i = 0; i< itemList.size(); i++){
                 if(itemCode.equals(itemList.get(i).getItemCode())){
                     itemNamePrintBarcode.setText(itemList.get(i).getItemName());
                     barcodeTextBarcode .setText(itemList.get(i).getItemCode());
-                    pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
-//                            ItemCard itemCard=finalItemList.get(i);
+                    if(offer){
+                        pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(price))));
+
+                    }else {
+                        pricePrintBarcode.setText(convertToEnglish(numberFormat.format(Double.parseDouble(itemList.get(i).getFDPRC()))));
+
+                    }
+                    //                            ItemCard itemCard=finalItemList.get(i);
 //                            barcodeListForPrint.add(itemCard);
 
                     isFound=true;
@@ -1731,7 +1767,7 @@ public class Item extends AppCompatActivity {
         startEditTextTag=dialog.findViewById(R.id.startEditTextTag);
         printEditTextTag=dialog.findViewById(R.id.printEditTextTag);
 
-        startEditTextTag.setText(""+today);
+        startEditTextTag.setText(""+convertToEnglish(""+today));
         // pri_LinerTag=(LinearLayout) dialog.findViewById(R.id.pri_LinerTag);
         ExpLinerTag=(LinearLayout) dialog.findViewById(R.id.ExpLinerTag);
         priceLinerPrint=(LinearLayout) dialog.findViewById(R.id.priceLinerPrint);
@@ -2767,7 +2803,7 @@ public class Item extends AppCompatActivity {
     void onEditorKeyPadChange(){
 
         boolean isItemFound = false;
-
+        String codeFromText="";
         String itemCode = ItemCodeEditTextTag.getText().toString();
         String itemName = ItemNameEditTextTag.getText().toString();
 
@@ -2811,6 +2847,7 @@ public class Item extends AppCompatActivity {
                     Log.e("itemCode2_",""+itemCode);
 
 
+                    codeFromText=itemCode;
 
                     List<ItemUnit> itemUnite = findUnite(itemCode);
                     int uQty = 1;
@@ -2833,6 +2870,34 @@ public class Item extends AppCompatActivity {
                         isPriceUnite = false;
                     }
                 }
+
+
+
+
+                boolean offer=false;
+
+                List<OfferTable> offerTables=findOffer(itemCode);
+                List<OfferTable> offerTablesO=findOffer(codeFromText);
+
+                if(offerTablesO.size()!=0){
+
+                    offer=true;
+                    isPriceUnite=true;
+//                    itemCode = offerTablesO.get(0).getITEMOCODE();
+                    Price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTablesO.get(0).getF_D())));
+
+
+                }else
+                if (offerTables.size()!=0) {
+                    offer=true;
+                    isPriceUnite=true;
+//                    itemCode = offerTables.get(0).getITEMOCODE();
+                    Price= convertToEnglish(numberFormat.format(Double.parseDouble(offerTables.get(0).getF_D())));
+
+                }
+
+
+
 
 
 //                ItemCard itemCard = InventDB.getItemCardByBarCode(itemCode);
@@ -4779,4 +4844,48 @@ public class Item extends AppCompatActivity {
         return userDao.getAll();
 
     }
+
+
+
+    public List<OfferTable> findOffer(String Item) {
+
+
+        UserDaoOffer userDao = db.itemOffer();
+        List<OfferTable> itemOCode =   userDao.getOfferByCode(Item);
+        List<OfferTable> itemResult=new ArrayList<>();
+        for(int i=0;i<itemOCode.size();i++){
+            if((formatDate(convertToEnglish(today)).after(formatDate(itemOCode.get(i).getFRMDATE() ))
+                    &&formatDate(convertToEnglish(today)).before(formatDate(itemOCode.get(i).getTODATE() )))||
+                    (formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getFRMDATE() )))||
+                    formatDate(convertToEnglish(today)).equals(formatDate(itemOCode.get(i).getTODATE() ))){
+                OfferTable offerTable=new OfferTable();
+                offerTable=itemOCode.get(i);
+                itemResult.add(offerTable);
+                break;
+            }
+
+        }
+
+        return itemResult;
+    }
+
+
+
+    public Date formatDate(String date) {
+
+//        Log.e("date", date);
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(myFormat, Locale.US);
+        Date d = null;
+        try {
+            d = simpleDateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d;
+    }
+
+
+
+
 }
